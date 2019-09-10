@@ -10,6 +10,36 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func (r Range) allCheckpoints() []uint32 {
+	var s []uint32
+	for chk := range r.Checkpoints() {
+		s = append(s, chk)
+	}
+	return s
+}
+
+func TestRangeEnumeration(t *testing.T) {
+	assert.Equal(t,
+		[]uint32{0x3f, 0x7f},
+		MakeRange(0x3f, 0x7f).allCheckpoints())
+
+	assert.Equal(t,
+		[]uint32{0x3f},
+		MakeRange(0x3f, 0x3f).allCheckpoints())
+
+	assert.Equal(t,
+		[]uint32{0x3f},
+		MakeRange(0, 0).allCheckpoints())
+
+	assert.Equal(t,
+		[]uint32{0x3f, 0x7f},
+		MakeRange(0, 0x40).allCheckpoints())
+
+	assert.Equal(t,
+		[]uint32{0xff},
+		MakeRange(0xff, 0x40).allCheckpoints())
+}
+
 func TestFmtRangeList(t *testing.T) {
 
 	assert.Equal(t,

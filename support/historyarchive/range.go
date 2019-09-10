@@ -67,7 +67,7 @@ func (r Range) String() string {
 func (r Range) Checkpoints() chan uint32 {
 	ch := make(chan uint32)
 	go func() {
-		for i := uint64(r.Low); i < uint64(r.High); i += uint64(CheckpointFreq) {
+		for i := uint64(r.Low); i <= uint64(r.High); i += uint64(CheckpointFreq) {
 			ch <- uint32(i)
 		}
 		close(ch)

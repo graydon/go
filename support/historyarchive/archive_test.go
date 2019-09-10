@@ -200,6 +200,43 @@ func TestMirrorThenRepair(t *testing.T) {
 	assert.Equal(t, 0, countMissing(dst, opts))
 }
 
+func (a *Archive) MustGetRootHAS() HistoryArchiveState {
+	has, e := a.GetRootHAS()
+	if e != nil {
+		panic("failed to get root HAS")
+	}
+	return has
+}
+
+func TestMirrorSubsetDoPointerUpdate(t *testing.T) {
+	defer cleanup()
+	opts := testOptions()
+	src := GetRandomPopulatedArchive()
+	dst := GetTestArchive()
+	Mirror(src, dst, opts)
+	oldHigh := opts.Range.High
+	assert.Equal(t, oldHigh, dst.MustGetRootHAS().CurrentLedger)
+	opts.Range.High = NextCheckpoint(oldHigh)
+	src.AddRandomCheckpoint(opts.Range.High)
+	Mirror(src, dst, opts)
+	assert.Equal(t, opts.Range.High, dst.MustGetRootHAS().CurrentLedger)
+}
+
+func TestMirrorSubsetNoPointerUpdate(t *testing.T) {
+	defer cleanup()
+	opts := testOptions()
+	src := GetRandomPopulatedArchive()
+	dst := GetTestArchive()
+	Mirror(src, dst, opts)
+	oldHigh := opts.Range.High
+	assert.Equal(t, oldHigh, dst.MustGetRootHAS().CurrentLedger)
+	src.AddRandomCheckpoint(NextCheckpoint(oldHigh))
+	opts.Range.Low = 0x7f
+	opts.Range.High = 0xff
+	Mirror(src, dst, opts)
+	assert.Equal(t, oldHigh, dst.MustGetRootHAS().CurrentLedger)
+}
+
 func TestDryRunNoRepair(t *testing.T) {
 	defer cleanup()
 	opts := testOptions()

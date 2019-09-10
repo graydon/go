@@ -202,9 +202,16 @@ func (arch *Archive) ScanBuckets(opts *CommandOptions) error {
 
 	// First scan _all_ buckets if we can; if not, we'll do an exists-check
 	// on each bucket as we go. But this is faster when we can do it.
-	doList := arch.backend.CanListFiles()
+	doList := false
+	has, e := arch.GetRootHAS()
+	if e == nil {
+		fullRange := MakeRange(0, has.CurrentLedger)
+		doList = arch.backend.CanListFiles() && opts.Range.Size() == fullRange.Size()
+	}
 	if doList {
 		errs += noteError(arch.ScanAllBuckets())
+	} else {
+		log.Printf("Scanning buckets for %d checkpoints", opts.Range.Size())
 	}
 
 	// Grab the set of checkpoints we have HASs for, to read references.

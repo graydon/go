@@ -155,6 +155,46 @@ func TestScan(t *testing.T) {
 	GetRandomPopulatedArchive().Scan(opts)
 }
 
+func TestScanSize(t *testing.T) {
+	defer cleanup()
+	opts := testOptions()
+	arch := GetRandomPopulatedArchive()
+	arch.Scan(opts)
+	assert.Equal(t, opts.Range.Size(),
+		len(arch.checkpointFiles["history"]))
+}
+
+func TestScanSizeSubrange(t *testing.T) {
+	defer cleanup()
+	opts := testOptions()
+	arch := GetRandomPopulatedArchive()
+	opts.Range.Low = NextCheckpoint(opts.Range.Low)
+	opts.Range.High = PrevCheckpoint(opts.Range.High)
+	arch.Scan(opts)
+	assert.Equal(t, opts.Range.Size(),
+		len(arch.checkpointFiles["history"]))
+}
+
+func TestScanSizeSubrangeFewBuckets(t *testing.T) {
+	defer cleanup()
+	opts := testOptions()
+	arch := GetRandomPopulatedArchive()
+	opts.Range.Low = 0x1ff
+	opts.Range.High = 0x1ff
+	arch.Scan(opts)
+	// We should only scan one checkpoint worth of buckets.
+	assert.Less(t, len(arch.allBuckets), 40)
+}
+
+func TestScanSizeSubrangeAllBuckets(t *testing.T) {
+	defer cleanup()
+	opts := testOptions()
+	arch := GetRandomPopulatedArchive()
+	arch.Scan(opts)
+	// We should scan all checkpoints worth of buckets.
+	assert.Less(t, 300, len(arch.allBuckets))
+}
+
 func countMissing(arch *Archive, opts *CommandOptions) int {
 	n := 0
 	arch.Scan(opts)

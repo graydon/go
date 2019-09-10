@@ -76,7 +76,7 @@ func (r Range) Checkpoints() chan uint32 {
 }
 
 func (r Range) Size() int {
-	return int(r.High-r.Low) / int(CheckpointFreq)
+	return 1 + (int(r.High-r.Low) / int(CheckpointFreq))
 }
 
 func (r Range) collapsedString() string {

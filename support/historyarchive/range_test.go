@@ -18,6 +18,20 @@ func (r Range) allCheckpoints() []uint32 {
 	return s
 }
 
+func TestRangeSize(t *testing.T) {
+	assert.Equal(t, 1,
+		MakeRange(0x3f, 0x3f).Size())
+
+	assert.Equal(t, 2,
+		MakeRange(0x3f, 0x7f).Size())
+
+	assert.Equal(t, 2,
+		MakeRange(0, 100).Size())
+
+	assert.Equal(t, 4,
+		MakeRange(0xff3f, 0xffff).Size())
+}
+
 func TestRangeEnumeration(t *testing.T) {
 	assert.Equal(t,
 		[]uint32{0x3f, 0x7f},

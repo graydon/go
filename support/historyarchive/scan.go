@@ -133,6 +133,9 @@ func (arch *Archive) ScanCheckpointsFast(opts *CommandOptions) error {
 				}
 				ch, es := arch.ListCategoryCheckpoints(r.category, r.pathprefix)
 				for n := range ch {
+					if n < opts.Range.Low || n > opts.Range.High {
+						continue
+					}
 					tick <- true
 					arch.NoteCheckpointFile(r.category, n, true)
 					if opts.Verify {

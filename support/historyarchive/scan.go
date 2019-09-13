@@ -205,7 +205,7 @@ func (arch *Archive) ScanBuckets(opts *CommandOptions) error {
 	// go. But this is faster when we can do it.
 	doList := arch.backend.CanListFiles()
 	has, err := arch.GetRootHAS()
-	if e == nil {
+	if err == nil {
 		fullRange := MakeRange(0, has.CurrentLedger)
 		doList = doList && opts.Range.Size() == fullRange.Size()
 	} else {

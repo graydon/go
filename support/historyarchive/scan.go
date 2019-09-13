@@ -204,7 +204,7 @@ func (arch *Archive) ScanBuckets(opts *CommandOptions) error {
 	// entire range); if not, we'll do an exists-check on each bucket as we
 	// go. But this is faster when we can do it.
 	doList := arch.backend.CanListFiles()
-	has, e := arch.GetRootHAS()
+	has, err := arch.GetRootHAS()
 	if e == nil {
 		fullRange := MakeRange(0, has.CurrentLedger)
 		doList = doList && opts.Range.Size() == fullRange.Size()

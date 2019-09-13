@@ -200,13 +200,16 @@ func (arch *Archive) ScanBuckets(opts *CommandOptions) error {
 
 	var errs uint32
 
-	// First scan _all_ buckets if we can; if not, we'll do an exists-check
-	// on each bucket as we go. But this is faster when we can do it.
-	doList := false
+	// First scan _all_ buckets if we can (and should -- if asked to look at the
+	// entire range); if not, we'll do an exists-check on each bucket as we
+	// go. But this is faster when we can do it.
+	doList := arch.backend.CanListFiles()
 	has, e := arch.GetRootHAS()
 	if e == nil {
 		fullRange := MakeRange(0, has.CurrentLedger)
-		doList = arch.backend.CanListFiles() && opts.Range.Size() == fullRange.Size()
+		doList = doList && opts.Range.Size() == fullRange.Size()
+	} else {
+		log.Printf("Missing root archive state, possibly corrupt archive")
 	}
 	if doList {
 		errs += noteError(arch.ScanAllBuckets())

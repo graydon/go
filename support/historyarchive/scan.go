@@ -209,7 +209,8 @@ func (arch *Archive) ScanBuckets(opts *CommandOptions) error {
 		fullRange := MakeRange(0, has.CurrentLedger)
 		doList = doList && opts.Range.Size() == fullRange.Size()
 	} else {
-		log.Printf("Missing root archive state, possibly corrupt archive")
+		log.Print("Error retrieving root archive state, possibly corrupt archive:", err)
+		log.Print("Continuing and will do an exists-check on each bucket as we go, this will be slower")
 	}
 	if doList {
 		errs += noteError(arch.ScanAllBuckets())

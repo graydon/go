@@ -1,13 +1,11 @@
-//lint:file-ignore S1005 The issue should be fixed in xdrgen. Unfortunately, there's no way to ignore a single file in staticcheck.
-//lint:file-ignore U1000 fmtTest is not needed anywhere, should be removed in xdrgen.
 // Package xdr is generated from:
 //
-//  Stellar-SCP.x
-//  Stellar-ledger-entries.x
-//  Stellar-ledger.x
-//  Stellar-overlay.x
-//  Stellar-transaction.x
-//  Stellar-types.x
+//  xdr/Stellar-types.x
+//  xdr/Stellar-ledger-entries.x
+//  xdr/Stellar-transaction.x
+//  xdr/Stellar-ledger.x
+//  xdr/Stellar-overlay.x
+//  xdr/Stellar-SCP.x
 //
 // DO NOT EDIT or your changes may be overwritten
 package xdr
@@ -33,454 +31,379 @@ func Marshal(w io.Writer, v interface{}) (int, error) {
 	return xdr.Marshal(w, v)
 }
 
-// Value is an XDR Typedef defines as:
+// Hash is an XDR Typedef defines as:
 //
-//   typedef opaque Value<>;
+//   typedef opaque Hash[32];
 //
-type Value []byte
+type Hash [32]byte
+
+// XDRMaxSize implements the Sized interface for Hash
+func (e Hash) XDRMaxSize() int {
+	return 32
+}
 
 // MarshalBinary implements encoding.BinaryMarshaler.
-func (s Value) MarshalBinary() ([]byte, error) {
+func (s Hash) MarshalBinary() ([]byte, error) {
 	b := new(bytes.Buffer)
 	_, err := Marshal(b, s)
 	return b.Bytes(), err
 }
 
 // UnmarshalBinary implements encoding.BinaryUnmarshaler.
-func (s *Value) UnmarshalBinary(inp []byte) error {
+func (s *Hash) UnmarshalBinary(inp []byte) error {
 	_, err := Unmarshal(bytes.NewReader(inp), s)
 	return err
 }
 
 var (
-	_ encoding.BinaryMarshaler   = (*Value)(nil)
-	_ encoding.BinaryUnmarshaler = (*Value)(nil)
+	_ encoding.BinaryMarshaler   = (*Hash)(nil)
+	_ encoding.BinaryUnmarshaler = (*Hash)(nil)
 )
 
-// ScpBallot is an XDR Struct defines as:
+// Uint256 is an XDR Typedef defines as:
 //
-//   struct SCPBallot
-//    {
-//        uint32 counter; // n
-//        Value value;    // x
-//    };
+//   typedef opaque uint256[32];
 //
-type ScpBallot struct {
-	Counter Uint32
-	Value   Value
+type Uint256 [32]byte
+
+// XDRMaxSize implements the Sized interface for Uint256
+func (e Uint256) XDRMaxSize() int {
+	return 32
 }
 
 // MarshalBinary implements encoding.BinaryMarshaler.
-func (s ScpBallot) MarshalBinary() ([]byte, error) {
+func (s Uint256) MarshalBinary() ([]byte, error) {
 	b := new(bytes.Buffer)
 	_, err := Marshal(b, s)
 	return b.Bytes(), err
 }
 
 // UnmarshalBinary implements encoding.BinaryUnmarshaler.
-func (s *ScpBallot) UnmarshalBinary(inp []byte) error {
+func (s *Uint256) UnmarshalBinary(inp []byte) error {
 	_, err := Unmarshal(bytes.NewReader(inp), s)
 	return err
 }
 
 var (
-	_ encoding.BinaryMarshaler   = (*ScpBallot)(nil)
-	_ encoding.BinaryUnmarshaler = (*ScpBallot)(nil)
+	_ encoding.BinaryMarshaler   = (*Uint256)(nil)
+	_ encoding.BinaryUnmarshaler = (*Uint256)(nil)
 )
 
-// ScpStatementType is an XDR Enum defines as:
+// Uint32 is an XDR Typedef defines as:
 //
-//   enum SCPStatementType
+//   typedef unsigned int uint32;
+//
+type Uint32 uint32
+
+// MarshalBinary implements encoding.BinaryMarshaler.
+func (s Uint32) MarshalBinary() ([]byte, error) {
+	b := new(bytes.Buffer)
+	_, err := Marshal(b, s)
+	return b.Bytes(), err
+}
+
+// UnmarshalBinary implements encoding.BinaryUnmarshaler.
+func (s *Uint32) UnmarshalBinary(inp []byte) error {
+	_, err := Unmarshal(bytes.NewReader(inp), s)
+	return err
+}
+
+var (
+	_ encoding.BinaryMarshaler   = (*Uint32)(nil)
+	_ encoding.BinaryUnmarshaler = (*Uint32)(nil)
+)
+
+// Int32 is an XDR Typedef defines as:
+//
+//   typedef int int32;
+//
+type Int32 int32
+
+// MarshalBinary implements encoding.BinaryMarshaler.
+func (s Int32) MarshalBinary() ([]byte, error) {
+	b := new(bytes.Buffer)
+	_, err := Marshal(b, s)
+	return b.Bytes(), err
+}
+
+// UnmarshalBinary implements encoding.BinaryUnmarshaler.
+func (s *Int32) UnmarshalBinary(inp []byte) error {
+	_, err := Unmarshal(bytes.NewReader(inp), s)
+	return err
+}
+
+var (
+	_ encoding.BinaryMarshaler   = (*Int32)(nil)
+	_ encoding.BinaryUnmarshaler = (*Int32)(nil)
+)
+
+// Uint64 is an XDR Typedef defines as:
+//
+//   typedef unsigned hyper uint64;
+//
+type Uint64 uint64
+
+// MarshalBinary implements encoding.BinaryMarshaler.
+func (s Uint64) MarshalBinary() ([]byte, error) {
+	b := new(bytes.Buffer)
+	_, err := Marshal(b, s)
+	return b.Bytes(), err
+}
+
+// UnmarshalBinary implements encoding.BinaryUnmarshaler.
+func (s *Uint64) UnmarshalBinary(inp []byte) error {
+	_, err := Unmarshal(bytes.NewReader(inp), s)
+	return err
+}
+
+var (
+	_ encoding.BinaryMarshaler   = (*Uint64)(nil)
+	_ encoding.BinaryUnmarshaler = (*Uint64)(nil)
+)
+
+// Int64 is an XDR Typedef defines as:
+//
+//   typedef hyper int64;
+//
+type Int64 int64
+
+// MarshalBinary implements encoding.BinaryMarshaler.
+func (s Int64) MarshalBinary() ([]byte, error) {
+	b := new(bytes.Buffer)
+	_, err := Marshal(b, s)
+	return b.Bytes(), err
+}
+
+// UnmarshalBinary implements encoding.BinaryUnmarshaler.
+func (s *Int64) UnmarshalBinary(inp []byte) error {
+	_, err := Unmarshal(bytes.NewReader(inp), s)
+	return err
+}
+
+var (
+	_ encoding.BinaryMarshaler   = (*Int64)(nil)
+	_ encoding.BinaryUnmarshaler = (*Int64)(nil)
+)
+
+// CryptoKeyType is an XDR Enum defines as:
+//
+//   enum CryptoKeyType
 //    {
-//        SCP_ST_PREPARE = 0,
-//        SCP_ST_CONFIRM = 1,
-//        SCP_ST_EXTERNALIZE = 2,
-//        SCP_ST_NOMINATE = 3
+//        KEY_TYPE_ED25519 = 0,
+//        KEY_TYPE_PRE_AUTH_TX = 1,
+//        KEY_TYPE_HASH_X = 2
 //    };
 //
-type ScpStatementType int32
+type CryptoKeyType int32
 
 const (
-	ScpStatementTypeScpStPrepare     ScpStatementType = 0
-	ScpStatementTypeScpStConfirm     ScpStatementType = 1
-	ScpStatementTypeScpStExternalize ScpStatementType = 2
-	ScpStatementTypeScpStNominate    ScpStatementType = 3
+	CryptoKeyTypeKeyTypeEd25519   CryptoKeyType = 0
+	CryptoKeyTypeKeyTypePreAuthTx CryptoKeyType = 1
+	CryptoKeyTypeKeyTypeHashX     CryptoKeyType = 2
 )
 
-var scpStatementTypeMap = map[int32]string{
-	0: "ScpStatementTypeScpStPrepare",
-	1: "ScpStatementTypeScpStConfirm",
-	2: "ScpStatementTypeScpStExternalize",
-	3: "ScpStatementTypeScpStNominate",
+var cryptoKeyTypeMap = map[int32]string{
+	0: "CryptoKeyTypeKeyTypeEd25519",
+	1: "CryptoKeyTypeKeyTypePreAuthTx",
+	2: "CryptoKeyTypeKeyTypeHashX",
 }
 
 // ValidEnum validates a proposed value for this enum.  Implements
-// the Enum interface for ScpStatementType
-func (e ScpStatementType) ValidEnum(v int32) bool {
-	_, ok := scpStatementTypeMap[v]
+// the Enum interface for CryptoKeyType
+func (e CryptoKeyType) ValidEnum(v int32) bool {
+	_, ok := cryptoKeyTypeMap[v]
 	return ok
 }
 
 // String returns the name of `e`
-func (e ScpStatementType) String() string {
-	name, _ := scpStatementTypeMap[int32(e)]
+func (e CryptoKeyType) String() string {
+	name, _ := cryptoKeyTypeMap[int32(e)]
 	return name
 }
 
 // MarshalBinary implements encoding.BinaryMarshaler.
-func (s ScpStatementType) MarshalBinary() ([]byte, error) {
+func (s CryptoKeyType) MarshalBinary() ([]byte, error) {
 	b := new(bytes.Buffer)
 	_, err := Marshal(b, s)
 	return b.Bytes(), err
 }
 
 // UnmarshalBinary implements encoding.BinaryUnmarshaler.
-func (s *ScpStatementType) UnmarshalBinary(inp []byte) error {
+func (s *CryptoKeyType) UnmarshalBinary(inp []byte) error {
 	_, err := Unmarshal(bytes.NewReader(inp), s)
 	return err
 }
 
 var (
-	_ encoding.BinaryMarshaler   = (*ScpStatementType)(nil)
-	_ encoding.BinaryUnmarshaler = (*ScpStatementType)(nil)
+	_ encoding.BinaryMarshaler   = (*CryptoKeyType)(nil)
+	_ encoding.BinaryUnmarshaler = (*CryptoKeyType)(nil)
 )
 
-// ScpNomination is an XDR Struct defines as:
+// PublicKeyType is an XDR Enum defines as:
 //
-//   struct SCPNomination
+//   enum PublicKeyType
 //    {
-//        Hash quorumSetHash; // D
-//        Value votes<>;      // X
-//        Value accepted<>;   // Y
+//        PUBLIC_KEY_TYPE_ED25519 = KEY_TYPE_ED25519
 //    };
 //
-type ScpNomination struct {
-	QuorumSetHash Hash
-	Votes         []Value
-	Accepted      []Value
+type PublicKeyType int32
+
+const (
+	PublicKeyTypePublicKeyTypeEd25519 PublicKeyType = 0
+)
+
+var publicKeyTypeMap = map[int32]string{
+	0: "PublicKeyTypePublicKeyTypeEd25519",
+}
+
+// ValidEnum validates a proposed value for this enum.  Implements
+// the Enum interface for PublicKeyType
+func (e PublicKeyType) ValidEnum(v int32) bool {
+	_, ok := publicKeyTypeMap[v]
+	return ok
+}
+
+// String returns the name of `e`
+func (e PublicKeyType) String() string {
+	name, _ := publicKeyTypeMap[int32(e)]
+	return name
 }
 
 // MarshalBinary implements encoding.BinaryMarshaler.
-func (s ScpNomination) MarshalBinary() ([]byte, error) {
+func (s PublicKeyType) MarshalBinary() ([]byte, error) {
 	b := new(bytes.Buffer)
 	_, err := Marshal(b, s)
 	return b.Bytes(), err
 }
 
 // UnmarshalBinary implements encoding.BinaryUnmarshaler.
-func (s *ScpNomination) UnmarshalBinary(inp []byte) error {
+func (s *PublicKeyType) UnmarshalBinary(inp []byte) error {
 	_, err := Unmarshal(bytes.NewReader(inp), s)
 	return err
 }
 
 var (
-	_ encoding.BinaryMarshaler   = (*ScpNomination)(nil)
-	_ encoding.BinaryUnmarshaler = (*ScpNomination)(nil)
+	_ encoding.BinaryMarshaler   = (*PublicKeyType)(nil)
+	_ encoding.BinaryUnmarshaler = (*PublicKeyType)(nil)
 )
 
-// ScpStatementPrepare is an XDR NestedStruct defines as:
+// SignerKeyType is an XDR Enum defines as:
 //
-//   struct
-//            {
-//                Hash quorumSetHash;       // D
-//                SCPBallot ballot;         // b
-//                SCPBallot* prepared;      // p
-//                SCPBallot* preparedPrime; // p'
-//                uint32 nC;                // c.n
-//                uint32 nH;                // h.n
-//            }
+//   enum SignerKeyType
+//    {
+//        SIGNER_KEY_TYPE_ED25519 = KEY_TYPE_ED25519,
+//        SIGNER_KEY_TYPE_PRE_AUTH_TX = KEY_TYPE_PRE_AUTH_TX,
+//        SIGNER_KEY_TYPE_HASH_X = KEY_TYPE_HASH_X
+//    };
 //
-type ScpStatementPrepare struct {
-	QuorumSetHash Hash
-	Ballot        ScpBallot
-	Prepared      *ScpBallot
-	PreparedPrime *ScpBallot
-	NC            Uint32
-	NH            Uint32
+type SignerKeyType int32
+
+const (
+	SignerKeyTypeSignerKeyTypeEd25519   SignerKeyType = 0
+	SignerKeyTypeSignerKeyTypePreAuthTx SignerKeyType = 1
+	SignerKeyTypeSignerKeyTypeHashX     SignerKeyType = 2
+)
+
+var signerKeyTypeMap = map[int32]string{
+	0: "SignerKeyTypeSignerKeyTypeEd25519",
+	1: "SignerKeyTypeSignerKeyTypePreAuthTx",
+	2: "SignerKeyTypeSignerKeyTypeHashX",
+}
+
+// ValidEnum validates a proposed value for this enum.  Implements
+// the Enum interface for SignerKeyType
+func (e SignerKeyType) ValidEnum(v int32) bool {
+	_, ok := signerKeyTypeMap[v]
+	return ok
+}
+
+// String returns the name of `e`
+func (e SignerKeyType) String() string {
+	name, _ := signerKeyTypeMap[int32(e)]
+	return name
 }
 
 // MarshalBinary implements encoding.BinaryMarshaler.
-func (s ScpStatementPrepare) MarshalBinary() ([]byte, error) {
+func (s SignerKeyType) MarshalBinary() ([]byte, error) {
 	b := new(bytes.Buffer)
 	_, err := Marshal(b, s)
 	return b.Bytes(), err
 }
 
 // UnmarshalBinary implements encoding.BinaryUnmarshaler.
-func (s *ScpStatementPrepare) UnmarshalBinary(inp []byte) error {
+func (s *SignerKeyType) UnmarshalBinary(inp []byte) error {
 	_, err := Unmarshal(bytes.NewReader(inp), s)
 	return err
 }
 
 var (
-	_ encoding.BinaryMarshaler   = (*ScpStatementPrepare)(nil)
-	_ encoding.BinaryUnmarshaler = (*ScpStatementPrepare)(nil)
+	_ encoding.BinaryMarshaler   = (*SignerKeyType)(nil)
+	_ encoding.BinaryUnmarshaler = (*SignerKeyType)(nil)
 )
 
-// ScpStatementConfirm is an XDR NestedStruct defines as:
+// PublicKey is an XDR Union defines as:
 //
-//   struct
-//            {
-//                SCPBallot ballot;   // b
-//                uint32 nPrepared;   // p.n
-//                uint32 nCommit;     // c.n
-//                uint32 nH;          // h.n
-//                Hash quorumSetHash; // D
-//            }
+//   union PublicKey switch (PublicKeyType type)
+//    {
+//    case PUBLIC_KEY_TYPE_ED25519:
+//        uint256 ed25519;
+//    };
 //
-type ScpStatementConfirm struct {
-	Ballot        ScpBallot
-	NPrepared     Uint32
-	NCommit       Uint32
-	NH            Uint32
-	QuorumSetHash Hash
-}
-
-// MarshalBinary implements encoding.BinaryMarshaler.
-func (s ScpStatementConfirm) MarshalBinary() ([]byte, error) {
-	b := new(bytes.Buffer)
-	_, err := Marshal(b, s)
-	return b.Bytes(), err
-}
-
-// UnmarshalBinary implements encoding.BinaryUnmarshaler.
-func (s *ScpStatementConfirm) UnmarshalBinary(inp []byte) error {
-	_, err := Unmarshal(bytes.NewReader(inp), s)
-	return err
-}
-
-var (
-	_ encoding.BinaryMarshaler   = (*ScpStatementConfirm)(nil)
-	_ encoding.BinaryUnmarshaler = (*ScpStatementConfirm)(nil)
-)
-
-// ScpStatementExternalize is an XDR NestedStruct defines as:
-//
-//   struct
-//            {
-//                SCPBallot commit;         // c
-//                uint32 nH;                // h.n
-//                Hash commitQuorumSetHash; // D used before EXTERNALIZE
-//            }
-//
-type ScpStatementExternalize struct {
-	Commit              ScpBallot
-	NH                  Uint32
-	CommitQuorumSetHash Hash
-}
-
-// MarshalBinary implements encoding.BinaryMarshaler.
-func (s ScpStatementExternalize) MarshalBinary() ([]byte, error) {
-	b := new(bytes.Buffer)
-	_, err := Marshal(b, s)
-	return b.Bytes(), err
-}
-
-// UnmarshalBinary implements encoding.BinaryUnmarshaler.
-func (s *ScpStatementExternalize) UnmarshalBinary(inp []byte) error {
-	_, err := Unmarshal(bytes.NewReader(inp), s)
-	return err
-}
-
-var (
-	_ encoding.BinaryMarshaler   = (*ScpStatementExternalize)(nil)
-	_ encoding.BinaryUnmarshaler = (*ScpStatementExternalize)(nil)
-)
-
-// ScpStatementPledges is an XDR NestedUnion defines as:
-//
-//   union switch (SCPStatementType type)
-//        {
-//        case SCP_ST_PREPARE:
-//            struct
-//            {
-//                Hash quorumSetHash;       // D
-//                SCPBallot ballot;         // b
-//                SCPBallot* prepared;      // p
-//                SCPBallot* preparedPrime; // p'
-//                uint32 nC;                // c.n
-//                uint32 nH;                // h.n
-//            } prepare;
-//        case SCP_ST_CONFIRM:
-//            struct
-//            {
-//                SCPBallot ballot;   // b
-//                uint32 nPrepared;   // p.n
-//                uint32 nCommit;     // c.n
-//                uint32 nH;          // h.n
-//                Hash quorumSetHash; // D
-//            } confirm;
-//        case SCP_ST_EXTERNALIZE:
-//            struct
-//            {
-//                SCPBallot commit;         // c
-//                uint32 nH;                // h.n
-//                Hash commitQuorumSetHash; // D used before EXTERNALIZE
-//            } externalize;
-//        case SCP_ST_NOMINATE:
-//            SCPNomination nominate;
-//        }
-//
-type ScpStatementPledges struct {
-	Type        ScpStatementType
-	Prepare     *ScpStatementPrepare
-	Confirm     *ScpStatementConfirm
-	Externalize *ScpStatementExternalize
-	Nominate    *ScpNomination
+type PublicKey struct {
+	Type    PublicKeyType
+	Ed25519 *Uint256
 }
 
 // SwitchFieldName returns the field name in which this union's
 // discriminant is stored
-func (u ScpStatementPledges) SwitchFieldName() string {
+func (u PublicKey) SwitchFieldName() string {
 	return "Type"
 }
 
 // ArmForSwitch returns which field name should be used for storing
-// the value for an instance of ScpStatementPledges
-func (u ScpStatementPledges) ArmForSwitch(sw int32) (string, bool) {
-	switch ScpStatementType(sw) {
-	case ScpStatementTypeScpStPrepare:
-		return "Prepare", true
-	case ScpStatementTypeScpStConfirm:
-		return "Confirm", true
-	case ScpStatementTypeScpStExternalize:
-		return "Externalize", true
-	case ScpStatementTypeScpStNominate:
-		return "Nominate", true
+// the value for an instance of PublicKey
+func (u PublicKey) ArmForSwitch(sw int32) (string, bool) {
+	switch PublicKeyType(sw) {
+	case PublicKeyTypePublicKeyTypeEd25519:
+		return "Ed25519", true
 	}
 	return "-", false
 }
 
-// NewScpStatementPledges creates a new  ScpStatementPledges.
-func NewScpStatementPledges(aType ScpStatementType, value interface{}) (result ScpStatementPledges, err error) {
+// NewPublicKey creates a new  PublicKey.
+func NewPublicKey(aType PublicKeyType, value interface{}) (result PublicKey, err error) {
 	result.Type = aType
-	switch ScpStatementType(aType) {
-	case ScpStatementTypeScpStPrepare:
-		tv, ok := value.(ScpStatementPrepare)
+	switch PublicKeyType(aType) {
+	case PublicKeyTypePublicKeyTypeEd25519:
+		tv, ok := value.(Uint256)
 		if !ok {
-			err = fmt.Errorf("invalid value, must be ScpStatementPrepare")
+			err = fmt.Errorf("invalid value, must be Uint256")
 			return
 		}
-		result.Prepare = &tv
-	case ScpStatementTypeScpStConfirm:
-		tv, ok := value.(ScpStatementConfirm)
-		if !ok {
-			err = fmt.Errorf("invalid value, must be ScpStatementConfirm")
-			return
-		}
-		result.Confirm = &tv
-	case ScpStatementTypeScpStExternalize:
-		tv, ok := value.(ScpStatementExternalize)
-		if !ok {
-			err = fmt.Errorf("invalid value, must be ScpStatementExternalize")
-			return
-		}
-		result.Externalize = &tv
-	case ScpStatementTypeScpStNominate:
-		tv, ok := value.(ScpNomination)
-		if !ok {
-			err = fmt.Errorf("invalid value, must be ScpNomination")
-			return
-		}
-		result.Nominate = &tv
+		result.Ed25519 = &tv
 	}
 	return
 }
 
-// MustPrepare retrieves the Prepare value from the union,
+// MustEd25519 retrieves the Ed25519 value from the union,
 // panicing if the value is not set.
-func (u ScpStatementPledges) MustPrepare() ScpStatementPrepare {
-	val, ok := u.GetPrepare()
+func (u PublicKey) MustEd25519() Uint256 {
+	val, ok := u.GetEd25519()
 
 	if !ok {
-		panic("arm Prepare is not set")
+		panic("arm Ed25519 is not set")
 	}
 
 	return val
 }
 
-// GetPrepare retrieves the Prepare value from the union,
+// GetEd25519 retrieves the Ed25519 value from the union,
 // returning ok if the union's switch indicated the value is valid.
-func (u ScpStatementPledges) GetPrepare() (result ScpStatementPrepare, ok bool) {
+func (u PublicKey) GetEd25519() (result Uint256, ok bool) {
 	armName, _ := u.ArmForSwitch(int32(u.Type))
 
-	if armName == "Prepare" {
-		result = *u.Prepare
-		ok = true
-	}
-
-	return
-}
-
-// MustConfirm retrieves the Confirm value from the union,
-// panicing if the value is not set.
-func (u ScpStatementPledges) MustConfirm() ScpStatementConfirm {
-	val, ok := u.GetConfirm()
-
-	if !ok {
-		panic("arm Confirm is not set")
-	}
-
-	return val
-}
-
-// GetConfirm retrieves the Confirm value from the union,
-// returning ok if the union's switch indicated the value is valid.
-func (u ScpStatementPledges) GetConfirm() (result ScpStatementConfirm, ok bool) {
-	armName, _ := u.ArmForSwitch(int32(u.Type))
-
-	if armName == "Confirm" {
-		result = *u.Confirm
-		ok = true
-	}
-
-	return
-}
-
-// MustExternalize retrieves the Externalize value from the union,
-// panicing if the value is not set.
-func (u ScpStatementPledges) MustExternalize() ScpStatementExternalize {
-	val, ok := u.GetExternalize()
-
-	if !ok {
-		panic("arm Externalize is not set")
-	}
-
-	return val
-}
-
-// GetExternalize retrieves the Externalize value from the union,
-// returning ok if the union's switch indicated the value is valid.
-func (u ScpStatementPledges) GetExternalize() (result ScpStatementExternalize, ok bool) {
-	armName, _ := u.ArmForSwitch(int32(u.Type))
-
-	if armName == "Externalize" {
-		result = *u.Externalize
-		ok = true
-	}
-
-	return
-}
-
-// MustNominate retrieves the Nominate value from the union,
-// panicing if the value is not set.
-func (u ScpStatementPledges) MustNominate() ScpNomination {
-	val, ok := u.GetNominate()
-
-	if !ok {
-		panic("arm Nominate is not set")
-	}
-
-	return val
-}
-
-// GetNominate retrieves the Nominate value from the union,
-// returning ok if the union's switch indicated the value is valid.
-func (u ScpStatementPledges) GetNominate() (result ScpNomination, ok bool) {
-	armName, _ := u.ArmForSwitch(int32(u.Type))
-
-	if armName == "Nominate" {
-		result = *u.Nominate
+	if armName == "Ed25519" {
+		result = *u.Ed25519
 		ok = true
 	}
 
@@ -488,150 +411,413 @@ func (u ScpStatementPledges) GetNominate() (result ScpNomination, ok bool) {
 }
 
 // MarshalBinary implements encoding.BinaryMarshaler.
-func (s ScpStatementPledges) MarshalBinary() ([]byte, error) {
+func (s PublicKey) MarshalBinary() ([]byte, error) {
 	b := new(bytes.Buffer)
 	_, err := Marshal(b, s)
 	return b.Bytes(), err
 }
 
 // UnmarshalBinary implements encoding.BinaryUnmarshaler.
-func (s *ScpStatementPledges) UnmarshalBinary(inp []byte) error {
+func (s *PublicKey) UnmarshalBinary(inp []byte) error {
 	_, err := Unmarshal(bytes.NewReader(inp), s)
 	return err
 }
 
 var (
-	_ encoding.BinaryMarshaler   = (*ScpStatementPledges)(nil)
-	_ encoding.BinaryUnmarshaler = (*ScpStatementPledges)(nil)
+	_ encoding.BinaryMarshaler   = (*PublicKey)(nil)
+	_ encoding.BinaryUnmarshaler = (*PublicKey)(nil)
 )
 
-// ScpStatement is an XDR Struct defines as:
+// SignerKey is an XDR Union defines as:
 //
-//   struct SCPStatement
+//   union SignerKey switch (SignerKeyType type)
 //    {
-//        NodeID nodeID;    // v
-//        uint64 slotIndex; // i
-//
-//        union switch (SCPStatementType type)
-//        {
-//        case SCP_ST_PREPARE:
-//            struct
-//            {
-//                Hash quorumSetHash;       // D
-//                SCPBallot ballot;         // b
-//                SCPBallot* prepared;      // p
-//                SCPBallot* preparedPrime; // p'
-//                uint32 nC;                // c.n
-//                uint32 nH;                // h.n
-//            } prepare;
-//        case SCP_ST_CONFIRM:
-//            struct
-//            {
-//                SCPBallot ballot;   // b
-//                uint32 nPrepared;   // p.n
-//                uint32 nCommit;     // c.n
-//                uint32 nH;          // h.n
-//                Hash quorumSetHash; // D
-//            } confirm;
-//        case SCP_ST_EXTERNALIZE:
-//            struct
-//            {
-//                SCPBallot commit;         // c
-//                uint32 nH;                // h.n
-//                Hash commitQuorumSetHash; // D used before EXTERNALIZE
-//            } externalize;
-//        case SCP_ST_NOMINATE:
-//            SCPNomination nominate;
-//        }
-//        pledges;
+//    case SIGNER_KEY_TYPE_ED25519:
+//        uint256 ed25519;
+//    case SIGNER_KEY_TYPE_PRE_AUTH_TX:
+//        /* SHA-256 Hash of TransactionSignaturePayload structure */
+//        uint256 preAuthTx;
+//    case SIGNER_KEY_TYPE_HASH_X:
+//        /* Hash of random 256 bit preimage X */
+//        uint256 hashX;
 //    };
 //
-type ScpStatement struct {
-	NodeId    NodeId
-	SlotIndex Uint64
-	Pledges   ScpStatementPledges
+type SignerKey struct {
+	Type      SignerKeyType
+	Ed25519   *Uint256
+	PreAuthTx *Uint256
+	HashX     *Uint256
+}
+
+// SwitchFieldName returns the field name in which this union's
+// discriminant is stored
+func (u SignerKey) SwitchFieldName() string {
+	return "Type"
+}
+
+// ArmForSwitch returns which field name should be used for storing
+// the value for an instance of SignerKey
+func (u SignerKey) ArmForSwitch(sw int32) (string, bool) {
+	switch SignerKeyType(sw) {
+	case SignerKeyTypeSignerKeyTypeEd25519:
+		return "Ed25519", true
+	case SignerKeyTypeSignerKeyTypePreAuthTx:
+		return "PreAuthTx", true
+	case SignerKeyTypeSignerKeyTypeHashX:
+		return "HashX", true
+	}
+	return "-", false
+}
+
+// NewSignerKey creates a new  SignerKey.
+func NewSignerKey(aType SignerKeyType, value interface{}) (result SignerKey, err error) {
+	result.Type = aType
+	switch SignerKeyType(aType) {
+	case SignerKeyTypeSignerKeyTypeEd25519:
+		tv, ok := value.(Uint256)
+		if !ok {
+			err = fmt.Errorf("invalid value, must be Uint256")
+			return
+		}
+		result.Ed25519 = &tv
+	case SignerKeyTypeSignerKeyTypePreAuthTx:
+		tv, ok := value.(Uint256)
+		if !ok {
+			err = fmt.Errorf("invalid value, must be Uint256")
+			return
+		}
+		result.PreAuthTx = &tv
+	case SignerKeyTypeSignerKeyTypeHashX:
+		tv, ok := value.(Uint256)
+		if !ok {
+			err = fmt.Errorf("invalid value, must be Uint256")
+			return
+		}
+		result.HashX = &tv
+	}
+	return
+}
+
+// MustEd25519 retrieves the Ed25519 value from the union,
+// panicing if the value is not set.
+func (u SignerKey) MustEd25519() Uint256 {
+	val, ok := u.GetEd25519()
+
+	if !ok {
+		panic("arm Ed25519 is not set")
+	}
+
+	return val
+}
+
+// GetEd25519 retrieves the Ed25519 value from the union,
+// returning ok if the union's switch indicated the value is valid.
+func (u SignerKey) GetEd25519() (result Uint256, ok bool) {
+	armName, _ := u.ArmForSwitch(int32(u.Type))
+
+	if armName == "Ed25519" {
+		result = *u.Ed25519
+		ok = true
+	}
+
+	return
+}
+
+// MustPreAuthTx retrieves the PreAuthTx value from the union,
+// panicing if the value is not set.
+func (u SignerKey) MustPreAuthTx() Uint256 {
+	val, ok := u.GetPreAuthTx()
+
+	if !ok {
+		panic("arm PreAuthTx is not set")
+	}
+
+	return val
+}
+
+// GetPreAuthTx retrieves the PreAuthTx value from the union,
+// returning ok if the union's switch indicated the value is valid.
+func (u SignerKey) GetPreAuthTx() (result Uint256, ok bool) {
+	armName, _ := u.ArmForSwitch(int32(u.Type))
+
+	if armName == "PreAuthTx" {
+		result = *u.PreAuthTx
+		ok = true
+	}
+
+	return
+}
+
+// MustHashX retrieves the HashX value from the union,
+// panicing if the value is not set.
+func (u SignerKey) MustHashX() Uint256 {
+	val, ok := u.GetHashX()
+
+	if !ok {
+		panic("arm HashX is not set")
+	}
+
+	return val
+}
+
+// GetHashX retrieves the HashX value from the union,
+// returning ok if the union's switch indicated the value is valid.
+func (u SignerKey) GetHashX() (result Uint256, ok bool) {
+	armName, _ := u.ArmForSwitch(int32(u.Type))
+
+	if armName == "HashX" {
+		result = *u.HashX
+		ok = true
+	}
+
+	return
 }
 
 // MarshalBinary implements encoding.BinaryMarshaler.
-func (s ScpStatement) MarshalBinary() ([]byte, error) {
+func (s SignerKey) MarshalBinary() ([]byte, error) {
 	b := new(bytes.Buffer)
 	_, err := Marshal(b, s)
 	return b.Bytes(), err
 }
 
 // UnmarshalBinary implements encoding.BinaryUnmarshaler.
-func (s *ScpStatement) UnmarshalBinary(inp []byte) error {
+func (s *SignerKey) UnmarshalBinary(inp []byte) error {
 	_, err := Unmarshal(bytes.NewReader(inp), s)
 	return err
 }
 
 var (
-	_ encoding.BinaryMarshaler   = (*ScpStatement)(nil)
-	_ encoding.BinaryUnmarshaler = (*ScpStatement)(nil)
+	_ encoding.BinaryMarshaler   = (*SignerKey)(nil)
+	_ encoding.BinaryUnmarshaler = (*SignerKey)(nil)
 )
 
-// ScpEnvelope is an XDR Struct defines as:
+// Signature is an XDR Typedef defines as:
 //
-//   struct SCPEnvelope
-//    {
-//        SCPStatement statement;
-//        Signature signature;
-//    };
+//   typedef opaque Signature<64>;
 //
-type ScpEnvelope struct {
-	Statement ScpStatement
-	Signature Signature
+type Signature []byte
+
+// XDRMaxSize implements the Sized interface for Signature
+func (e Signature) XDRMaxSize() int {
+	return 64
 }
 
 // MarshalBinary implements encoding.BinaryMarshaler.
-func (s ScpEnvelope) MarshalBinary() ([]byte, error) {
+func (s Signature) MarshalBinary() ([]byte, error) {
 	b := new(bytes.Buffer)
 	_, err := Marshal(b, s)
 	return b.Bytes(), err
 }
 
 // UnmarshalBinary implements encoding.BinaryUnmarshaler.
-func (s *ScpEnvelope) UnmarshalBinary(inp []byte) error {
+func (s *Signature) UnmarshalBinary(inp []byte) error {
 	_, err := Unmarshal(bytes.NewReader(inp), s)
 	return err
 }
 
 var (
-	_ encoding.BinaryMarshaler   = (*ScpEnvelope)(nil)
-	_ encoding.BinaryUnmarshaler = (*ScpEnvelope)(nil)
+	_ encoding.BinaryMarshaler   = (*Signature)(nil)
+	_ encoding.BinaryUnmarshaler = (*Signature)(nil)
 )
 
-// ScpQuorumSet is an XDR Struct defines as:
+// SignatureHint is an XDR Typedef defines as:
 //
-//   struct SCPQuorumSet
-//    {
-//        uint32 threshold;
-//        PublicKey validators<>;
-//        SCPQuorumSet innerSets<>;
-//    };
+//   typedef opaque SignatureHint[4];
 //
-type ScpQuorumSet struct {
-	Threshold  Uint32
-	Validators []PublicKey
-	InnerSets  []ScpQuorumSet
+type SignatureHint [4]byte
+
+// XDRMaxSize implements the Sized interface for SignatureHint
+func (e SignatureHint) XDRMaxSize() int {
+	return 4
 }
 
 // MarshalBinary implements encoding.BinaryMarshaler.
-func (s ScpQuorumSet) MarshalBinary() ([]byte, error) {
+func (s SignatureHint) MarshalBinary() ([]byte, error) {
 	b := new(bytes.Buffer)
 	_, err := Marshal(b, s)
 	return b.Bytes(), err
 }
 
 // UnmarshalBinary implements encoding.BinaryUnmarshaler.
-func (s *ScpQuorumSet) UnmarshalBinary(inp []byte) error {
+func (s *SignatureHint) UnmarshalBinary(inp []byte) error {
 	_, err := Unmarshal(bytes.NewReader(inp), s)
 	return err
 }
 
 var (
-	_ encoding.BinaryMarshaler   = (*ScpQuorumSet)(nil)
-	_ encoding.BinaryUnmarshaler = (*ScpQuorumSet)(nil)
+	_ encoding.BinaryMarshaler   = (*SignatureHint)(nil)
+	_ encoding.BinaryUnmarshaler = (*SignatureHint)(nil)
+)
+
+// NodeId is an XDR Typedef defines as:
+//
+//   typedef PublicKey NodeID;
+//
+type NodeId PublicKey
+
+// SwitchFieldName returns the field name in which this union's
+// discriminant is stored
+func (u NodeId) SwitchFieldName() string {
+	return PublicKey(u).SwitchFieldName()
+}
+
+// ArmForSwitch returns which field name should be used for storing
+// the value for an instance of PublicKey
+func (u NodeId) ArmForSwitch(sw int32) (string, bool) {
+	return PublicKey(u).ArmForSwitch(sw)
+}
+
+// NewNodeId creates a new  NodeId.
+func NewNodeId(aType PublicKeyType, value interface{}) (result NodeId, err error) {
+	u, err := NewPublicKey(aType, value)
+	result = NodeId(u)
+	return
+}
+
+// MustEd25519 retrieves the Ed25519 value from the union,
+// panicing if the value is not set.
+func (u NodeId) MustEd25519() Uint256 {
+	return PublicKey(u).MustEd25519()
+}
+
+// GetEd25519 retrieves the Ed25519 value from the union,
+// returning ok if the union's switch indicated the value is valid.
+func (u NodeId) GetEd25519() (result Uint256, ok bool) {
+	return PublicKey(u).GetEd25519()
+}
+
+// MarshalBinary implements encoding.BinaryMarshaler.
+func (s NodeId) MarshalBinary() ([]byte, error) {
+	b := new(bytes.Buffer)
+	_, err := Marshal(b, s)
+	return b.Bytes(), err
+}
+
+// UnmarshalBinary implements encoding.BinaryUnmarshaler.
+func (s *NodeId) UnmarshalBinary(inp []byte) error {
+	_, err := Unmarshal(bytes.NewReader(inp), s)
+	return err
+}
+
+var (
+	_ encoding.BinaryMarshaler   = (*NodeId)(nil)
+	_ encoding.BinaryUnmarshaler = (*NodeId)(nil)
+)
+
+// Curve25519Secret is an XDR Struct defines as:
+//
+//   struct Curve25519Secret
+//    {
+//            opaque key[32];
+//    };
+//
+type Curve25519Secret struct {
+	Key [32]byte `xdrmaxsize:"32"`
+}
+
+// MarshalBinary implements encoding.BinaryMarshaler.
+func (s Curve25519Secret) MarshalBinary() ([]byte, error) {
+	b := new(bytes.Buffer)
+	_, err := Marshal(b, s)
+	return b.Bytes(), err
+}
+
+// UnmarshalBinary implements encoding.BinaryUnmarshaler.
+func (s *Curve25519Secret) UnmarshalBinary(inp []byte) error {
+	_, err := Unmarshal(bytes.NewReader(inp), s)
+	return err
+}
+
+var (
+	_ encoding.BinaryMarshaler   = (*Curve25519Secret)(nil)
+	_ encoding.BinaryUnmarshaler = (*Curve25519Secret)(nil)
+)
+
+// Curve25519Public is an XDR Struct defines as:
+//
+//   struct Curve25519Public
+//    {
+//            opaque key[32];
+//    };
+//
+type Curve25519Public struct {
+	Key [32]byte `xdrmaxsize:"32"`
+}
+
+// MarshalBinary implements encoding.BinaryMarshaler.
+func (s Curve25519Public) MarshalBinary() ([]byte, error) {
+	b := new(bytes.Buffer)
+	_, err := Marshal(b, s)
+	return b.Bytes(), err
+}
+
+// UnmarshalBinary implements encoding.BinaryUnmarshaler.
+func (s *Curve25519Public) UnmarshalBinary(inp []byte) error {
+	_, err := Unmarshal(bytes.NewReader(inp), s)
+	return err
+}
+
+var (
+	_ encoding.BinaryMarshaler   = (*Curve25519Public)(nil)
+	_ encoding.BinaryUnmarshaler = (*Curve25519Public)(nil)
+)
+
+// HmacSha256Key is an XDR Struct defines as:
+//
+//   struct HmacSha256Key
+//    {
+//            opaque key[32];
+//    };
+//
+type HmacSha256Key struct {
+	Key [32]byte `xdrmaxsize:"32"`
+}
+
+// MarshalBinary implements encoding.BinaryMarshaler.
+func (s HmacSha256Key) MarshalBinary() ([]byte, error) {
+	b := new(bytes.Buffer)
+	_, err := Marshal(b, s)
+	return b.Bytes(), err
+}
+
+// UnmarshalBinary implements encoding.BinaryUnmarshaler.
+func (s *HmacSha256Key) UnmarshalBinary(inp []byte) error {
+	_, err := Unmarshal(bytes.NewReader(inp), s)
+	return err
+}
+
+var (
+	_ encoding.BinaryMarshaler   = (*HmacSha256Key)(nil)
+	_ encoding.BinaryUnmarshaler = (*HmacSha256Key)(nil)
+)
+
+// HmacSha256Mac is an XDR Struct defines as:
+//
+//   struct HmacSha256Mac
+//    {
+//            opaque mac[32];
+//    };
+//
+type HmacSha256Mac struct {
+	Mac [32]byte `xdrmaxsize:"32"`
+}
+
+// MarshalBinary implements encoding.BinaryMarshaler.
+func (s HmacSha256Mac) MarshalBinary() ([]byte, error) {
+	b := new(bytes.Buffer)
+	_, err := Marshal(b, s)
+	return b.Bytes(), err
+}
+
+// UnmarshalBinary implements encoding.BinaryUnmarshaler.
+func (s *HmacSha256Mac) UnmarshalBinary(inp []byte) error {
+	_, err := Unmarshal(bytes.NewReader(inp), s)
+	return err
+}
+
+var (
+	_ encoding.BinaryMarshaler   = (*HmacSha256Mac)(nil)
+	_ encoding.BinaryUnmarshaler = (*HmacSha256Mac)(nil)
 )
 
 // AccountId is an XDR Typedef defines as:
@@ -2648,4244 +2834,6 @@ func (s *EnvelopeType) UnmarshalBinary(inp []byte) error {
 var (
 	_ encoding.BinaryMarshaler   = (*EnvelopeType)(nil)
 	_ encoding.BinaryUnmarshaler = (*EnvelopeType)(nil)
-)
-
-// UpgradeType is an XDR Typedef defines as:
-//
-//   typedef opaque UpgradeType<128>;
-//
-type UpgradeType []byte
-
-// XDRMaxSize implements the Sized interface for UpgradeType
-func (e UpgradeType) XDRMaxSize() int {
-	return 128
-}
-
-// MarshalBinary implements encoding.BinaryMarshaler.
-func (s UpgradeType) MarshalBinary() ([]byte, error) {
-	b := new(bytes.Buffer)
-	_, err := Marshal(b, s)
-	return b.Bytes(), err
-}
-
-// UnmarshalBinary implements encoding.BinaryUnmarshaler.
-func (s *UpgradeType) UnmarshalBinary(inp []byte) error {
-	_, err := Unmarshal(bytes.NewReader(inp), s)
-	return err
-}
-
-var (
-	_ encoding.BinaryMarshaler   = (*UpgradeType)(nil)
-	_ encoding.BinaryUnmarshaler = (*UpgradeType)(nil)
-)
-
-// StellarValueType is an XDR Enum defines as:
-//
-//   enum StellarValueType
-//    {
-//        STELLAR_VALUE_BASIC = 0,
-//        STELLAR_VALUE_SIGNED = 1
-//    };
-//
-type StellarValueType int32
-
-const (
-	StellarValueTypeStellarValueBasic  StellarValueType = 0
-	StellarValueTypeStellarValueSigned StellarValueType = 1
-)
-
-var stellarValueTypeMap = map[int32]string{
-	0: "StellarValueTypeStellarValueBasic",
-	1: "StellarValueTypeStellarValueSigned",
-}
-
-// ValidEnum validates a proposed value for this enum.  Implements
-// the Enum interface for StellarValueType
-func (e StellarValueType) ValidEnum(v int32) bool {
-	_, ok := stellarValueTypeMap[v]
-	return ok
-}
-
-// String returns the name of `e`
-func (e StellarValueType) String() string {
-	name, _ := stellarValueTypeMap[int32(e)]
-	return name
-}
-
-// MarshalBinary implements encoding.BinaryMarshaler.
-func (s StellarValueType) MarshalBinary() ([]byte, error) {
-	b := new(bytes.Buffer)
-	_, err := Marshal(b, s)
-	return b.Bytes(), err
-}
-
-// UnmarshalBinary implements encoding.BinaryUnmarshaler.
-func (s *StellarValueType) UnmarshalBinary(inp []byte) error {
-	_, err := Unmarshal(bytes.NewReader(inp), s)
-	return err
-}
-
-var (
-	_ encoding.BinaryMarshaler   = (*StellarValueType)(nil)
-	_ encoding.BinaryUnmarshaler = (*StellarValueType)(nil)
-)
-
-// LedgerCloseValueSignature is an XDR Struct defines as:
-//
-//   struct LedgerCloseValueSignature
-//    {
-//        NodeID nodeID;       // which node introduced the value
-//        Signature signature; // nodeID's signature
-//    };
-//
-type LedgerCloseValueSignature struct {
-	NodeId    NodeId
-	Signature Signature
-}
-
-// MarshalBinary implements encoding.BinaryMarshaler.
-func (s LedgerCloseValueSignature) MarshalBinary() ([]byte, error) {
-	b := new(bytes.Buffer)
-	_, err := Marshal(b, s)
-	return b.Bytes(), err
-}
-
-// UnmarshalBinary implements encoding.BinaryUnmarshaler.
-func (s *LedgerCloseValueSignature) UnmarshalBinary(inp []byte) error {
-	_, err := Unmarshal(bytes.NewReader(inp), s)
-	return err
-}
-
-var (
-	_ encoding.BinaryMarshaler   = (*LedgerCloseValueSignature)(nil)
-	_ encoding.BinaryUnmarshaler = (*LedgerCloseValueSignature)(nil)
-)
-
-// StellarValueExt is an XDR NestedUnion defines as:
-//
-//   union switch (StellarValueType v)
-//        {
-//        case STELLAR_VALUE_BASIC:
-//            void;
-//        case STELLAR_VALUE_SIGNED:
-//            LedgerCloseValueSignature lcValueSignature;
-//        }
-//
-type StellarValueExt struct {
-	V                StellarValueType
-	LcValueSignature *LedgerCloseValueSignature
-}
-
-// SwitchFieldName returns the field name in which this union's
-// discriminant is stored
-func (u StellarValueExt) SwitchFieldName() string {
-	return "V"
-}
-
-// ArmForSwitch returns which field name should be used for storing
-// the value for an instance of StellarValueExt
-func (u StellarValueExt) ArmForSwitch(sw int32) (string, bool) {
-	switch StellarValueType(sw) {
-	case StellarValueTypeStellarValueBasic:
-		return "", true
-	case StellarValueTypeStellarValueSigned:
-		return "LcValueSignature", true
-	}
-	return "-", false
-}
-
-// NewStellarValueExt creates a new  StellarValueExt.
-func NewStellarValueExt(v StellarValueType, value interface{}) (result StellarValueExt, err error) {
-	result.V = v
-	switch StellarValueType(v) {
-	case StellarValueTypeStellarValueBasic:
-		// void
-	case StellarValueTypeStellarValueSigned:
-		tv, ok := value.(LedgerCloseValueSignature)
-		if !ok {
-			err = fmt.Errorf("invalid value, must be LedgerCloseValueSignature")
-			return
-		}
-		result.LcValueSignature = &tv
-	}
-	return
-}
-
-// MustLcValueSignature retrieves the LcValueSignature value from the union,
-// panicing if the value is not set.
-func (u StellarValueExt) MustLcValueSignature() LedgerCloseValueSignature {
-	val, ok := u.GetLcValueSignature()
-
-	if !ok {
-		panic("arm LcValueSignature is not set")
-	}
-
-	return val
-}
-
-// GetLcValueSignature retrieves the LcValueSignature value from the union,
-// returning ok if the union's switch indicated the value is valid.
-func (u StellarValueExt) GetLcValueSignature() (result LedgerCloseValueSignature, ok bool) {
-	armName, _ := u.ArmForSwitch(int32(u.V))
-
-	if armName == "LcValueSignature" {
-		result = *u.LcValueSignature
-		ok = true
-	}
-
-	return
-}
-
-// MarshalBinary implements encoding.BinaryMarshaler.
-func (s StellarValueExt) MarshalBinary() ([]byte, error) {
-	b := new(bytes.Buffer)
-	_, err := Marshal(b, s)
-	return b.Bytes(), err
-}
-
-// UnmarshalBinary implements encoding.BinaryUnmarshaler.
-func (s *StellarValueExt) UnmarshalBinary(inp []byte) error {
-	_, err := Unmarshal(bytes.NewReader(inp), s)
-	return err
-}
-
-var (
-	_ encoding.BinaryMarshaler   = (*StellarValueExt)(nil)
-	_ encoding.BinaryUnmarshaler = (*StellarValueExt)(nil)
-)
-
-// StellarValue is an XDR Struct defines as:
-//
-//   struct StellarValue
-//    {
-//        Hash txSetHash;      // transaction set to apply to previous ledger
-//        TimePoint closeTime; // network close time
-//
-//        // upgrades to apply to the previous ledger (usually empty)
-//        // this is a vector of encoded 'LedgerUpgrade' so that nodes can drop
-//        // unknown steps during consensus if needed.
-//        // see notes below on 'LedgerUpgrade' for more detail
-//        // max size is dictated by number of upgrade types (+ room for future)
-//        UpgradeType upgrades<6>;
-//
-//        // reserved for future use
-//        union switch (StellarValueType v)
-//        {
-//        case STELLAR_VALUE_BASIC:
-//            void;
-//        case STELLAR_VALUE_SIGNED:
-//            LedgerCloseValueSignature lcValueSignature;
-//        }
-//        ext;
-//    };
-//
-type StellarValue struct {
-	TxSetHash Hash
-	CloseTime TimePoint
-	Upgrades  []UpgradeType `xdrmaxsize:"6"`
-	Ext       StellarValueExt
-}
-
-// MarshalBinary implements encoding.BinaryMarshaler.
-func (s StellarValue) MarshalBinary() ([]byte, error) {
-	b := new(bytes.Buffer)
-	_, err := Marshal(b, s)
-	return b.Bytes(), err
-}
-
-// UnmarshalBinary implements encoding.BinaryUnmarshaler.
-func (s *StellarValue) UnmarshalBinary(inp []byte) error {
-	_, err := Unmarshal(bytes.NewReader(inp), s)
-	return err
-}
-
-var (
-	_ encoding.BinaryMarshaler   = (*StellarValue)(nil)
-	_ encoding.BinaryUnmarshaler = (*StellarValue)(nil)
-)
-
-// LedgerHeaderExt is an XDR NestedUnion defines as:
-//
-//   union switch (int v)
-//        {
-//        case 0:
-//            void;
-//        }
-//
-type LedgerHeaderExt struct {
-	V int32
-}
-
-// SwitchFieldName returns the field name in which this union's
-// discriminant is stored
-func (u LedgerHeaderExt) SwitchFieldName() string {
-	return "V"
-}
-
-// ArmForSwitch returns which field name should be used for storing
-// the value for an instance of LedgerHeaderExt
-func (u LedgerHeaderExt) ArmForSwitch(sw int32) (string, bool) {
-	switch int32(sw) {
-	case 0:
-		return "", true
-	}
-	return "-", false
-}
-
-// NewLedgerHeaderExt creates a new  LedgerHeaderExt.
-func NewLedgerHeaderExt(v int32, value interface{}) (result LedgerHeaderExt, err error) {
-	result.V = v
-	switch int32(v) {
-	case 0:
-		// void
-	}
-	return
-}
-
-// MarshalBinary implements encoding.BinaryMarshaler.
-func (s LedgerHeaderExt) MarshalBinary() ([]byte, error) {
-	b := new(bytes.Buffer)
-	_, err := Marshal(b, s)
-	return b.Bytes(), err
-}
-
-// UnmarshalBinary implements encoding.BinaryUnmarshaler.
-func (s *LedgerHeaderExt) UnmarshalBinary(inp []byte) error {
-	_, err := Unmarshal(bytes.NewReader(inp), s)
-	return err
-}
-
-var (
-	_ encoding.BinaryMarshaler   = (*LedgerHeaderExt)(nil)
-	_ encoding.BinaryUnmarshaler = (*LedgerHeaderExt)(nil)
-)
-
-// LedgerHeader is an XDR Struct defines as:
-//
-//   struct LedgerHeader
-//    {
-//        uint32 ledgerVersion;    // the protocol version of the ledger
-//        Hash previousLedgerHash; // hash of the previous ledger header
-//        StellarValue scpValue;   // what consensus agreed to
-//        Hash txSetResultHash;    // the TransactionResultSet that led to this ledger
-//        Hash bucketListHash;     // hash of the ledger state
-//
-//        uint32 ledgerSeq; // sequence number of this ledger
-//
-//        int64 totalCoins; // total number of stroops in existence.
-//                          // 10,000,000 stroops in 1 XLM
-//
-//        int64 feePool;       // fees burned since last inflation run
-//        uint32 inflationSeq; // inflation sequence number
-//
-//        uint64 idPool; // last used global ID, used for generating objects
-//
-//        uint32 baseFee;     // base fee per operation in stroops
-//        uint32 baseReserve; // account base reserve in stroops
-//
-//        uint32 maxTxSetSize; // maximum size a transaction set can be
-//
-//        Hash skipList[4]; // hashes of ledgers in the past. allows you to jump back
-//                          // in time without walking the chain back ledger by ledger
-//                          // each slot contains the oldest ledger that is mod of
-//                          // either 50  5000  50000 or 500000 depending on index
-//                          // skipList[0] mod(50), skipList[1] mod(5000), etc
-//
-//        // reserved for future use
-//        union switch (int v)
-//        {
-//        case 0:
-//            void;
-//        }
-//        ext;
-//    };
-//
-type LedgerHeader struct {
-	LedgerVersion      Uint32
-	PreviousLedgerHash Hash
-	ScpValue           StellarValue
-	TxSetResultHash    Hash
-	BucketListHash     Hash
-	LedgerSeq          Uint32
-	TotalCoins         Int64
-	FeePool            Int64
-	InflationSeq       Uint32
-	IdPool             Uint64
-	BaseFee            Uint32
-	BaseReserve        Uint32
-	MaxTxSetSize       Uint32
-	SkipList           [4]Hash
-	Ext                LedgerHeaderExt
-}
-
-// MarshalBinary implements encoding.BinaryMarshaler.
-func (s LedgerHeader) MarshalBinary() ([]byte, error) {
-	b := new(bytes.Buffer)
-	_, err := Marshal(b, s)
-	return b.Bytes(), err
-}
-
-// UnmarshalBinary implements encoding.BinaryUnmarshaler.
-func (s *LedgerHeader) UnmarshalBinary(inp []byte) error {
-	_, err := Unmarshal(bytes.NewReader(inp), s)
-	return err
-}
-
-var (
-	_ encoding.BinaryMarshaler   = (*LedgerHeader)(nil)
-	_ encoding.BinaryUnmarshaler = (*LedgerHeader)(nil)
-)
-
-// LedgerUpgradeType is an XDR Enum defines as:
-//
-//   enum LedgerUpgradeType
-//    {
-//        LEDGER_UPGRADE_VERSION = 1,
-//        LEDGER_UPGRADE_BASE_FEE = 2,
-//        LEDGER_UPGRADE_MAX_TX_SET_SIZE = 3,
-//        LEDGER_UPGRADE_BASE_RESERVE = 4
-//    };
-//
-type LedgerUpgradeType int32
-
-const (
-	LedgerUpgradeTypeLedgerUpgradeVersion      LedgerUpgradeType = 1
-	LedgerUpgradeTypeLedgerUpgradeBaseFee      LedgerUpgradeType = 2
-	LedgerUpgradeTypeLedgerUpgradeMaxTxSetSize LedgerUpgradeType = 3
-	LedgerUpgradeTypeLedgerUpgradeBaseReserve  LedgerUpgradeType = 4
-)
-
-var ledgerUpgradeTypeMap = map[int32]string{
-	1: "LedgerUpgradeTypeLedgerUpgradeVersion",
-	2: "LedgerUpgradeTypeLedgerUpgradeBaseFee",
-	3: "LedgerUpgradeTypeLedgerUpgradeMaxTxSetSize",
-	4: "LedgerUpgradeTypeLedgerUpgradeBaseReserve",
-}
-
-// ValidEnum validates a proposed value for this enum.  Implements
-// the Enum interface for LedgerUpgradeType
-func (e LedgerUpgradeType) ValidEnum(v int32) bool {
-	_, ok := ledgerUpgradeTypeMap[v]
-	return ok
-}
-
-// String returns the name of `e`
-func (e LedgerUpgradeType) String() string {
-	name, _ := ledgerUpgradeTypeMap[int32(e)]
-	return name
-}
-
-// MarshalBinary implements encoding.BinaryMarshaler.
-func (s LedgerUpgradeType) MarshalBinary() ([]byte, error) {
-	b := new(bytes.Buffer)
-	_, err := Marshal(b, s)
-	return b.Bytes(), err
-}
-
-// UnmarshalBinary implements encoding.BinaryUnmarshaler.
-func (s *LedgerUpgradeType) UnmarshalBinary(inp []byte) error {
-	_, err := Unmarshal(bytes.NewReader(inp), s)
-	return err
-}
-
-var (
-	_ encoding.BinaryMarshaler   = (*LedgerUpgradeType)(nil)
-	_ encoding.BinaryUnmarshaler = (*LedgerUpgradeType)(nil)
-)
-
-// LedgerUpgrade is an XDR Union defines as:
-//
-//   union LedgerUpgrade switch (LedgerUpgradeType type)
-//    {
-//    case LEDGER_UPGRADE_VERSION:
-//        uint32 newLedgerVersion; // update ledgerVersion
-//    case LEDGER_UPGRADE_BASE_FEE:
-//        uint32 newBaseFee; // update baseFee
-//    case LEDGER_UPGRADE_MAX_TX_SET_SIZE:
-//        uint32 newMaxTxSetSize; // update maxTxSetSize
-//    case LEDGER_UPGRADE_BASE_RESERVE:
-//        uint32 newBaseReserve; // update baseReserve
-//    };
-//
-type LedgerUpgrade struct {
-	Type             LedgerUpgradeType
-	NewLedgerVersion *Uint32
-	NewBaseFee       *Uint32
-	NewMaxTxSetSize  *Uint32
-	NewBaseReserve   *Uint32
-}
-
-// SwitchFieldName returns the field name in which this union's
-// discriminant is stored
-func (u LedgerUpgrade) SwitchFieldName() string {
-	return "Type"
-}
-
-// ArmForSwitch returns which field name should be used for storing
-// the value for an instance of LedgerUpgrade
-func (u LedgerUpgrade) ArmForSwitch(sw int32) (string, bool) {
-	switch LedgerUpgradeType(sw) {
-	case LedgerUpgradeTypeLedgerUpgradeVersion:
-		return "NewLedgerVersion", true
-	case LedgerUpgradeTypeLedgerUpgradeBaseFee:
-		return "NewBaseFee", true
-	case LedgerUpgradeTypeLedgerUpgradeMaxTxSetSize:
-		return "NewMaxTxSetSize", true
-	case LedgerUpgradeTypeLedgerUpgradeBaseReserve:
-		return "NewBaseReserve", true
-	}
-	return "-", false
-}
-
-// NewLedgerUpgrade creates a new  LedgerUpgrade.
-func NewLedgerUpgrade(aType LedgerUpgradeType, value interface{}) (result LedgerUpgrade, err error) {
-	result.Type = aType
-	switch LedgerUpgradeType(aType) {
-	case LedgerUpgradeTypeLedgerUpgradeVersion:
-		tv, ok := value.(Uint32)
-		if !ok {
-			err = fmt.Errorf("invalid value, must be Uint32")
-			return
-		}
-		result.NewLedgerVersion = &tv
-	case LedgerUpgradeTypeLedgerUpgradeBaseFee:
-		tv, ok := value.(Uint32)
-		if !ok {
-			err = fmt.Errorf("invalid value, must be Uint32")
-			return
-		}
-		result.NewBaseFee = &tv
-	case LedgerUpgradeTypeLedgerUpgradeMaxTxSetSize:
-		tv, ok := value.(Uint32)
-		if !ok {
-			err = fmt.Errorf("invalid value, must be Uint32")
-			return
-		}
-		result.NewMaxTxSetSize = &tv
-	case LedgerUpgradeTypeLedgerUpgradeBaseReserve:
-		tv, ok := value.(Uint32)
-		if !ok {
-			err = fmt.Errorf("invalid value, must be Uint32")
-			return
-		}
-		result.NewBaseReserve = &tv
-	}
-	return
-}
-
-// MustNewLedgerVersion retrieves the NewLedgerVersion value from the union,
-// panicing if the value is not set.
-func (u LedgerUpgrade) MustNewLedgerVersion() Uint32 {
-	val, ok := u.GetNewLedgerVersion()
-
-	if !ok {
-		panic("arm NewLedgerVersion is not set")
-	}
-
-	return val
-}
-
-// GetNewLedgerVersion retrieves the NewLedgerVersion value from the union,
-// returning ok if the union's switch indicated the value is valid.
-func (u LedgerUpgrade) GetNewLedgerVersion() (result Uint32, ok bool) {
-	armName, _ := u.ArmForSwitch(int32(u.Type))
-
-	if armName == "NewLedgerVersion" {
-		result = *u.NewLedgerVersion
-		ok = true
-	}
-
-	return
-}
-
-// MustNewBaseFee retrieves the NewBaseFee value from the union,
-// panicing if the value is not set.
-func (u LedgerUpgrade) MustNewBaseFee() Uint32 {
-	val, ok := u.GetNewBaseFee()
-
-	if !ok {
-		panic("arm NewBaseFee is not set")
-	}
-
-	return val
-}
-
-// GetNewBaseFee retrieves the NewBaseFee value from the union,
-// returning ok if the union's switch indicated the value is valid.
-func (u LedgerUpgrade) GetNewBaseFee() (result Uint32, ok bool) {
-	armName, _ := u.ArmForSwitch(int32(u.Type))
-
-	if armName == "NewBaseFee" {
-		result = *u.NewBaseFee
-		ok = true
-	}
-
-	return
-}
-
-// MustNewMaxTxSetSize retrieves the NewMaxTxSetSize value from the union,
-// panicing if the value is not set.
-func (u LedgerUpgrade) MustNewMaxTxSetSize() Uint32 {
-	val, ok := u.GetNewMaxTxSetSize()
-
-	if !ok {
-		panic("arm NewMaxTxSetSize is not set")
-	}
-
-	return val
-}
-
-// GetNewMaxTxSetSize retrieves the NewMaxTxSetSize value from the union,
-// returning ok if the union's switch indicated the value is valid.
-func (u LedgerUpgrade) GetNewMaxTxSetSize() (result Uint32, ok bool) {
-	armName, _ := u.ArmForSwitch(int32(u.Type))
-
-	if armName == "NewMaxTxSetSize" {
-		result = *u.NewMaxTxSetSize
-		ok = true
-	}
-
-	return
-}
-
-// MustNewBaseReserve retrieves the NewBaseReserve value from the union,
-// panicing if the value is not set.
-func (u LedgerUpgrade) MustNewBaseReserve() Uint32 {
-	val, ok := u.GetNewBaseReserve()
-
-	if !ok {
-		panic("arm NewBaseReserve is not set")
-	}
-
-	return val
-}
-
-// GetNewBaseReserve retrieves the NewBaseReserve value from the union,
-// returning ok if the union's switch indicated the value is valid.
-func (u LedgerUpgrade) GetNewBaseReserve() (result Uint32, ok bool) {
-	armName, _ := u.ArmForSwitch(int32(u.Type))
-
-	if armName == "NewBaseReserve" {
-		result = *u.NewBaseReserve
-		ok = true
-	}
-
-	return
-}
-
-// MarshalBinary implements encoding.BinaryMarshaler.
-func (s LedgerUpgrade) MarshalBinary() ([]byte, error) {
-	b := new(bytes.Buffer)
-	_, err := Marshal(b, s)
-	return b.Bytes(), err
-}
-
-// UnmarshalBinary implements encoding.BinaryUnmarshaler.
-func (s *LedgerUpgrade) UnmarshalBinary(inp []byte) error {
-	_, err := Unmarshal(bytes.NewReader(inp), s)
-	return err
-}
-
-var (
-	_ encoding.BinaryMarshaler   = (*LedgerUpgrade)(nil)
-	_ encoding.BinaryUnmarshaler = (*LedgerUpgrade)(nil)
-)
-
-// LedgerKeyAccount is an XDR NestedStruct defines as:
-//
-//   struct
-//        {
-//            AccountID accountID;
-//        }
-//
-type LedgerKeyAccount struct {
-	AccountId AccountId
-}
-
-// MarshalBinary implements encoding.BinaryMarshaler.
-func (s LedgerKeyAccount) MarshalBinary() ([]byte, error) {
-	b := new(bytes.Buffer)
-	_, err := Marshal(b, s)
-	return b.Bytes(), err
-}
-
-// UnmarshalBinary implements encoding.BinaryUnmarshaler.
-func (s *LedgerKeyAccount) UnmarshalBinary(inp []byte) error {
-	_, err := Unmarshal(bytes.NewReader(inp), s)
-	return err
-}
-
-var (
-	_ encoding.BinaryMarshaler   = (*LedgerKeyAccount)(nil)
-	_ encoding.BinaryUnmarshaler = (*LedgerKeyAccount)(nil)
-)
-
-// LedgerKeyTrustLine is an XDR NestedStruct defines as:
-//
-//   struct
-//        {
-//            AccountID accountID;
-//            Asset asset;
-//        }
-//
-type LedgerKeyTrustLine struct {
-	AccountId AccountId
-	Asset     Asset
-}
-
-// MarshalBinary implements encoding.BinaryMarshaler.
-func (s LedgerKeyTrustLine) MarshalBinary() ([]byte, error) {
-	b := new(bytes.Buffer)
-	_, err := Marshal(b, s)
-	return b.Bytes(), err
-}
-
-// UnmarshalBinary implements encoding.BinaryUnmarshaler.
-func (s *LedgerKeyTrustLine) UnmarshalBinary(inp []byte) error {
-	_, err := Unmarshal(bytes.NewReader(inp), s)
-	return err
-}
-
-var (
-	_ encoding.BinaryMarshaler   = (*LedgerKeyTrustLine)(nil)
-	_ encoding.BinaryUnmarshaler = (*LedgerKeyTrustLine)(nil)
-)
-
-// LedgerKeyOffer is an XDR NestedStruct defines as:
-//
-//   struct
-//        {
-//            AccountID sellerID;
-//            int64 offerID;
-//        }
-//
-type LedgerKeyOffer struct {
-	SellerId AccountId
-	OfferId  Int64
-}
-
-// MarshalBinary implements encoding.BinaryMarshaler.
-func (s LedgerKeyOffer) MarshalBinary() ([]byte, error) {
-	b := new(bytes.Buffer)
-	_, err := Marshal(b, s)
-	return b.Bytes(), err
-}
-
-// UnmarshalBinary implements encoding.BinaryUnmarshaler.
-func (s *LedgerKeyOffer) UnmarshalBinary(inp []byte) error {
-	_, err := Unmarshal(bytes.NewReader(inp), s)
-	return err
-}
-
-var (
-	_ encoding.BinaryMarshaler   = (*LedgerKeyOffer)(nil)
-	_ encoding.BinaryUnmarshaler = (*LedgerKeyOffer)(nil)
-)
-
-// LedgerKeyData is an XDR NestedStruct defines as:
-//
-//   struct
-//        {
-//            AccountID accountID;
-//            string64 dataName;
-//        }
-//
-type LedgerKeyData struct {
-	AccountId AccountId
-	DataName  String64
-}
-
-// MarshalBinary implements encoding.BinaryMarshaler.
-func (s LedgerKeyData) MarshalBinary() ([]byte, error) {
-	b := new(bytes.Buffer)
-	_, err := Marshal(b, s)
-	return b.Bytes(), err
-}
-
-// UnmarshalBinary implements encoding.BinaryUnmarshaler.
-func (s *LedgerKeyData) UnmarshalBinary(inp []byte) error {
-	_, err := Unmarshal(bytes.NewReader(inp), s)
-	return err
-}
-
-var (
-	_ encoding.BinaryMarshaler   = (*LedgerKeyData)(nil)
-	_ encoding.BinaryUnmarshaler = (*LedgerKeyData)(nil)
-)
-
-// LedgerKey is an XDR Union defines as:
-//
-//   union LedgerKey switch (LedgerEntryType type)
-//    {
-//    case ACCOUNT:
-//        struct
-//        {
-//            AccountID accountID;
-//        } account;
-//
-//    case TRUSTLINE:
-//        struct
-//        {
-//            AccountID accountID;
-//            Asset asset;
-//        } trustLine;
-//
-//    case OFFER:
-//        struct
-//        {
-//            AccountID sellerID;
-//            int64 offerID;
-//        } offer;
-//
-//    case DATA:
-//        struct
-//        {
-//            AccountID accountID;
-//            string64 dataName;
-//        } data;
-//    };
-//
-type LedgerKey struct {
-	Type      LedgerEntryType
-	Account   *LedgerKeyAccount
-	TrustLine *LedgerKeyTrustLine
-	Offer     *LedgerKeyOffer
-	Data      *LedgerKeyData
-}
-
-// SwitchFieldName returns the field name in which this union's
-// discriminant is stored
-func (u LedgerKey) SwitchFieldName() string {
-	return "Type"
-}
-
-// ArmForSwitch returns which field name should be used for storing
-// the value for an instance of LedgerKey
-func (u LedgerKey) ArmForSwitch(sw int32) (string, bool) {
-	switch LedgerEntryType(sw) {
-	case LedgerEntryTypeAccount:
-		return "Account", true
-	case LedgerEntryTypeTrustline:
-		return "TrustLine", true
-	case LedgerEntryTypeOffer:
-		return "Offer", true
-	case LedgerEntryTypeData:
-		return "Data", true
-	}
-	return "-", false
-}
-
-// NewLedgerKey creates a new  LedgerKey.
-func NewLedgerKey(aType LedgerEntryType, value interface{}) (result LedgerKey, err error) {
-	result.Type = aType
-	switch LedgerEntryType(aType) {
-	case LedgerEntryTypeAccount:
-		tv, ok := value.(LedgerKeyAccount)
-		if !ok {
-			err = fmt.Errorf("invalid value, must be LedgerKeyAccount")
-			return
-		}
-		result.Account = &tv
-	case LedgerEntryTypeTrustline:
-		tv, ok := value.(LedgerKeyTrustLine)
-		if !ok {
-			err = fmt.Errorf("invalid value, must be LedgerKeyTrustLine")
-			return
-		}
-		result.TrustLine = &tv
-	case LedgerEntryTypeOffer:
-		tv, ok := value.(LedgerKeyOffer)
-		if !ok {
-			err = fmt.Errorf("invalid value, must be LedgerKeyOffer")
-			return
-		}
-		result.Offer = &tv
-	case LedgerEntryTypeData:
-		tv, ok := value.(LedgerKeyData)
-		if !ok {
-			err = fmt.Errorf("invalid value, must be LedgerKeyData")
-			return
-		}
-		result.Data = &tv
-	}
-	return
-}
-
-// MustAccount retrieves the Account value from the union,
-// panicing if the value is not set.
-func (u LedgerKey) MustAccount() LedgerKeyAccount {
-	val, ok := u.GetAccount()
-
-	if !ok {
-		panic("arm Account is not set")
-	}
-
-	return val
-}
-
-// GetAccount retrieves the Account value from the union,
-// returning ok if the union's switch indicated the value is valid.
-func (u LedgerKey) GetAccount() (result LedgerKeyAccount, ok bool) {
-	armName, _ := u.ArmForSwitch(int32(u.Type))
-
-	if armName == "Account" {
-		result = *u.Account
-		ok = true
-	}
-
-	return
-}
-
-// MustTrustLine retrieves the TrustLine value from the union,
-// panicing if the value is not set.
-func (u LedgerKey) MustTrustLine() LedgerKeyTrustLine {
-	val, ok := u.GetTrustLine()
-
-	if !ok {
-		panic("arm TrustLine is not set")
-	}
-
-	return val
-}
-
-// GetTrustLine retrieves the TrustLine value from the union,
-// returning ok if the union's switch indicated the value is valid.
-func (u LedgerKey) GetTrustLine() (result LedgerKeyTrustLine, ok bool) {
-	armName, _ := u.ArmForSwitch(int32(u.Type))
-
-	if armName == "TrustLine" {
-		result = *u.TrustLine
-		ok = true
-	}
-
-	return
-}
-
-// MustOffer retrieves the Offer value from the union,
-// panicing if the value is not set.
-func (u LedgerKey) MustOffer() LedgerKeyOffer {
-	val, ok := u.GetOffer()
-
-	if !ok {
-		panic("arm Offer is not set")
-	}
-
-	return val
-}
-
-// GetOffer retrieves the Offer value from the union,
-// returning ok if the union's switch indicated the value is valid.
-func (u LedgerKey) GetOffer() (result LedgerKeyOffer, ok bool) {
-	armName, _ := u.ArmForSwitch(int32(u.Type))
-
-	if armName == "Offer" {
-		result = *u.Offer
-		ok = true
-	}
-
-	return
-}
-
-// MustData retrieves the Data value from the union,
-// panicing if the value is not set.
-func (u LedgerKey) MustData() LedgerKeyData {
-	val, ok := u.GetData()
-
-	if !ok {
-		panic("arm Data is not set")
-	}
-
-	return val
-}
-
-// GetData retrieves the Data value from the union,
-// returning ok if the union's switch indicated the value is valid.
-func (u LedgerKey) GetData() (result LedgerKeyData, ok bool) {
-	armName, _ := u.ArmForSwitch(int32(u.Type))
-
-	if armName == "Data" {
-		result = *u.Data
-		ok = true
-	}
-
-	return
-}
-
-// MarshalBinary implements encoding.BinaryMarshaler.
-func (s LedgerKey) MarshalBinary() ([]byte, error) {
-	b := new(bytes.Buffer)
-	_, err := Marshal(b, s)
-	return b.Bytes(), err
-}
-
-// UnmarshalBinary implements encoding.BinaryUnmarshaler.
-func (s *LedgerKey) UnmarshalBinary(inp []byte) error {
-	_, err := Unmarshal(bytes.NewReader(inp), s)
-	return err
-}
-
-var (
-	_ encoding.BinaryMarshaler   = (*LedgerKey)(nil)
-	_ encoding.BinaryUnmarshaler = (*LedgerKey)(nil)
-)
-
-// BucketEntryType is an XDR Enum defines as:
-//
-//   enum BucketEntryType
-//    {
-//        METAENTRY =
-//            -1, // At-and-after protocol 11: bucket metadata, should come first.
-//        LIVEENTRY = 0, // Before protocol 11: created-or-updated;
-//                       // At-and-after protocol 11: only updated.
-//        DEADENTRY = 1,
-//        INITENTRY = 2 // At-and-after protocol 11: only created.
-//    };
-//
-type BucketEntryType int32
-
-const (
-	BucketEntryTypeMetaentry BucketEntryType = -1
-	BucketEntryTypeLiveentry BucketEntryType = 0
-	BucketEntryTypeDeadentry BucketEntryType = 1
-	BucketEntryTypeInitentry BucketEntryType = 2
-)
-
-var bucketEntryTypeMap = map[int32]string{
-	-1: "BucketEntryTypeMetaentry",
-	0:  "BucketEntryTypeLiveentry",
-	1:  "BucketEntryTypeDeadentry",
-	2:  "BucketEntryTypeInitentry",
-}
-
-// ValidEnum validates a proposed value for this enum.  Implements
-// the Enum interface for BucketEntryType
-func (e BucketEntryType) ValidEnum(v int32) bool {
-	_, ok := bucketEntryTypeMap[v]
-	return ok
-}
-
-// String returns the name of `e`
-func (e BucketEntryType) String() string {
-	name, _ := bucketEntryTypeMap[int32(e)]
-	return name
-}
-
-// MarshalBinary implements encoding.BinaryMarshaler.
-func (s BucketEntryType) MarshalBinary() ([]byte, error) {
-	b := new(bytes.Buffer)
-	_, err := Marshal(b, s)
-	return b.Bytes(), err
-}
-
-// UnmarshalBinary implements encoding.BinaryUnmarshaler.
-func (s *BucketEntryType) UnmarshalBinary(inp []byte) error {
-	_, err := Unmarshal(bytes.NewReader(inp), s)
-	return err
-}
-
-var (
-	_ encoding.BinaryMarshaler   = (*BucketEntryType)(nil)
-	_ encoding.BinaryUnmarshaler = (*BucketEntryType)(nil)
-)
-
-// BucketMetadataExt is an XDR NestedUnion defines as:
-//
-//   union switch (int v)
-//        {
-//        case 0:
-//            void;
-//        }
-//
-type BucketMetadataExt struct {
-	V int32
-}
-
-// SwitchFieldName returns the field name in which this union's
-// discriminant is stored
-func (u BucketMetadataExt) SwitchFieldName() string {
-	return "V"
-}
-
-// ArmForSwitch returns which field name should be used for storing
-// the value for an instance of BucketMetadataExt
-func (u BucketMetadataExt) ArmForSwitch(sw int32) (string, bool) {
-	switch int32(sw) {
-	case 0:
-		return "", true
-	}
-	return "-", false
-}
-
-// NewBucketMetadataExt creates a new  BucketMetadataExt.
-func NewBucketMetadataExt(v int32, value interface{}) (result BucketMetadataExt, err error) {
-	result.V = v
-	switch int32(v) {
-	case 0:
-		// void
-	}
-	return
-}
-
-// MarshalBinary implements encoding.BinaryMarshaler.
-func (s BucketMetadataExt) MarshalBinary() ([]byte, error) {
-	b := new(bytes.Buffer)
-	_, err := Marshal(b, s)
-	return b.Bytes(), err
-}
-
-// UnmarshalBinary implements encoding.BinaryUnmarshaler.
-func (s *BucketMetadataExt) UnmarshalBinary(inp []byte) error {
-	_, err := Unmarshal(bytes.NewReader(inp), s)
-	return err
-}
-
-var (
-	_ encoding.BinaryMarshaler   = (*BucketMetadataExt)(nil)
-	_ encoding.BinaryUnmarshaler = (*BucketMetadataExt)(nil)
-)
-
-// BucketMetadata is an XDR Struct defines as:
-//
-//   struct BucketMetadata
-//    {
-//        // Indicates the protocol version used to create / merge this bucket.
-//        uint32 ledgerVersion;
-//
-//        // reserved for future use
-//        union switch (int v)
-//        {
-//        case 0:
-//            void;
-//        }
-//        ext;
-//    };
-//
-type BucketMetadata struct {
-	LedgerVersion Uint32
-	Ext           BucketMetadataExt
-}
-
-// MarshalBinary implements encoding.BinaryMarshaler.
-func (s BucketMetadata) MarshalBinary() ([]byte, error) {
-	b := new(bytes.Buffer)
-	_, err := Marshal(b, s)
-	return b.Bytes(), err
-}
-
-// UnmarshalBinary implements encoding.BinaryUnmarshaler.
-func (s *BucketMetadata) UnmarshalBinary(inp []byte) error {
-	_, err := Unmarshal(bytes.NewReader(inp), s)
-	return err
-}
-
-var (
-	_ encoding.BinaryMarshaler   = (*BucketMetadata)(nil)
-	_ encoding.BinaryUnmarshaler = (*BucketMetadata)(nil)
-)
-
-// BucketEntry is an XDR Union defines as:
-//
-//   union BucketEntry switch (BucketEntryType type)
-//    {
-//    case LIVEENTRY:
-//    case INITENTRY:
-//        LedgerEntry liveEntry;
-//
-//    case DEADENTRY:
-//        LedgerKey deadEntry;
-//    case METAENTRY:
-//        BucketMetadata metaEntry;
-//    };
-//
-type BucketEntry struct {
-	Type      BucketEntryType
-	LiveEntry *LedgerEntry
-	DeadEntry *LedgerKey
-	MetaEntry *BucketMetadata
-}
-
-// SwitchFieldName returns the field name in which this union's
-// discriminant is stored
-func (u BucketEntry) SwitchFieldName() string {
-	return "Type"
-}
-
-// ArmForSwitch returns which field name should be used for storing
-// the value for an instance of BucketEntry
-func (u BucketEntry) ArmForSwitch(sw int32) (string, bool) {
-	switch BucketEntryType(sw) {
-	case BucketEntryTypeLiveentry:
-		return "LiveEntry", true
-	case BucketEntryTypeInitentry:
-		return "LiveEntry", true
-	case BucketEntryTypeDeadentry:
-		return "DeadEntry", true
-	case BucketEntryTypeMetaentry:
-		return "MetaEntry", true
-	}
-	return "-", false
-}
-
-// NewBucketEntry creates a new  BucketEntry.
-func NewBucketEntry(aType BucketEntryType, value interface{}) (result BucketEntry, err error) {
-	result.Type = aType
-	switch BucketEntryType(aType) {
-	case BucketEntryTypeLiveentry:
-		tv, ok := value.(LedgerEntry)
-		if !ok {
-			err = fmt.Errorf("invalid value, must be LedgerEntry")
-			return
-		}
-		result.LiveEntry = &tv
-	case BucketEntryTypeInitentry:
-		tv, ok := value.(LedgerEntry)
-		if !ok {
-			err = fmt.Errorf("invalid value, must be LedgerEntry")
-			return
-		}
-		result.LiveEntry = &tv
-	case BucketEntryTypeDeadentry:
-		tv, ok := value.(LedgerKey)
-		if !ok {
-			err = fmt.Errorf("invalid value, must be LedgerKey")
-			return
-		}
-		result.DeadEntry = &tv
-	case BucketEntryTypeMetaentry:
-		tv, ok := value.(BucketMetadata)
-		if !ok {
-			err = fmt.Errorf("invalid value, must be BucketMetadata")
-			return
-		}
-		result.MetaEntry = &tv
-	}
-	return
-}
-
-// MustLiveEntry retrieves the LiveEntry value from the union,
-// panicing if the value is not set.
-func (u BucketEntry) MustLiveEntry() LedgerEntry {
-	val, ok := u.GetLiveEntry()
-
-	if !ok {
-		panic("arm LiveEntry is not set")
-	}
-
-	return val
-}
-
-// GetLiveEntry retrieves the LiveEntry value from the union,
-// returning ok if the union's switch indicated the value is valid.
-func (u BucketEntry) GetLiveEntry() (result LedgerEntry, ok bool) {
-	armName, _ := u.ArmForSwitch(int32(u.Type))
-
-	if armName == "LiveEntry" {
-		result = *u.LiveEntry
-		ok = true
-	}
-
-	return
-}
-
-// MustDeadEntry retrieves the DeadEntry value from the union,
-// panicing if the value is not set.
-func (u BucketEntry) MustDeadEntry() LedgerKey {
-	val, ok := u.GetDeadEntry()
-
-	if !ok {
-		panic("arm DeadEntry is not set")
-	}
-
-	return val
-}
-
-// GetDeadEntry retrieves the DeadEntry value from the union,
-// returning ok if the union's switch indicated the value is valid.
-func (u BucketEntry) GetDeadEntry() (result LedgerKey, ok bool) {
-	armName, _ := u.ArmForSwitch(int32(u.Type))
-
-	if armName == "DeadEntry" {
-		result = *u.DeadEntry
-		ok = true
-	}
-
-	return
-}
-
-// MustMetaEntry retrieves the MetaEntry value from the union,
-// panicing if the value is not set.
-func (u BucketEntry) MustMetaEntry() BucketMetadata {
-	val, ok := u.GetMetaEntry()
-
-	if !ok {
-		panic("arm MetaEntry is not set")
-	}
-
-	return val
-}
-
-// GetMetaEntry retrieves the MetaEntry value from the union,
-// returning ok if the union's switch indicated the value is valid.
-func (u BucketEntry) GetMetaEntry() (result BucketMetadata, ok bool) {
-	armName, _ := u.ArmForSwitch(int32(u.Type))
-
-	if armName == "MetaEntry" {
-		result = *u.MetaEntry
-		ok = true
-	}
-
-	return
-}
-
-// MarshalBinary implements encoding.BinaryMarshaler.
-func (s BucketEntry) MarshalBinary() ([]byte, error) {
-	b := new(bytes.Buffer)
-	_, err := Marshal(b, s)
-	return b.Bytes(), err
-}
-
-// UnmarshalBinary implements encoding.BinaryUnmarshaler.
-func (s *BucketEntry) UnmarshalBinary(inp []byte) error {
-	_, err := Unmarshal(bytes.NewReader(inp), s)
-	return err
-}
-
-var (
-	_ encoding.BinaryMarshaler   = (*BucketEntry)(nil)
-	_ encoding.BinaryUnmarshaler = (*BucketEntry)(nil)
-)
-
-// TransactionSet is an XDR Struct defines as:
-//
-//   struct TransactionSet
-//    {
-//        Hash previousLedgerHash;
-//        TransactionEnvelope txs<>;
-//    };
-//
-type TransactionSet struct {
-	PreviousLedgerHash Hash
-	Txs                []TransactionEnvelope
-}
-
-// MarshalBinary implements encoding.BinaryMarshaler.
-func (s TransactionSet) MarshalBinary() ([]byte, error) {
-	b := new(bytes.Buffer)
-	_, err := Marshal(b, s)
-	return b.Bytes(), err
-}
-
-// UnmarshalBinary implements encoding.BinaryUnmarshaler.
-func (s *TransactionSet) UnmarshalBinary(inp []byte) error {
-	_, err := Unmarshal(bytes.NewReader(inp), s)
-	return err
-}
-
-var (
-	_ encoding.BinaryMarshaler   = (*TransactionSet)(nil)
-	_ encoding.BinaryUnmarshaler = (*TransactionSet)(nil)
-)
-
-// TransactionResultPair is an XDR Struct defines as:
-//
-//   struct TransactionResultPair
-//    {
-//        Hash transactionHash;
-//        TransactionResult result; // result for the transaction
-//    };
-//
-type TransactionResultPair struct {
-	TransactionHash Hash
-	Result          TransactionResult
-}
-
-// MarshalBinary implements encoding.BinaryMarshaler.
-func (s TransactionResultPair) MarshalBinary() ([]byte, error) {
-	b := new(bytes.Buffer)
-	_, err := Marshal(b, s)
-	return b.Bytes(), err
-}
-
-// UnmarshalBinary implements encoding.BinaryUnmarshaler.
-func (s *TransactionResultPair) UnmarshalBinary(inp []byte) error {
-	_, err := Unmarshal(bytes.NewReader(inp), s)
-	return err
-}
-
-var (
-	_ encoding.BinaryMarshaler   = (*TransactionResultPair)(nil)
-	_ encoding.BinaryUnmarshaler = (*TransactionResultPair)(nil)
-)
-
-// TransactionResultSet is an XDR Struct defines as:
-//
-//   struct TransactionResultSet
-//    {
-//        TransactionResultPair results<>;
-//    };
-//
-type TransactionResultSet struct {
-	Results []TransactionResultPair
-}
-
-// MarshalBinary implements encoding.BinaryMarshaler.
-func (s TransactionResultSet) MarshalBinary() ([]byte, error) {
-	b := new(bytes.Buffer)
-	_, err := Marshal(b, s)
-	return b.Bytes(), err
-}
-
-// UnmarshalBinary implements encoding.BinaryUnmarshaler.
-func (s *TransactionResultSet) UnmarshalBinary(inp []byte) error {
-	_, err := Unmarshal(bytes.NewReader(inp), s)
-	return err
-}
-
-var (
-	_ encoding.BinaryMarshaler   = (*TransactionResultSet)(nil)
-	_ encoding.BinaryUnmarshaler = (*TransactionResultSet)(nil)
-)
-
-// TransactionHistoryEntryExt is an XDR NestedUnion defines as:
-//
-//   union switch (int v)
-//        {
-//        case 0:
-//            void;
-//        }
-//
-type TransactionHistoryEntryExt struct {
-	V int32
-}
-
-// SwitchFieldName returns the field name in which this union's
-// discriminant is stored
-func (u TransactionHistoryEntryExt) SwitchFieldName() string {
-	return "V"
-}
-
-// ArmForSwitch returns which field name should be used for storing
-// the value for an instance of TransactionHistoryEntryExt
-func (u TransactionHistoryEntryExt) ArmForSwitch(sw int32) (string, bool) {
-	switch int32(sw) {
-	case 0:
-		return "", true
-	}
-	return "-", false
-}
-
-// NewTransactionHistoryEntryExt creates a new  TransactionHistoryEntryExt.
-func NewTransactionHistoryEntryExt(v int32, value interface{}) (result TransactionHistoryEntryExt, err error) {
-	result.V = v
-	switch int32(v) {
-	case 0:
-		// void
-	}
-	return
-}
-
-// MarshalBinary implements encoding.BinaryMarshaler.
-func (s TransactionHistoryEntryExt) MarshalBinary() ([]byte, error) {
-	b := new(bytes.Buffer)
-	_, err := Marshal(b, s)
-	return b.Bytes(), err
-}
-
-// UnmarshalBinary implements encoding.BinaryUnmarshaler.
-func (s *TransactionHistoryEntryExt) UnmarshalBinary(inp []byte) error {
-	_, err := Unmarshal(bytes.NewReader(inp), s)
-	return err
-}
-
-var (
-	_ encoding.BinaryMarshaler   = (*TransactionHistoryEntryExt)(nil)
-	_ encoding.BinaryUnmarshaler = (*TransactionHistoryEntryExt)(nil)
-)
-
-// TransactionHistoryEntry is an XDR Struct defines as:
-//
-//   struct TransactionHistoryEntry
-//    {
-//        uint32 ledgerSeq;
-//        TransactionSet txSet;
-//
-//        // reserved for future use
-//        union switch (int v)
-//        {
-//        case 0:
-//            void;
-//        }
-//        ext;
-//    };
-//
-type TransactionHistoryEntry struct {
-	LedgerSeq Uint32
-	TxSet     TransactionSet
-	Ext       TransactionHistoryEntryExt
-}
-
-// MarshalBinary implements encoding.BinaryMarshaler.
-func (s TransactionHistoryEntry) MarshalBinary() ([]byte, error) {
-	b := new(bytes.Buffer)
-	_, err := Marshal(b, s)
-	return b.Bytes(), err
-}
-
-// UnmarshalBinary implements encoding.BinaryUnmarshaler.
-func (s *TransactionHistoryEntry) UnmarshalBinary(inp []byte) error {
-	_, err := Unmarshal(bytes.NewReader(inp), s)
-	return err
-}
-
-var (
-	_ encoding.BinaryMarshaler   = (*TransactionHistoryEntry)(nil)
-	_ encoding.BinaryUnmarshaler = (*TransactionHistoryEntry)(nil)
-)
-
-// TransactionHistoryResultEntryExt is an XDR NestedUnion defines as:
-//
-//   union switch (int v)
-//        {
-//        case 0:
-//            void;
-//        }
-//
-type TransactionHistoryResultEntryExt struct {
-	V int32
-}
-
-// SwitchFieldName returns the field name in which this union's
-// discriminant is stored
-func (u TransactionHistoryResultEntryExt) SwitchFieldName() string {
-	return "V"
-}
-
-// ArmForSwitch returns which field name should be used for storing
-// the value for an instance of TransactionHistoryResultEntryExt
-func (u TransactionHistoryResultEntryExt) ArmForSwitch(sw int32) (string, bool) {
-	switch int32(sw) {
-	case 0:
-		return "", true
-	}
-	return "-", false
-}
-
-// NewTransactionHistoryResultEntryExt creates a new  TransactionHistoryResultEntryExt.
-func NewTransactionHistoryResultEntryExt(v int32, value interface{}) (result TransactionHistoryResultEntryExt, err error) {
-	result.V = v
-	switch int32(v) {
-	case 0:
-		// void
-	}
-	return
-}
-
-// MarshalBinary implements encoding.BinaryMarshaler.
-func (s TransactionHistoryResultEntryExt) MarshalBinary() ([]byte, error) {
-	b := new(bytes.Buffer)
-	_, err := Marshal(b, s)
-	return b.Bytes(), err
-}
-
-// UnmarshalBinary implements encoding.BinaryUnmarshaler.
-func (s *TransactionHistoryResultEntryExt) UnmarshalBinary(inp []byte) error {
-	_, err := Unmarshal(bytes.NewReader(inp), s)
-	return err
-}
-
-var (
-	_ encoding.BinaryMarshaler   = (*TransactionHistoryResultEntryExt)(nil)
-	_ encoding.BinaryUnmarshaler = (*TransactionHistoryResultEntryExt)(nil)
-)
-
-// TransactionHistoryResultEntry is an XDR Struct defines as:
-//
-//   struct TransactionHistoryResultEntry
-//    {
-//        uint32 ledgerSeq;
-//        TransactionResultSet txResultSet;
-//
-//        // reserved for future use
-//        union switch (int v)
-//        {
-//        case 0:
-//            void;
-//        }
-//        ext;
-//    };
-//
-type TransactionHistoryResultEntry struct {
-	LedgerSeq   Uint32
-	TxResultSet TransactionResultSet
-	Ext         TransactionHistoryResultEntryExt
-}
-
-// MarshalBinary implements encoding.BinaryMarshaler.
-func (s TransactionHistoryResultEntry) MarshalBinary() ([]byte, error) {
-	b := new(bytes.Buffer)
-	_, err := Marshal(b, s)
-	return b.Bytes(), err
-}
-
-// UnmarshalBinary implements encoding.BinaryUnmarshaler.
-func (s *TransactionHistoryResultEntry) UnmarshalBinary(inp []byte) error {
-	_, err := Unmarshal(bytes.NewReader(inp), s)
-	return err
-}
-
-var (
-	_ encoding.BinaryMarshaler   = (*TransactionHistoryResultEntry)(nil)
-	_ encoding.BinaryUnmarshaler = (*TransactionHistoryResultEntry)(nil)
-)
-
-// LedgerHeaderHistoryEntryExt is an XDR NestedUnion defines as:
-//
-//   union switch (int v)
-//        {
-//        case 0:
-//            void;
-//        }
-//
-type LedgerHeaderHistoryEntryExt struct {
-	V int32
-}
-
-// SwitchFieldName returns the field name in which this union's
-// discriminant is stored
-func (u LedgerHeaderHistoryEntryExt) SwitchFieldName() string {
-	return "V"
-}
-
-// ArmForSwitch returns which field name should be used for storing
-// the value for an instance of LedgerHeaderHistoryEntryExt
-func (u LedgerHeaderHistoryEntryExt) ArmForSwitch(sw int32) (string, bool) {
-	switch int32(sw) {
-	case 0:
-		return "", true
-	}
-	return "-", false
-}
-
-// NewLedgerHeaderHistoryEntryExt creates a new  LedgerHeaderHistoryEntryExt.
-func NewLedgerHeaderHistoryEntryExt(v int32, value interface{}) (result LedgerHeaderHistoryEntryExt, err error) {
-	result.V = v
-	switch int32(v) {
-	case 0:
-		// void
-	}
-	return
-}
-
-// MarshalBinary implements encoding.BinaryMarshaler.
-func (s LedgerHeaderHistoryEntryExt) MarshalBinary() ([]byte, error) {
-	b := new(bytes.Buffer)
-	_, err := Marshal(b, s)
-	return b.Bytes(), err
-}
-
-// UnmarshalBinary implements encoding.BinaryUnmarshaler.
-func (s *LedgerHeaderHistoryEntryExt) UnmarshalBinary(inp []byte) error {
-	_, err := Unmarshal(bytes.NewReader(inp), s)
-	return err
-}
-
-var (
-	_ encoding.BinaryMarshaler   = (*LedgerHeaderHistoryEntryExt)(nil)
-	_ encoding.BinaryUnmarshaler = (*LedgerHeaderHistoryEntryExt)(nil)
-)
-
-// LedgerHeaderHistoryEntry is an XDR Struct defines as:
-//
-//   struct LedgerHeaderHistoryEntry
-//    {
-//        Hash hash;
-//        LedgerHeader header;
-//
-//        // reserved for future use
-//        union switch (int v)
-//        {
-//        case 0:
-//            void;
-//        }
-//        ext;
-//    };
-//
-type LedgerHeaderHistoryEntry struct {
-	Hash   Hash
-	Header LedgerHeader
-	Ext    LedgerHeaderHistoryEntryExt
-}
-
-// MarshalBinary implements encoding.BinaryMarshaler.
-func (s LedgerHeaderHistoryEntry) MarshalBinary() ([]byte, error) {
-	b := new(bytes.Buffer)
-	_, err := Marshal(b, s)
-	return b.Bytes(), err
-}
-
-// UnmarshalBinary implements encoding.BinaryUnmarshaler.
-func (s *LedgerHeaderHistoryEntry) UnmarshalBinary(inp []byte) error {
-	_, err := Unmarshal(bytes.NewReader(inp), s)
-	return err
-}
-
-var (
-	_ encoding.BinaryMarshaler   = (*LedgerHeaderHistoryEntry)(nil)
-	_ encoding.BinaryUnmarshaler = (*LedgerHeaderHistoryEntry)(nil)
-)
-
-// LedgerScpMessages is an XDR Struct defines as:
-//
-//   struct LedgerSCPMessages
-//    {
-//        uint32 ledgerSeq;
-//        SCPEnvelope messages<>;
-//    };
-//
-type LedgerScpMessages struct {
-	LedgerSeq Uint32
-	Messages  []ScpEnvelope
-}
-
-// MarshalBinary implements encoding.BinaryMarshaler.
-func (s LedgerScpMessages) MarshalBinary() ([]byte, error) {
-	b := new(bytes.Buffer)
-	_, err := Marshal(b, s)
-	return b.Bytes(), err
-}
-
-// UnmarshalBinary implements encoding.BinaryUnmarshaler.
-func (s *LedgerScpMessages) UnmarshalBinary(inp []byte) error {
-	_, err := Unmarshal(bytes.NewReader(inp), s)
-	return err
-}
-
-var (
-	_ encoding.BinaryMarshaler   = (*LedgerScpMessages)(nil)
-	_ encoding.BinaryUnmarshaler = (*LedgerScpMessages)(nil)
-)
-
-// ScpHistoryEntryV0 is an XDR Struct defines as:
-//
-//   struct SCPHistoryEntryV0
-//    {
-//        SCPQuorumSet quorumSets<>; // additional quorum sets used by ledgerMessages
-//        LedgerSCPMessages ledgerMessages;
-//    };
-//
-type ScpHistoryEntryV0 struct {
-	QuorumSets     []ScpQuorumSet
-	LedgerMessages LedgerScpMessages
-}
-
-// MarshalBinary implements encoding.BinaryMarshaler.
-func (s ScpHistoryEntryV0) MarshalBinary() ([]byte, error) {
-	b := new(bytes.Buffer)
-	_, err := Marshal(b, s)
-	return b.Bytes(), err
-}
-
-// UnmarshalBinary implements encoding.BinaryUnmarshaler.
-func (s *ScpHistoryEntryV0) UnmarshalBinary(inp []byte) error {
-	_, err := Unmarshal(bytes.NewReader(inp), s)
-	return err
-}
-
-var (
-	_ encoding.BinaryMarshaler   = (*ScpHistoryEntryV0)(nil)
-	_ encoding.BinaryUnmarshaler = (*ScpHistoryEntryV0)(nil)
-)
-
-// ScpHistoryEntry is an XDR Union defines as:
-//
-//   union SCPHistoryEntry switch (int v)
-//    {
-//    case 0:
-//        SCPHistoryEntryV0 v0;
-//    };
-//
-type ScpHistoryEntry struct {
-	V  int32
-	V0 *ScpHistoryEntryV0
-}
-
-// SwitchFieldName returns the field name in which this union's
-// discriminant is stored
-func (u ScpHistoryEntry) SwitchFieldName() string {
-	return "V"
-}
-
-// ArmForSwitch returns which field name should be used for storing
-// the value for an instance of ScpHistoryEntry
-func (u ScpHistoryEntry) ArmForSwitch(sw int32) (string, bool) {
-	switch int32(sw) {
-	case 0:
-		return "V0", true
-	}
-	return "-", false
-}
-
-// NewScpHistoryEntry creates a new  ScpHistoryEntry.
-func NewScpHistoryEntry(v int32, value interface{}) (result ScpHistoryEntry, err error) {
-	result.V = v
-	switch int32(v) {
-	case 0:
-		tv, ok := value.(ScpHistoryEntryV0)
-		if !ok {
-			err = fmt.Errorf("invalid value, must be ScpHistoryEntryV0")
-			return
-		}
-		result.V0 = &tv
-	}
-	return
-}
-
-// MustV0 retrieves the V0 value from the union,
-// panicing if the value is not set.
-func (u ScpHistoryEntry) MustV0() ScpHistoryEntryV0 {
-	val, ok := u.GetV0()
-
-	if !ok {
-		panic("arm V0 is not set")
-	}
-
-	return val
-}
-
-// GetV0 retrieves the V0 value from the union,
-// returning ok if the union's switch indicated the value is valid.
-func (u ScpHistoryEntry) GetV0() (result ScpHistoryEntryV0, ok bool) {
-	armName, _ := u.ArmForSwitch(int32(u.V))
-
-	if armName == "V0" {
-		result = *u.V0
-		ok = true
-	}
-
-	return
-}
-
-// MarshalBinary implements encoding.BinaryMarshaler.
-func (s ScpHistoryEntry) MarshalBinary() ([]byte, error) {
-	b := new(bytes.Buffer)
-	_, err := Marshal(b, s)
-	return b.Bytes(), err
-}
-
-// UnmarshalBinary implements encoding.BinaryUnmarshaler.
-func (s *ScpHistoryEntry) UnmarshalBinary(inp []byte) error {
-	_, err := Unmarshal(bytes.NewReader(inp), s)
-	return err
-}
-
-var (
-	_ encoding.BinaryMarshaler   = (*ScpHistoryEntry)(nil)
-	_ encoding.BinaryUnmarshaler = (*ScpHistoryEntry)(nil)
-)
-
-// LedgerEntryChangeType is an XDR Enum defines as:
-//
-//   enum LedgerEntryChangeType
-//    {
-//        LEDGER_ENTRY_CREATED = 0, // entry was added to the ledger
-//        LEDGER_ENTRY_UPDATED = 1, // entry was modified in the ledger
-//        LEDGER_ENTRY_REMOVED = 2, // entry was removed from the ledger
-//        LEDGER_ENTRY_STATE = 3    // value of the entry
-//    };
-//
-type LedgerEntryChangeType int32
-
-const (
-	LedgerEntryChangeTypeLedgerEntryCreated LedgerEntryChangeType = 0
-	LedgerEntryChangeTypeLedgerEntryUpdated LedgerEntryChangeType = 1
-	LedgerEntryChangeTypeLedgerEntryRemoved LedgerEntryChangeType = 2
-	LedgerEntryChangeTypeLedgerEntryState   LedgerEntryChangeType = 3
-)
-
-var ledgerEntryChangeTypeMap = map[int32]string{
-	0: "LedgerEntryChangeTypeLedgerEntryCreated",
-	1: "LedgerEntryChangeTypeLedgerEntryUpdated",
-	2: "LedgerEntryChangeTypeLedgerEntryRemoved",
-	3: "LedgerEntryChangeTypeLedgerEntryState",
-}
-
-// ValidEnum validates a proposed value for this enum.  Implements
-// the Enum interface for LedgerEntryChangeType
-func (e LedgerEntryChangeType) ValidEnum(v int32) bool {
-	_, ok := ledgerEntryChangeTypeMap[v]
-	return ok
-}
-
-// String returns the name of `e`
-func (e LedgerEntryChangeType) String() string {
-	name, _ := ledgerEntryChangeTypeMap[int32(e)]
-	return name
-}
-
-// MarshalBinary implements encoding.BinaryMarshaler.
-func (s LedgerEntryChangeType) MarshalBinary() ([]byte, error) {
-	b := new(bytes.Buffer)
-	_, err := Marshal(b, s)
-	return b.Bytes(), err
-}
-
-// UnmarshalBinary implements encoding.BinaryUnmarshaler.
-func (s *LedgerEntryChangeType) UnmarshalBinary(inp []byte) error {
-	_, err := Unmarshal(bytes.NewReader(inp), s)
-	return err
-}
-
-var (
-	_ encoding.BinaryMarshaler   = (*LedgerEntryChangeType)(nil)
-	_ encoding.BinaryUnmarshaler = (*LedgerEntryChangeType)(nil)
-)
-
-// LedgerEntryChange is an XDR Union defines as:
-//
-//   union LedgerEntryChange switch (LedgerEntryChangeType type)
-//    {
-//    case LEDGER_ENTRY_CREATED:
-//        LedgerEntry created;
-//    case LEDGER_ENTRY_UPDATED:
-//        LedgerEntry updated;
-//    case LEDGER_ENTRY_REMOVED:
-//        LedgerKey removed;
-//    case LEDGER_ENTRY_STATE:
-//        LedgerEntry state;
-//    };
-//
-type LedgerEntryChange struct {
-	Type    LedgerEntryChangeType
-	Created *LedgerEntry
-	Updated *LedgerEntry
-	Removed *LedgerKey
-	State   *LedgerEntry
-}
-
-// SwitchFieldName returns the field name in which this union's
-// discriminant is stored
-func (u LedgerEntryChange) SwitchFieldName() string {
-	return "Type"
-}
-
-// ArmForSwitch returns which field name should be used for storing
-// the value for an instance of LedgerEntryChange
-func (u LedgerEntryChange) ArmForSwitch(sw int32) (string, bool) {
-	switch LedgerEntryChangeType(sw) {
-	case LedgerEntryChangeTypeLedgerEntryCreated:
-		return "Created", true
-	case LedgerEntryChangeTypeLedgerEntryUpdated:
-		return "Updated", true
-	case LedgerEntryChangeTypeLedgerEntryRemoved:
-		return "Removed", true
-	case LedgerEntryChangeTypeLedgerEntryState:
-		return "State", true
-	}
-	return "-", false
-}
-
-// NewLedgerEntryChange creates a new  LedgerEntryChange.
-func NewLedgerEntryChange(aType LedgerEntryChangeType, value interface{}) (result LedgerEntryChange, err error) {
-	result.Type = aType
-	switch LedgerEntryChangeType(aType) {
-	case LedgerEntryChangeTypeLedgerEntryCreated:
-		tv, ok := value.(LedgerEntry)
-		if !ok {
-			err = fmt.Errorf("invalid value, must be LedgerEntry")
-			return
-		}
-		result.Created = &tv
-	case LedgerEntryChangeTypeLedgerEntryUpdated:
-		tv, ok := value.(LedgerEntry)
-		if !ok {
-			err = fmt.Errorf("invalid value, must be LedgerEntry")
-			return
-		}
-		result.Updated = &tv
-	case LedgerEntryChangeTypeLedgerEntryRemoved:
-		tv, ok := value.(LedgerKey)
-		if !ok {
-			err = fmt.Errorf("invalid value, must be LedgerKey")
-			return
-		}
-		result.Removed = &tv
-	case LedgerEntryChangeTypeLedgerEntryState:
-		tv, ok := value.(LedgerEntry)
-		if !ok {
-			err = fmt.Errorf("invalid value, must be LedgerEntry")
-			return
-		}
-		result.State = &tv
-	}
-	return
-}
-
-// MustCreated retrieves the Created value from the union,
-// panicing if the value is not set.
-func (u LedgerEntryChange) MustCreated() LedgerEntry {
-	val, ok := u.GetCreated()
-
-	if !ok {
-		panic("arm Created is not set")
-	}
-
-	return val
-}
-
-// GetCreated retrieves the Created value from the union,
-// returning ok if the union's switch indicated the value is valid.
-func (u LedgerEntryChange) GetCreated() (result LedgerEntry, ok bool) {
-	armName, _ := u.ArmForSwitch(int32(u.Type))
-
-	if armName == "Created" {
-		result = *u.Created
-		ok = true
-	}
-
-	return
-}
-
-// MustUpdated retrieves the Updated value from the union,
-// panicing if the value is not set.
-func (u LedgerEntryChange) MustUpdated() LedgerEntry {
-	val, ok := u.GetUpdated()
-
-	if !ok {
-		panic("arm Updated is not set")
-	}
-
-	return val
-}
-
-// GetUpdated retrieves the Updated value from the union,
-// returning ok if the union's switch indicated the value is valid.
-func (u LedgerEntryChange) GetUpdated() (result LedgerEntry, ok bool) {
-	armName, _ := u.ArmForSwitch(int32(u.Type))
-
-	if armName == "Updated" {
-		result = *u.Updated
-		ok = true
-	}
-
-	return
-}
-
-// MustRemoved retrieves the Removed value from the union,
-// panicing if the value is not set.
-func (u LedgerEntryChange) MustRemoved() LedgerKey {
-	val, ok := u.GetRemoved()
-
-	if !ok {
-		panic("arm Removed is not set")
-	}
-
-	return val
-}
-
-// GetRemoved retrieves the Removed value from the union,
-// returning ok if the union's switch indicated the value is valid.
-func (u LedgerEntryChange) GetRemoved() (result LedgerKey, ok bool) {
-	armName, _ := u.ArmForSwitch(int32(u.Type))
-
-	if armName == "Removed" {
-		result = *u.Removed
-		ok = true
-	}
-
-	return
-}
-
-// MustState retrieves the State value from the union,
-// panicing if the value is not set.
-func (u LedgerEntryChange) MustState() LedgerEntry {
-	val, ok := u.GetState()
-
-	if !ok {
-		panic("arm State is not set")
-	}
-
-	return val
-}
-
-// GetState retrieves the State value from the union,
-// returning ok if the union's switch indicated the value is valid.
-func (u LedgerEntryChange) GetState() (result LedgerEntry, ok bool) {
-	armName, _ := u.ArmForSwitch(int32(u.Type))
-
-	if armName == "State" {
-		result = *u.State
-		ok = true
-	}
-
-	return
-}
-
-// MarshalBinary implements encoding.BinaryMarshaler.
-func (s LedgerEntryChange) MarshalBinary() ([]byte, error) {
-	b := new(bytes.Buffer)
-	_, err := Marshal(b, s)
-	return b.Bytes(), err
-}
-
-// UnmarshalBinary implements encoding.BinaryUnmarshaler.
-func (s *LedgerEntryChange) UnmarshalBinary(inp []byte) error {
-	_, err := Unmarshal(bytes.NewReader(inp), s)
-	return err
-}
-
-var (
-	_ encoding.BinaryMarshaler   = (*LedgerEntryChange)(nil)
-	_ encoding.BinaryUnmarshaler = (*LedgerEntryChange)(nil)
-)
-
-// LedgerEntryChanges is an XDR Typedef defines as:
-//
-//   typedef LedgerEntryChange LedgerEntryChanges<>;
-//
-type LedgerEntryChanges []LedgerEntryChange
-
-// MarshalBinary implements encoding.BinaryMarshaler.
-func (s LedgerEntryChanges) MarshalBinary() ([]byte, error) {
-	b := new(bytes.Buffer)
-	_, err := Marshal(b, s)
-	return b.Bytes(), err
-}
-
-// UnmarshalBinary implements encoding.BinaryUnmarshaler.
-func (s *LedgerEntryChanges) UnmarshalBinary(inp []byte) error {
-	_, err := Unmarshal(bytes.NewReader(inp), s)
-	return err
-}
-
-var (
-	_ encoding.BinaryMarshaler   = (*LedgerEntryChanges)(nil)
-	_ encoding.BinaryUnmarshaler = (*LedgerEntryChanges)(nil)
-)
-
-// OperationMeta is an XDR Struct defines as:
-//
-//   struct OperationMeta
-//    {
-//        LedgerEntryChanges changes;
-//    };
-//
-type OperationMeta struct {
-	Changes LedgerEntryChanges
-}
-
-// MarshalBinary implements encoding.BinaryMarshaler.
-func (s OperationMeta) MarshalBinary() ([]byte, error) {
-	b := new(bytes.Buffer)
-	_, err := Marshal(b, s)
-	return b.Bytes(), err
-}
-
-// UnmarshalBinary implements encoding.BinaryUnmarshaler.
-func (s *OperationMeta) UnmarshalBinary(inp []byte) error {
-	_, err := Unmarshal(bytes.NewReader(inp), s)
-	return err
-}
-
-var (
-	_ encoding.BinaryMarshaler   = (*OperationMeta)(nil)
-	_ encoding.BinaryUnmarshaler = (*OperationMeta)(nil)
-)
-
-// TransactionMetaV1 is an XDR Struct defines as:
-//
-//   struct TransactionMetaV1
-//    {
-//        LedgerEntryChanges txChanges; // tx level changes if any
-//        OperationMeta operations<>;   // meta for each operation
-//    };
-//
-type TransactionMetaV1 struct {
-	TxChanges  LedgerEntryChanges
-	Operations []OperationMeta
-}
-
-// MarshalBinary implements encoding.BinaryMarshaler.
-func (s TransactionMetaV1) MarshalBinary() ([]byte, error) {
-	b := new(bytes.Buffer)
-	_, err := Marshal(b, s)
-	return b.Bytes(), err
-}
-
-// UnmarshalBinary implements encoding.BinaryUnmarshaler.
-func (s *TransactionMetaV1) UnmarshalBinary(inp []byte) error {
-	_, err := Unmarshal(bytes.NewReader(inp), s)
-	return err
-}
-
-var (
-	_ encoding.BinaryMarshaler   = (*TransactionMetaV1)(nil)
-	_ encoding.BinaryUnmarshaler = (*TransactionMetaV1)(nil)
-)
-
-// TransactionMetaV2 is an XDR Struct defines as:
-//
-//   struct TransactionMetaV2
-//    {
-//        LedgerEntryChanges txChangesBefore; // tx level changes before operations
-//                                            // are applied if any
-//        OperationMeta operations<>;         // meta for each operation
-//        LedgerEntryChanges txChangesAfter;  // tx level changes after operations are
-//                                            // applied if any
-//    };
-//
-type TransactionMetaV2 struct {
-	TxChangesBefore LedgerEntryChanges
-	Operations      []OperationMeta
-	TxChangesAfter  LedgerEntryChanges
-}
-
-// MarshalBinary implements encoding.BinaryMarshaler.
-func (s TransactionMetaV2) MarshalBinary() ([]byte, error) {
-	b := new(bytes.Buffer)
-	_, err := Marshal(b, s)
-	return b.Bytes(), err
-}
-
-// UnmarshalBinary implements encoding.BinaryUnmarshaler.
-func (s *TransactionMetaV2) UnmarshalBinary(inp []byte) error {
-	_, err := Unmarshal(bytes.NewReader(inp), s)
-	return err
-}
-
-var (
-	_ encoding.BinaryMarshaler   = (*TransactionMetaV2)(nil)
-	_ encoding.BinaryUnmarshaler = (*TransactionMetaV2)(nil)
-)
-
-// TransactionMeta is an XDR Union defines as:
-//
-//   union TransactionMeta switch (int v)
-//    {
-//    case 0:
-//        OperationMeta operations<>;
-//    case 1:
-//        TransactionMetaV1 v1;
-//    case 2:
-//        TransactionMetaV2 v2;
-//    };
-//
-type TransactionMeta struct {
-	V          int32
-	Operations *[]OperationMeta
-	V1         *TransactionMetaV1
-	V2         *TransactionMetaV2
-}
-
-// SwitchFieldName returns the field name in which this union's
-// discriminant is stored
-func (u TransactionMeta) SwitchFieldName() string {
-	return "V"
-}
-
-// ArmForSwitch returns which field name should be used for storing
-// the value for an instance of TransactionMeta
-func (u TransactionMeta) ArmForSwitch(sw int32) (string, bool) {
-	switch int32(sw) {
-	case 0:
-		return "Operations", true
-	case 1:
-		return "V1", true
-	case 2:
-		return "V2", true
-	}
-	return "-", false
-}
-
-// NewTransactionMeta creates a new  TransactionMeta.
-func NewTransactionMeta(v int32, value interface{}) (result TransactionMeta, err error) {
-	result.V = v
-	switch int32(v) {
-	case 0:
-		tv, ok := value.([]OperationMeta)
-		if !ok {
-			err = fmt.Errorf("invalid value, must be []OperationMeta")
-			return
-		}
-		result.Operations = &tv
-	case 1:
-		tv, ok := value.(TransactionMetaV1)
-		if !ok {
-			err = fmt.Errorf("invalid value, must be TransactionMetaV1")
-			return
-		}
-		result.V1 = &tv
-	case 2:
-		tv, ok := value.(TransactionMetaV2)
-		if !ok {
-			err = fmt.Errorf("invalid value, must be TransactionMetaV2")
-			return
-		}
-		result.V2 = &tv
-	}
-	return
-}
-
-// MustOperations retrieves the Operations value from the union,
-// panicing if the value is not set.
-func (u TransactionMeta) MustOperations() []OperationMeta {
-	val, ok := u.GetOperations()
-
-	if !ok {
-		panic("arm Operations is not set")
-	}
-
-	return val
-}
-
-// GetOperations retrieves the Operations value from the union,
-// returning ok if the union's switch indicated the value is valid.
-func (u TransactionMeta) GetOperations() (result []OperationMeta, ok bool) {
-	armName, _ := u.ArmForSwitch(int32(u.V))
-
-	if armName == "Operations" {
-		result = *u.Operations
-		ok = true
-	}
-
-	return
-}
-
-// MustV1 retrieves the V1 value from the union,
-// panicing if the value is not set.
-func (u TransactionMeta) MustV1() TransactionMetaV1 {
-	val, ok := u.GetV1()
-
-	if !ok {
-		panic("arm V1 is not set")
-	}
-
-	return val
-}
-
-// GetV1 retrieves the V1 value from the union,
-// returning ok if the union's switch indicated the value is valid.
-func (u TransactionMeta) GetV1() (result TransactionMetaV1, ok bool) {
-	armName, _ := u.ArmForSwitch(int32(u.V))
-
-	if armName == "V1" {
-		result = *u.V1
-		ok = true
-	}
-
-	return
-}
-
-// MustV2 retrieves the V2 value from the union,
-// panicing if the value is not set.
-func (u TransactionMeta) MustV2() TransactionMetaV2 {
-	val, ok := u.GetV2()
-
-	if !ok {
-		panic("arm V2 is not set")
-	}
-
-	return val
-}
-
-// GetV2 retrieves the V2 value from the union,
-// returning ok if the union's switch indicated the value is valid.
-func (u TransactionMeta) GetV2() (result TransactionMetaV2, ok bool) {
-	armName, _ := u.ArmForSwitch(int32(u.V))
-
-	if armName == "V2" {
-		result = *u.V2
-		ok = true
-	}
-
-	return
-}
-
-// MarshalBinary implements encoding.BinaryMarshaler.
-func (s TransactionMeta) MarshalBinary() ([]byte, error) {
-	b := new(bytes.Buffer)
-	_, err := Marshal(b, s)
-	return b.Bytes(), err
-}
-
-// UnmarshalBinary implements encoding.BinaryUnmarshaler.
-func (s *TransactionMeta) UnmarshalBinary(inp []byte) error {
-	_, err := Unmarshal(bytes.NewReader(inp), s)
-	return err
-}
-
-var (
-	_ encoding.BinaryMarshaler   = (*TransactionMeta)(nil)
-	_ encoding.BinaryUnmarshaler = (*TransactionMeta)(nil)
-)
-
-// TransactionResultMeta is an XDR Struct defines as:
-//
-//   struct TransactionResultMeta
-//    {
-//        TransactionResultPair result;
-//        LedgerEntryChanges feeProcessing;
-//        TransactionMeta txApplyProcessing;
-//    };
-//
-type TransactionResultMeta struct {
-	Result            TransactionResultPair
-	FeeProcessing     LedgerEntryChanges
-	TxApplyProcessing TransactionMeta
-}
-
-// MarshalBinary implements encoding.BinaryMarshaler.
-func (s TransactionResultMeta) MarshalBinary() ([]byte, error) {
-	b := new(bytes.Buffer)
-	_, err := Marshal(b, s)
-	return b.Bytes(), err
-}
-
-// UnmarshalBinary implements encoding.BinaryUnmarshaler.
-func (s *TransactionResultMeta) UnmarshalBinary(inp []byte) error {
-	_, err := Unmarshal(bytes.NewReader(inp), s)
-	return err
-}
-
-var (
-	_ encoding.BinaryMarshaler   = (*TransactionResultMeta)(nil)
-	_ encoding.BinaryUnmarshaler = (*TransactionResultMeta)(nil)
-)
-
-// UpgradeEntryMeta is an XDR Struct defines as:
-//
-//   struct UpgradeEntryMeta
-//    {
-//        LedgerUpgrade upgrade;
-//        LedgerEntryChanges changes;
-//    };
-//
-type UpgradeEntryMeta struct {
-	Upgrade LedgerUpgrade
-	Changes LedgerEntryChanges
-}
-
-// MarshalBinary implements encoding.BinaryMarshaler.
-func (s UpgradeEntryMeta) MarshalBinary() ([]byte, error) {
-	b := new(bytes.Buffer)
-	_, err := Marshal(b, s)
-	return b.Bytes(), err
-}
-
-// UnmarshalBinary implements encoding.BinaryUnmarshaler.
-func (s *UpgradeEntryMeta) UnmarshalBinary(inp []byte) error {
-	_, err := Unmarshal(bytes.NewReader(inp), s)
-	return err
-}
-
-var (
-	_ encoding.BinaryMarshaler   = (*UpgradeEntryMeta)(nil)
-	_ encoding.BinaryUnmarshaler = (*UpgradeEntryMeta)(nil)
-)
-
-// LedgerCloseMetaV0 is an XDR Struct defines as:
-//
-//   struct LedgerCloseMetaV0
-//    {
-//        LedgerHeaderHistoryEntry ledgerHeader;
-//        // NB: txSet is sorted in "Hash order"
-//        TransactionSet txSet;
-//
-//        // NB: transactions are sorted in apply order here
-//        // fees for all transactions are processed first
-//        // followed by applying transactions
-//        TransactionResultMeta txProcessing<>;
-//
-//        // upgrades are applied last
-//        UpgradeEntryMeta upgradesProcessing<>;
-//
-//        // other misc information attached to the ledger close
-//        SCPHistoryEntry scpInfo<>;
-//    };
-//
-type LedgerCloseMetaV0 struct {
-	LedgerHeader       LedgerHeaderHistoryEntry
-	TxSet              TransactionSet
-	TxProcessing       []TransactionResultMeta
-	UpgradesProcessing []UpgradeEntryMeta
-	ScpInfo            []ScpHistoryEntry
-}
-
-// MarshalBinary implements encoding.BinaryMarshaler.
-func (s LedgerCloseMetaV0) MarshalBinary() ([]byte, error) {
-	b := new(bytes.Buffer)
-	_, err := Marshal(b, s)
-	return b.Bytes(), err
-}
-
-// UnmarshalBinary implements encoding.BinaryUnmarshaler.
-func (s *LedgerCloseMetaV0) UnmarshalBinary(inp []byte) error {
-	_, err := Unmarshal(bytes.NewReader(inp), s)
-	return err
-}
-
-var (
-	_ encoding.BinaryMarshaler   = (*LedgerCloseMetaV0)(nil)
-	_ encoding.BinaryUnmarshaler = (*LedgerCloseMetaV0)(nil)
-)
-
-// LedgerCloseMeta is an XDR Union defines as:
-//
-//   union LedgerCloseMeta switch (int v)
-//    {
-//    case 0:
-//         LedgerCloseMetaV0 v0;
-//    };
-//
-type LedgerCloseMeta struct {
-	V  int32
-	V0 *LedgerCloseMetaV0
-}
-
-// SwitchFieldName returns the field name in which this union's
-// discriminant is stored
-func (u LedgerCloseMeta) SwitchFieldName() string {
-	return "V"
-}
-
-// ArmForSwitch returns which field name should be used for storing
-// the value for an instance of LedgerCloseMeta
-func (u LedgerCloseMeta) ArmForSwitch(sw int32) (string, bool) {
-	switch int32(sw) {
-	case 0:
-		return "V0", true
-	}
-	return "-", false
-}
-
-// NewLedgerCloseMeta creates a new  LedgerCloseMeta.
-func NewLedgerCloseMeta(v int32, value interface{}) (result LedgerCloseMeta, err error) {
-	result.V = v
-	switch int32(v) {
-	case 0:
-		tv, ok := value.(LedgerCloseMetaV0)
-		if !ok {
-			err = fmt.Errorf("invalid value, must be LedgerCloseMetaV0")
-			return
-		}
-		result.V0 = &tv
-	}
-	return
-}
-
-// MustV0 retrieves the V0 value from the union,
-// panicing if the value is not set.
-func (u LedgerCloseMeta) MustV0() LedgerCloseMetaV0 {
-	val, ok := u.GetV0()
-
-	if !ok {
-		panic("arm V0 is not set")
-	}
-
-	return val
-}
-
-// GetV0 retrieves the V0 value from the union,
-// returning ok if the union's switch indicated the value is valid.
-func (u LedgerCloseMeta) GetV0() (result LedgerCloseMetaV0, ok bool) {
-	armName, _ := u.ArmForSwitch(int32(u.V))
-
-	if armName == "V0" {
-		result = *u.V0
-		ok = true
-	}
-
-	return
-}
-
-// MarshalBinary implements encoding.BinaryMarshaler.
-func (s LedgerCloseMeta) MarshalBinary() ([]byte, error) {
-	b := new(bytes.Buffer)
-	_, err := Marshal(b, s)
-	return b.Bytes(), err
-}
-
-// UnmarshalBinary implements encoding.BinaryUnmarshaler.
-func (s *LedgerCloseMeta) UnmarshalBinary(inp []byte) error {
-	_, err := Unmarshal(bytes.NewReader(inp), s)
-	return err
-}
-
-var (
-	_ encoding.BinaryMarshaler   = (*LedgerCloseMeta)(nil)
-	_ encoding.BinaryUnmarshaler = (*LedgerCloseMeta)(nil)
-)
-
-// ErrorCode is an XDR Enum defines as:
-//
-//   enum ErrorCode
-//    {
-//        ERR_MISC = 0, // Unspecific error
-//        ERR_DATA = 1, // Malformed data
-//        ERR_CONF = 2, // Misconfiguration error
-//        ERR_AUTH = 3, // Authentication failure
-//        ERR_LOAD = 4  // System overloaded
-//    };
-//
-type ErrorCode int32
-
-const (
-	ErrorCodeErrMisc ErrorCode = 0
-	ErrorCodeErrData ErrorCode = 1
-	ErrorCodeErrConf ErrorCode = 2
-	ErrorCodeErrAuth ErrorCode = 3
-	ErrorCodeErrLoad ErrorCode = 4
-)
-
-var errorCodeMap = map[int32]string{
-	0: "ErrorCodeErrMisc",
-	1: "ErrorCodeErrData",
-	2: "ErrorCodeErrConf",
-	3: "ErrorCodeErrAuth",
-	4: "ErrorCodeErrLoad",
-}
-
-// ValidEnum validates a proposed value for this enum.  Implements
-// the Enum interface for ErrorCode
-func (e ErrorCode) ValidEnum(v int32) bool {
-	_, ok := errorCodeMap[v]
-	return ok
-}
-
-// String returns the name of `e`
-func (e ErrorCode) String() string {
-	name, _ := errorCodeMap[int32(e)]
-	return name
-}
-
-// MarshalBinary implements encoding.BinaryMarshaler.
-func (s ErrorCode) MarshalBinary() ([]byte, error) {
-	b := new(bytes.Buffer)
-	_, err := Marshal(b, s)
-	return b.Bytes(), err
-}
-
-// UnmarshalBinary implements encoding.BinaryUnmarshaler.
-func (s *ErrorCode) UnmarshalBinary(inp []byte) error {
-	_, err := Unmarshal(bytes.NewReader(inp), s)
-	return err
-}
-
-var (
-	_ encoding.BinaryMarshaler   = (*ErrorCode)(nil)
-	_ encoding.BinaryUnmarshaler = (*ErrorCode)(nil)
-)
-
-// Error is an XDR Struct defines as:
-//
-//   struct Error
-//    {
-//        ErrorCode code;
-//        string msg<100>;
-//    };
-//
-type Error struct {
-	Code ErrorCode
-	Msg  string `xdrmaxsize:"100"`
-}
-
-// MarshalBinary implements encoding.BinaryMarshaler.
-func (s Error) MarshalBinary() ([]byte, error) {
-	b := new(bytes.Buffer)
-	_, err := Marshal(b, s)
-	return b.Bytes(), err
-}
-
-// UnmarshalBinary implements encoding.BinaryUnmarshaler.
-func (s *Error) UnmarshalBinary(inp []byte) error {
-	_, err := Unmarshal(bytes.NewReader(inp), s)
-	return err
-}
-
-var (
-	_ encoding.BinaryMarshaler   = (*Error)(nil)
-	_ encoding.BinaryUnmarshaler = (*Error)(nil)
-)
-
-// AuthCert is an XDR Struct defines as:
-//
-//   struct AuthCert
-//    {
-//        Curve25519Public pubkey;
-//        uint64 expiration;
-//        Signature sig;
-//    };
-//
-type AuthCert struct {
-	Pubkey     Curve25519Public
-	Expiration Uint64
-	Sig        Signature
-}
-
-// MarshalBinary implements encoding.BinaryMarshaler.
-func (s AuthCert) MarshalBinary() ([]byte, error) {
-	b := new(bytes.Buffer)
-	_, err := Marshal(b, s)
-	return b.Bytes(), err
-}
-
-// UnmarshalBinary implements encoding.BinaryUnmarshaler.
-func (s *AuthCert) UnmarshalBinary(inp []byte) error {
-	_, err := Unmarshal(bytes.NewReader(inp), s)
-	return err
-}
-
-var (
-	_ encoding.BinaryMarshaler   = (*AuthCert)(nil)
-	_ encoding.BinaryUnmarshaler = (*AuthCert)(nil)
-)
-
-// Hello is an XDR Struct defines as:
-//
-//   struct Hello
-//    {
-//        uint32 ledgerVersion;
-//        uint32 overlayVersion;
-//        uint32 overlayMinVersion;
-//        Hash networkID;
-//        string versionStr<100>;
-//        int listeningPort;
-//        NodeID peerID;
-//        AuthCert cert;
-//        uint256 nonce;
-//    };
-//
-type Hello struct {
-	LedgerVersion     Uint32
-	OverlayVersion    Uint32
-	OverlayMinVersion Uint32
-	NetworkId         Hash
-	VersionStr        string `xdrmaxsize:"100"`
-	ListeningPort     int32
-	PeerId            NodeId
-	Cert              AuthCert
-	Nonce             Uint256
-}
-
-// MarshalBinary implements encoding.BinaryMarshaler.
-func (s Hello) MarshalBinary() ([]byte, error) {
-	b := new(bytes.Buffer)
-	_, err := Marshal(b, s)
-	return b.Bytes(), err
-}
-
-// UnmarshalBinary implements encoding.BinaryUnmarshaler.
-func (s *Hello) UnmarshalBinary(inp []byte) error {
-	_, err := Unmarshal(bytes.NewReader(inp), s)
-	return err
-}
-
-var (
-	_ encoding.BinaryMarshaler   = (*Hello)(nil)
-	_ encoding.BinaryUnmarshaler = (*Hello)(nil)
-)
-
-// Auth is an XDR Struct defines as:
-//
-//   struct Auth
-//    {
-//        // Empty message, just to confirm
-//        // establishment of MAC keys.
-//        int unused;
-//    };
-//
-type Auth struct {
-	Unused int32
-}
-
-// MarshalBinary implements encoding.BinaryMarshaler.
-func (s Auth) MarshalBinary() ([]byte, error) {
-	b := new(bytes.Buffer)
-	_, err := Marshal(b, s)
-	return b.Bytes(), err
-}
-
-// UnmarshalBinary implements encoding.BinaryUnmarshaler.
-func (s *Auth) UnmarshalBinary(inp []byte) error {
-	_, err := Unmarshal(bytes.NewReader(inp), s)
-	return err
-}
-
-var (
-	_ encoding.BinaryMarshaler   = (*Auth)(nil)
-	_ encoding.BinaryUnmarshaler = (*Auth)(nil)
-)
-
-// IpAddrType is an XDR Enum defines as:
-//
-//   enum IPAddrType
-//    {
-//        IPv4 = 0,
-//        IPv6 = 1
-//    };
-//
-type IpAddrType int32
-
-const (
-	IpAddrTypeIPv4 IpAddrType = 0
-	IpAddrTypeIPv6 IpAddrType = 1
-)
-
-var ipAddrTypeMap = map[int32]string{
-	0: "IpAddrTypeIPv4",
-	1: "IpAddrTypeIPv6",
-}
-
-// ValidEnum validates a proposed value for this enum.  Implements
-// the Enum interface for IpAddrType
-func (e IpAddrType) ValidEnum(v int32) bool {
-	_, ok := ipAddrTypeMap[v]
-	return ok
-}
-
-// String returns the name of `e`
-func (e IpAddrType) String() string {
-	name, _ := ipAddrTypeMap[int32(e)]
-	return name
-}
-
-// MarshalBinary implements encoding.BinaryMarshaler.
-func (s IpAddrType) MarshalBinary() ([]byte, error) {
-	b := new(bytes.Buffer)
-	_, err := Marshal(b, s)
-	return b.Bytes(), err
-}
-
-// UnmarshalBinary implements encoding.BinaryUnmarshaler.
-func (s *IpAddrType) UnmarshalBinary(inp []byte) error {
-	_, err := Unmarshal(bytes.NewReader(inp), s)
-	return err
-}
-
-var (
-	_ encoding.BinaryMarshaler   = (*IpAddrType)(nil)
-	_ encoding.BinaryUnmarshaler = (*IpAddrType)(nil)
-)
-
-// PeerAddressIp is an XDR NestedUnion defines as:
-//
-//   union switch (IPAddrType type)
-//        {
-//        case IPv4:
-//            opaque ipv4[4];
-//        case IPv6:
-//            opaque ipv6[16];
-//        }
-//
-type PeerAddressIp struct {
-	Type IpAddrType
-	Ipv4 *[4]byte  `xdrmaxsize:"4"`
-	Ipv6 *[16]byte `xdrmaxsize:"16"`
-}
-
-// SwitchFieldName returns the field name in which this union's
-// discriminant is stored
-func (u PeerAddressIp) SwitchFieldName() string {
-	return "Type"
-}
-
-// ArmForSwitch returns which field name should be used for storing
-// the value for an instance of PeerAddressIp
-func (u PeerAddressIp) ArmForSwitch(sw int32) (string, bool) {
-	switch IpAddrType(sw) {
-	case IpAddrTypeIPv4:
-		return "Ipv4", true
-	case IpAddrTypeIPv6:
-		return "Ipv6", true
-	}
-	return "-", false
-}
-
-// NewPeerAddressIp creates a new  PeerAddressIp.
-func NewPeerAddressIp(aType IpAddrType, value interface{}) (result PeerAddressIp, err error) {
-	result.Type = aType
-	switch IpAddrType(aType) {
-	case IpAddrTypeIPv4:
-		tv, ok := value.([4]byte)
-		if !ok {
-			err = fmt.Errorf("invalid value, must be [4]byte")
-			return
-		}
-		result.Ipv4 = &tv
-	case IpAddrTypeIPv6:
-		tv, ok := value.([16]byte)
-		if !ok {
-			err = fmt.Errorf("invalid value, must be [16]byte")
-			return
-		}
-		result.Ipv6 = &tv
-	}
-	return
-}
-
-// MustIpv4 retrieves the Ipv4 value from the union,
-// panicing if the value is not set.
-func (u PeerAddressIp) MustIpv4() [4]byte {
-	val, ok := u.GetIpv4()
-
-	if !ok {
-		panic("arm Ipv4 is not set")
-	}
-
-	return val
-}
-
-// GetIpv4 retrieves the Ipv4 value from the union,
-// returning ok if the union's switch indicated the value is valid.
-func (u PeerAddressIp) GetIpv4() (result [4]byte, ok bool) {
-	armName, _ := u.ArmForSwitch(int32(u.Type))
-
-	if armName == "Ipv4" {
-		result = *u.Ipv4
-		ok = true
-	}
-
-	return
-}
-
-// MustIpv6 retrieves the Ipv6 value from the union,
-// panicing if the value is not set.
-func (u PeerAddressIp) MustIpv6() [16]byte {
-	val, ok := u.GetIpv6()
-
-	if !ok {
-		panic("arm Ipv6 is not set")
-	}
-
-	return val
-}
-
-// GetIpv6 retrieves the Ipv6 value from the union,
-// returning ok if the union's switch indicated the value is valid.
-func (u PeerAddressIp) GetIpv6() (result [16]byte, ok bool) {
-	armName, _ := u.ArmForSwitch(int32(u.Type))
-
-	if armName == "Ipv6" {
-		result = *u.Ipv6
-		ok = true
-	}
-
-	return
-}
-
-// MarshalBinary implements encoding.BinaryMarshaler.
-func (s PeerAddressIp) MarshalBinary() ([]byte, error) {
-	b := new(bytes.Buffer)
-	_, err := Marshal(b, s)
-	return b.Bytes(), err
-}
-
-// UnmarshalBinary implements encoding.BinaryUnmarshaler.
-func (s *PeerAddressIp) UnmarshalBinary(inp []byte) error {
-	_, err := Unmarshal(bytes.NewReader(inp), s)
-	return err
-}
-
-var (
-	_ encoding.BinaryMarshaler   = (*PeerAddressIp)(nil)
-	_ encoding.BinaryUnmarshaler = (*PeerAddressIp)(nil)
-)
-
-// PeerAddress is an XDR Struct defines as:
-//
-//   struct PeerAddress
-//    {
-//        union switch (IPAddrType type)
-//        {
-//        case IPv4:
-//            opaque ipv4[4];
-//        case IPv6:
-//            opaque ipv6[16];
-//        }
-//        ip;
-//        uint32 port;
-//        uint32 numFailures;
-//    };
-//
-type PeerAddress struct {
-	Ip          PeerAddressIp
-	Port        Uint32
-	NumFailures Uint32
-}
-
-// MarshalBinary implements encoding.BinaryMarshaler.
-func (s PeerAddress) MarshalBinary() ([]byte, error) {
-	b := new(bytes.Buffer)
-	_, err := Marshal(b, s)
-	return b.Bytes(), err
-}
-
-// UnmarshalBinary implements encoding.BinaryUnmarshaler.
-func (s *PeerAddress) UnmarshalBinary(inp []byte) error {
-	_, err := Unmarshal(bytes.NewReader(inp), s)
-	return err
-}
-
-var (
-	_ encoding.BinaryMarshaler   = (*PeerAddress)(nil)
-	_ encoding.BinaryUnmarshaler = (*PeerAddress)(nil)
-)
-
-// MessageType is an XDR Enum defines as:
-//
-//   enum MessageType
-//    {
-//        ERROR_MSG = 0,
-//        AUTH = 2,
-//        DONT_HAVE = 3,
-//
-//        GET_PEERS = 4, // gets a list of peers this guy knows about
-//        PEERS = 5,
-//
-//        GET_TX_SET = 6, // gets a particular txset by hash
-//        TX_SET = 7,
-//
-//        TRANSACTION = 8, // pass on a tx you have heard about
-//
-//        // SCP
-//        GET_SCP_QUORUMSET = 9,
-//        SCP_QUORUMSET = 10,
-//        SCP_MESSAGE = 11,
-//        GET_SCP_STATE = 12,
-//
-//        // new messages
-//        HELLO = 13,
-//
-//        SURVEY_REQUEST = 14,
-//        SURVEY_RESPONSE = 15
-//    };
-//
-type MessageType int32
-
-const (
-	MessageTypeErrorMsg        MessageType = 0
-	MessageTypeAuth            MessageType = 2
-	MessageTypeDontHave        MessageType = 3
-	MessageTypeGetPeers        MessageType = 4
-	MessageTypePeers           MessageType = 5
-	MessageTypeGetTxSet        MessageType = 6
-	MessageTypeTxSet           MessageType = 7
-	MessageTypeTransaction     MessageType = 8
-	MessageTypeGetScpQuorumset MessageType = 9
-	MessageTypeScpQuorumset    MessageType = 10
-	MessageTypeScpMessage      MessageType = 11
-	MessageTypeGetScpState     MessageType = 12
-	MessageTypeHello           MessageType = 13
-	MessageTypeSurveyRequest   MessageType = 14
-	MessageTypeSurveyResponse  MessageType = 15
-)
-
-var messageTypeMap = map[int32]string{
-	0:  "MessageTypeErrorMsg",
-	2:  "MessageTypeAuth",
-	3:  "MessageTypeDontHave",
-	4:  "MessageTypeGetPeers",
-	5:  "MessageTypePeers",
-	6:  "MessageTypeGetTxSet",
-	7:  "MessageTypeTxSet",
-	8:  "MessageTypeTransaction",
-	9:  "MessageTypeGetScpQuorumset",
-	10: "MessageTypeScpQuorumset",
-	11: "MessageTypeScpMessage",
-	12: "MessageTypeGetScpState",
-	13: "MessageTypeHello",
-	14: "MessageTypeSurveyRequest",
-	15: "MessageTypeSurveyResponse",
-}
-
-// ValidEnum validates a proposed value for this enum.  Implements
-// the Enum interface for MessageType
-func (e MessageType) ValidEnum(v int32) bool {
-	_, ok := messageTypeMap[v]
-	return ok
-}
-
-// String returns the name of `e`
-func (e MessageType) String() string {
-	name, _ := messageTypeMap[int32(e)]
-	return name
-}
-
-// MarshalBinary implements encoding.BinaryMarshaler.
-func (s MessageType) MarshalBinary() ([]byte, error) {
-	b := new(bytes.Buffer)
-	_, err := Marshal(b, s)
-	return b.Bytes(), err
-}
-
-// UnmarshalBinary implements encoding.BinaryUnmarshaler.
-func (s *MessageType) UnmarshalBinary(inp []byte) error {
-	_, err := Unmarshal(bytes.NewReader(inp), s)
-	return err
-}
-
-var (
-	_ encoding.BinaryMarshaler   = (*MessageType)(nil)
-	_ encoding.BinaryUnmarshaler = (*MessageType)(nil)
-)
-
-// DontHave is an XDR Struct defines as:
-//
-//   struct DontHave
-//    {
-//        MessageType type;
-//        uint256 reqHash;
-//    };
-//
-type DontHave struct {
-	Type    MessageType
-	ReqHash Uint256
-}
-
-// MarshalBinary implements encoding.BinaryMarshaler.
-func (s DontHave) MarshalBinary() ([]byte, error) {
-	b := new(bytes.Buffer)
-	_, err := Marshal(b, s)
-	return b.Bytes(), err
-}
-
-// UnmarshalBinary implements encoding.BinaryUnmarshaler.
-func (s *DontHave) UnmarshalBinary(inp []byte) error {
-	_, err := Unmarshal(bytes.NewReader(inp), s)
-	return err
-}
-
-var (
-	_ encoding.BinaryMarshaler   = (*DontHave)(nil)
-	_ encoding.BinaryUnmarshaler = (*DontHave)(nil)
-)
-
-// SurveyMessageCommandType is an XDR Enum defines as:
-//
-//   enum SurveyMessageCommandType
-//    {
-//        SURVEY_TOPOLOGY = 0
-//    };
-//
-type SurveyMessageCommandType int32
-
-const (
-	SurveyMessageCommandTypeSurveyTopology SurveyMessageCommandType = 0
-)
-
-var surveyMessageCommandTypeMap = map[int32]string{
-	0: "SurveyMessageCommandTypeSurveyTopology",
-}
-
-// ValidEnum validates a proposed value for this enum.  Implements
-// the Enum interface for SurveyMessageCommandType
-func (e SurveyMessageCommandType) ValidEnum(v int32) bool {
-	_, ok := surveyMessageCommandTypeMap[v]
-	return ok
-}
-
-// String returns the name of `e`
-func (e SurveyMessageCommandType) String() string {
-	name, _ := surveyMessageCommandTypeMap[int32(e)]
-	return name
-}
-
-// MarshalBinary implements encoding.BinaryMarshaler.
-func (s SurveyMessageCommandType) MarshalBinary() ([]byte, error) {
-	b := new(bytes.Buffer)
-	_, err := Marshal(b, s)
-	return b.Bytes(), err
-}
-
-// UnmarshalBinary implements encoding.BinaryUnmarshaler.
-func (s *SurveyMessageCommandType) UnmarshalBinary(inp []byte) error {
-	_, err := Unmarshal(bytes.NewReader(inp), s)
-	return err
-}
-
-var (
-	_ encoding.BinaryMarshaler   = (*SurveyMessageCommandType)(nil)
-	_ encoding.BinaryUnmarshaler = (*SurveyMessageCommandType)(nil)
-)
-
-// SurveyRequestMessage is an XDR Struct defines as:
-//
-//   struct SurveyRequestMessage
-//    {
-//        NodeID surveyorPeerID;
-//        NodeID surveyedPeerID;
-//        uint32 ledgerNum;
-//        Curve25519Public encryptionKey;
-//        SurveyMessageCommandType commandType;
-//    };
-//
-type SurveyRequestMessage struct {
-	SurveyorPeerId NodeId
-	SurveyedPeerId NodeId
-	LedgerNum      Uint32
-	EncryptionKey  Curve25519Public
-	CommandType    SurveyMessageCommandType
-}
-
-// MarshalBinary implements encoding.BinaryMarshaler.
-func (s SurveyRequestMessage) MarshalBinary() ([]byte, error) {
-	b := new(bytes.Buffer)
-	_, err := Marshal(b, s)
-	return b.Bytes(), err
-}
-
-// UnmarshalBinary implements encoding.BinaryUnmarshaler.
-func (s *SurveyRequestMessage) UnmarshalBinary(inp []byte) error {
-	_, err := Unmarshal(bytes.NewReader(inp), s)
-	return err
-}
-
-var (
-	_ encoding.BinaryMarshaler   = (*SurveyRequestMessage)(nil)
-	_ encoding.BinaryUnmarshaler = (*SurveyRequestMessage)(nil)
-)
-
-// SignedSurveyRequestMessage is an XDR Struct defines as:
-//
-//   struct SignedSurveyRequestMessage
-//    {
-//        Signature requestSignature;
-//        SurveyRequestMessage request;
-//    };
-//
-type SignedSurveyRequestMessage struct {
-	RequestSignature Signature
-	Request          SurveyRequestMessage
-}
-
-// MarshalBinary implements encoding.BinaryMarshaler.
-func (s SignedSurveyRequestMessage) MarshalBinary() ([]byte, error) {
-	b := new(bytes.Buffer)
-	_, err := Marshal(b, s)
-	return b.Bytes(), err
-}
-
-// UnmarshalBinary implements encoding.BinaryUnmarshaler.
-func (s *SignedSurveyRequestMessage) UnmarshalBinary(inp []byte) error {
-	_, err := Unmarshal(bytes.NewReader(inp), s)
-	return err
-}
-
-var (
-	_ encoding.BinaryMarshaler   = (*SignedSurveyRequestMessage)(nil)
-	_ encoding.BinaryUnmarshaler = (*SignedSurveyRequestMessage)(nil)
-)
-
-// EncryptedBody is an XDR Typedef defines as:
-//
-//   typedef opaque EncryptedBody<64000>;
-//
-type EncryptedBody []byte
-
-// XDRMaxSize implements the Sized interface for EncryptedBody
-func (e EncryptedBody) XDRMaxSize() int {
-	return 64000
-}
-
-// MarshalBinary implements encoding.BinaryMarshaler.
-func (s EncryptedBody) MarshalBinary() ([]byte, error) {
-	b := new(bytes.Buffer)
-	_, err := Marshal(b, s)
-	return b.Bytes(), err
-}
-
-// UnmarshalBinary implements encoding.BinaryUnmarshaler.
-func (s *EncryptedBody) UnmarshalBinary(inp []byte) error {
-	_, err := Unmarshal(bytes.NewReader(inp), s)
-	return err
-}
-
-var (
-	_ encoding.BinaryMarshaler   = (*EncryptedBody)(nil)
-	_ encoding.BinaryUnmarshaler = (*EncryptedBody)(nil)
-)
-
-// SurveyResponseMessage is an XDR Struct defines as:
-//
-//   struct SurveyResponseMessage
-//    {
-//        NodeID surveyorPeerID;
-//        NodeID surveyedPeerID;
-//        uint32 ledgerNum;
-//        SurveyMessageCommandType commandType;
-//        EncryptedBody encryptedBody;
-//    };
-//
-type SurveyResponseMessage struct {
-	SurveyorPeerId NodeId
-	SurveyedPeerId NodeId
-	LedgerNum      Uint32
-	CommandType    SurveyMessageCommandType
-	EncryptedBody  EncryptedBody
-}
-
-// MarshalBinary implements encoding.BinaryMarshaler.
-func (s SurveyResponseMessage) MarshalBinary() ([]byte, error) {
-	b := new(bytes.Buffer)
-	_, err := Marshal(b, s)
-	return b.Bytes(), err
-}
-
-// UnmarshalBinary implements encoding.BinaryUnmarshaler.
-func (s *SurveyResponseMessage) UnmarshalBinary(inp []byte) error {
-	_, err := Unmarshal(bytes.NewReader(inp), s)
-	return err
-}
-
-var (
-	_ encoding.BinaryMarshaler   = (*SurveyResponseMessage)(nil)
-	_ encoding.BinaryUnmarshaler = (*SurveyResponseMessage)(nil)
-)
-
-// SignedSurveyResponseMessage is an XDR Struct defines as:
-//
-//   struct SignedSurveyResponseMessage
-//    {
-//        Signature responseSignature;
-//        SurveyResponseMessage response;
-//    };
-//
-type SignedSurveyResponseMessage struct {
-	ResponseSignature Signature
-	Response          SurveyResponseMessage
-}
-
-// MarshalBinary implements encoding.BinaryMarshaler.
-func (s SignedSurveyResponseMessage) MarshalBinary() ([]byte, error) {
-	b := new(bytes.Buffer)
-	_, err := Marshal(b, s)
-	return b.Bytes(), err
-}
-
-// UnmarshalBinary implements encoding.BinaryUnmarshaler.
-func (s *SignedSurveyResponseMessage) UnmarshalBinary(inp []byte) error {
-	_, err := Unmarshal(bytes.NewReader(inp), s)
-	return err
-}
-
-var (
-	_ encoding.BinaryMarshaler   = (*SignedSurveyResponseMessage)(nil)
-	_ encoding.BinaryUnmarshaler = (*SignedSurveyResponseMessage)(nil)
-)
-
-// PeerStats is an XDR Struct defines as:
-//
-//   struct PeerStats
-//    {
-//        NodeID id;
-//        string versionStr<100>;
-//        uint64 messagesRead;
-//        uint64 messagesWritten;
-//        uint64 bytesRead;
-//        uint64 bytesWritten;
-//        uint64 secondsConnected;
-//
-//        uint64 uniqueFloodBytesRecv;
-//        uint64 duplicateFloodBytesRecv;
-//        uint64 uniqueFetchBytesRecv;
-//        uint64 duplicateFetchBytesRecv;
-//
-//        uint64 uniqueFloodMessageRecv;
-//        uint64 duplicateFloodMessageRecv;
-//        uint64 uniqueFetchMessageRecv;
-//        uint64 duplicateFetchMessageRecv;
-//    };
-//
-type PeerStats struct {
-	Id                        NodeId
-	VersionStr                string `xdrmaxsize:"100"`
-	MessagesRead              Uint64
-	MessagesWritten           Uint64
-	BytesRead                 Uint64
-	BytesWritten              Uint64
-	SecondsConnected          Uint64
-	UniqueFloodBytesRecv      Uint64
-	DuplicateFloodBytesRecv   Uint64
-	UniqueFetchBytesRecv      Uint64
-	DuplicateFetchBytesRecv   Uint64
-	UniqueFloodMessageRecv    Uint64
-	DuplicateFloodMessageRecv Uint64
-	UniqueFetchMessageRecv    Uint64
-	DuplicateFetchMessageRecv Uint64
-}
-
-// MarshalBinary implements encoding.BinaryMarshaler.
-func (s PeerStats) MarshalBinary() ([]byte, error) {
-	b := new(bytes.Buffer)
-	_, err := Marshal(b, s)
-	return b.Bytes(), err
-}
-
-// UnmarshalBinary implements encoding.BinaryUnmarshaler.
-func (s *PeerStats) UnmarshalBinary(inp []byte) error {
-	_, err := Unmarshal(bytes.NewReader(inp), s)
-	return err
-}
-
-var (
-	_ encoding.BinaryMarshaler   = (*PeerStats)(nil)
-	_ encoding.BinaryUnmarshaler = (*PeerStats)(nil)
-)
-
-// PeerStatList is an XDR Typedef defines as:
-//
-//   typedef PeerStats PeerStatList<25>;
-//
-type PeerStatList []PeerStats
-
-// XDRMaxSize implements the Sized interface for PeerStatList
-func (e PeerStatList) XDRMaxSize() int {
-	return 25
-}
-
-// MarshalBinary implements encoding.BinaryMarshaler.
-func (s PeerStatList) MarshalBinary() ([]byte, error) {
-	b := new(bytes.Buffer)
-	_, err := Marshal(b, s)
-	return b.Bytes(), err
-}
-
-// UnmarshalBinary implements encoding.BinaryUnmarshaler.
-func (s *PeerStatList) UnmarshalBinary(inp []byte) error {
-	_, err := Unmarshal(bytes.NewReader(inp), s)
-	return err
-}
-
-var (
-	_ encoding.BinaryMarshaler   = (*PeerStatList)(nil)
-	_ encoding.BinaryUnmarshaler = (*PeerStatList)(nil)
-)
-
-// TopologyResponseBody is an XDR Struct defines as:
-//
-//   struct TopologyResponseBody
-//    {
-//        PeerStatList inboundPeers;
-//        PeerStatList outboundPeers;
-//
-//        uint32 totalInboundPeerCount;
-//        uint32 totalOutboundPeerCount;
-//    };
-//
-type TopologyResponseBody struct {
-	InboundPeers           PeerStatList
-	OutboundPeers          PeerStatList
-	TotalInboundPeerCount  Uint32
-	TotalOutboundPeerCount Uint32
-}
-
-// MarshalBinary implements encoding.BinaryMarshaler.
-func (s TopologyResponseBody) MarshalBinary() ([]byte, error) {
-	b := new(bytes.Buffer)
-	_, err := Marshal(b, s)
-	return b.Bytes(), err
-}
-
-// UnmarshalBinary implements encoding.BinaryUnmarshaler.
-func (s *TopologyResponseBody) UnmarshalBinary(inp []byte) error {
-	_, err := Unmarshal(bytes.NewReader(inp), s)
-	return err
-}
-
-var (
-	_ encoding.BinaryMarshaler   = (*TopologyResponseBody)(nil)
-	_ encoding.BinaryUnmarshaler = (*TopologyResponseBody)(nil)
-)
-
-// SurveyResponseBody is an XDR Union defines as:
-//
-//   union SurveyResponseBody switch (SurveyMessageCommandType type)
-//    {
-//        case SURVEY_TOPOLOGY:
-//            TopologyResponseBody topologyResponseBody;
-//    };
-//
-type SurveyResponseBody struct {
-	Type                 SurveyMessageCommandType
-	TopologyResponseBody *TopologyResponseBody
-}
-
-// SwitchFieldName returns the field name in which this union's
-// discriminant is stored
-func (u SurveyResponseBody) SwitchFieldName() string {
-	return "Type"
-}
-
-// ArmForSwitch returns which field name should be used for storing
-// the value for an instance of SurveyResponseBody
-func (u SurveyResponseBody) ArmForSwitch(sw int32) (string, bool) {
-	switch SurveyMessageCommandType(sw) {
-	case SurveyMessageCommandTypeSurveyTopology:
-		return "TopologyResponseBody", true
-	}
-	return "-", false
-}
-
-// NewSurveyResponseBody creates a new  SurveyResponseBody.
-func NewSurveyResponseBody(aType SurveyMessageCommandType, value interface{}) (result SurveyResponseBody, err error) {
-	result.Type = aType
-	switch SurveyMessageCommandType(aType) {
-	case SurveyMessageCommandTypeSurveyTopology:
-		tv, ok := value.(TopologyResponseBody)
-		if !ok {
-			err = fmt.Errorf("invalid value, must be TopologyResponseBody")
-			return
-		}
-		result.TopologyResponseBody = &tv
-	}
-	return
-}
-
-// MustTopologyResponseBody retrieves the TopologyResponseBody value from the union,
-// panicing if the value is not set.
-func (u SurveyResponseBody) MustTopologyResponseBody() TopologyResponseBody {
-	val, ok := u.GetTopologyResponseBody()
-
-	if !ok {
-		panic("arm TopologyResponseBody is not set")
-	}
-
-	return val
-}
-
-// GetTopologyResponseBody retrieves the TopologyResponseBody value from the union,
-// returning ok if the union's switch indicated the value is valid.
-func (u SurveyResponseBody) GetTopologyResponseBody() (result TopologyResponseBody, ok bool) {
-	armName, _ := u.ArmForSwitch(int32(u.Type))
-
-	if armName == "TopologyResponseBody" {
-		result = *u.TopologyResponseBody
-		ok = true
-	}
-
-	return
-}
-
-// MarshalBinary implements encoding.BinaryMarshaler.
-func (s SurveyResponseBody) MarshalBinary() ([]byte, error) {
-	b := new(bytes.Buffer)
-	_, err := Marshal(b, s)
-	return b.Bytes(), err
-}
-
-// UnmarshalBinary implements encoding.BinaryUnmarshaler.
-func (s *SurveyResponseBody) UnmarshalBinary(inp []byte) error {
-	_, err := Unmarshal(bytes.NewReader(inp), s)
-	return err
-}
-
-var (
-	_ encoding.BinaryMarshaler   = (*SurveyResponseBody)(nil)
-	_ encoding.BinaryUnmarshaler = (*SurveyResponseBody)(nil)
-)
-
-// StellarMessage is an XDR Union defines as:
-//
-//   union StellarMessage switch (MessageType type)
-//    {
-//    case ERROR_MSG:
-//        Error error;
-//    case HELLO:
-//        Hello hello;
-//    case AUTH:
-//        Auth auth;
-//    case DONT_HAVE:
-//        DontHave dontHave;
-//    case GET_PEERS:
-//        void;
-//    case PEERS:
-//        PeerAddress peers<100>;
-//
-//    case GET_TX_SET:
-//        uint256 txSetHash;
-//    case TX_SET:
-//        TransactionSet txSet;
-//
-//    case TRANSACTION:
-//        TransactionEnvelope transaction;
-//
-//    case SURVEY_REQUEST:
-//        SignedSurveyRequestMessage signedSurveyRequestMessage;
-//
-//    case SURVEY_RESPONSE:
-//        SignedSurveyResponseMessage signedSurveyResponseMessage;
-//
-//    // SCP
-//    case GET_SCP_QUORUMSET:
-//        uint256 qSetHash;
-//    case SCP_QUORUMSET:
-//        SCPQuorumSet qSet;
-//    case SCP_MESSAGE:
-//        SCPEnvelope envelope;
-//    case GET_SCP_STATE:
-//        uint32 getSCPLedgerSeq; // ledger seq requested ; if 0, requests the latest
-//    };
-//
-type StellarMessage struct {
-	Type                        MessageType
-	Error                       *Error
-	Hello                       *Hello
-	Auth                        *Auth
-	DontHave                    *DontHave
-	Peers                       *[]PeerAddress `xdrmaxsize:"100"`
-	TxSetHash                   *Uint256
-	TxSet                       *TransactionSet
-	Transaction                 *TransactionEnvelope
-	SignedSurveyRequestMessage  *SignedSurveyRequestMessage
-	SignedSurveyResponseMessage *SignedSurveyResponseMessage
-	QSetHash                    *Uint256
-	QSet                        *ScpQuorumSet
-	Envelope                    *ScpEnvelope
-	GetScpLedgerSeq             *Uint32
-}
-
-// SwitchFieldName returns the field name in which this union's
-// discriminant is stored
-func (u StellarMessage) SwitchFieldName() string {
-	return "Type"
-}
-
-// ArmForSwitch returns which field name should be used for storing
-// the value for an instance of StellarMessage
-func (u StellarMessage) ArmForSwitch(sw int32) (string, bool) {
-	switch MessageType(sw) {
-	case MessageTypeErrorMsg:
-		return "Error", true
-	case MessageTypeHello:
-		return "Hello", true
-	case MessageTypeAuth:
-		return "Auth", true
-	case MessageTypeDontHave:
-		return "DontHave", true
-	case MessageTypeGetPeers:
-		return "", true
-	case MessageTypePeers:
-		return "Peers", true
-	case MessageTypeGetTxSet:
-		return "TxSetHash", true
-	case MessageTypeTxSet:
-		return "TxSet", true
-	case MessageTypeTransaction:
-		return "Transaction", true
-	case MessageTypeSurveyRequest:
-		return "SignedSurveyRequestMessage", true
-	case MessageTypeSurveyResponse:
-		return "SignedSurveyResponseMessage", true
-	case MessageTypeGetScpQuorumset:
-		return "QSetHash", true
-	case MessageTypeScpQuorumset:
-		return "QSet", true
-	case MessageTypeScpMessage:
-		return "Envelope", true
-	case MessageTypeGetScpState:
-		return "GetScpLedgerSeq", true
-	}
-	return "-", false
-}
-
-// NewStellarMessage creates a new  StellarMessage.
-func NewStellarMessage(aType MessageType, value interface{}) (result StellarMessage, err error) {
-	result.Type = aType
-	switch MessageType(aType) {
-	case MessageTypeErrorMsg:
-		tv, ok := value.(Error)
-		if !ok {
-			err = fmt.Errorf("invalid value, must be Error")
-			return
-		}
-		result.Error = &tv
-	case MessageTypeHello:
-		tv, ok := value.(Hello)
-		if !ok {
-			err = fmt.Errorf("invalid value, must be Hello")
-			return
-		}
-		result.Hello = &tv
-	case MessageTypeAuth:
-		tv, ok := value.(Auth)
-		if !ok {
-			err = fmt.Errorf("invalid value, must be Auth")
-			return
-		}
-		result.Auth = &tv
-	case MessageTypeDontHave:
-		tv, ok := value.(DontHave)
-		if !ok {
-			err = fmt.Errorf("invalid value, must be DontHave")
-			return
-		}
-		result.DontHave = &tv
-	case MessageTypeGetPeers:
-		// void
-	case MessageTypePeers:
-		tv, ok := value.([]PeerAddress)
-		if !ok {
-			err = fmt.Errorf("invalid value, must be []PeerAddress")
-			return
-		}
-		result.Peers = &tv
-	case MessageTypeGetTxSet:
-		tv, ok := value.(Uint256)
-		if !ok {
-			err = fmt.Errorf("invalid value, must be Uint256")
-			return
-		}
-		result.TxSetHash = &tv
-	case MessageTypeTxSet:
-		tv, ok := value.(TransactionSet)
-		if !ok {
-			err = fmt.Errorf("invalid value, must be TransactionSet")
-			return
-		}
-		result.TxSet = &tv
-	case MessageTypeTransaction:
-		tv, ok := value.(TransactionEnvelope)
-		if !ok {
-			err = fmt.Errorf("invalid value, must be TransactionEnvelope")
-			return
-		}
-		result.Transaction = &tv
-	case MessageTypeSurveyRequest:
-		tv, ok := value.(SignedSurveyRequestMessage)
-		if !ok {
-			err = fmt.Errorf("invalid value, must be SignedSurveyRequestMessage")
-			return
-		}
-		result.SignedSurveyRequestMessage = &tv
-	case MessageTypeSurveyResponse:
-		tv, ok := value.(SignedSurveyResponseMessage)
-		if !ok {
-			err = fmt.Errorf("invalid value, must be SignedSurveyResponseMessage")
-			return
-		}
-		result.SignedSurveyResponseMessage = &tv
-	case MessageTypeGetScpQuorumset:
-		tv, ok := value.(Uint256)
-		if !ok {
-			err = fmt.Errorf("invalid value, must be Uint256")
-			return
-		}
-		result.QSetHash = &tv
-	case MessageTypeScpQuorumset:
-		tv, ok := value.(ScpQuorumSet)
-		if !ok {
-			err = fmt.Errorf("invalid value, must be ScpQuorumSet")
-			return
-		}
-		result.QSet = &tv
-	case MessageTypeScpMessage:
-		tv, ok := value.(ScpEnvelope)
-		if !ok {
-			err = fmt.Errorf("invalid value, must be ScpEnvelope")
-			return
-		}
-		result.Envelope = &tv
-	case MessageTypeGetScpState:
-		tv, ok := value.(Uint32)
-		if !ok {
-			err = fmt.Errorf("invalid value, must be Uint32")
-			return
-		}
-		result.GetScpLedgerSeq = &tv
-	}
-	return
-}
-
-// MustError retrieves the Error value from the union,
-// panicing if the value is not set.
-func (u StellarMessage) MustError() Error {
-	val, ok := u.GetError()
-
-	if !ok {
-		panic("arm Error is not set")
-	}
-
-	return val
-}
-
-// GetError retrieves the Error value from the union,
-// returning ok if the union's switch indicated the value is valid.
-func (u StellarMessage) GetError() (result Error, ok bool) {
-	armName, _ := u.ArmForSwitch(int32(u.Type))
-
-	if armName == "Error" {
-		result = *u.Error
-		ok = true
-	}
-
-	return
-}
-
-// MustHello retrieves the Hello value from the union,
-// panicing if the value is not set.
-func (u StellarMessage) MustHello() Hello {
-	val, ok := u.GetHello()
-
-	if !ok {
-		panic("arm Hello is not set")
-	}
-
-	return val
-}
-
-// GetHello retrieves the Hello value from the union,
-// returning ok if the union's switch indicated the value is valid.
-func (u StellarMessage) GetHello() (result Hello, ok bool) {
-	armName, _ := u.ArmForSwitch(int32(u.Type))
-
-	if armName == "Hello" {
-		result = *u.Hello
-		ok = true
-	}
-
-	return
-}
-
-// MustAuth retrieves the Auth value from the union,
-// panicing if the value is not set.
-func (u StellarMessage) MustAuth() Auth {
-	val, ok := u.GetAuth()
-
-	if !ok {
-		panic("arm Auth is not set")
-	}
-
-	return val
-}
-
-// GetAuth retrieves the Auth value from the union,
-// returning ok if the union's switch indicated the value is valid.
-func (u StellarMessage) GetAuth() (result Auth, ok bool) {
-	armName, _ := u.ArmForSwitch(int32(u.Type))
-
-	if armName == "Auth" {
-		result = *u.Auth
-		ok = true
-	}
-
-	return
-}
-
-// MustDontHave retrieves the DontHave value from the union,
-// panicing if the value is not set.
-func (u StellarMessage) MustDontHave() DontHave {
-	val, ok := u.GetDontHave()
-
-	if !ok {
-		panic("arm DontHave is not set")
-	}
-
-	return val
-}
-
-// GetDontHave retrieves the DontHave value from the union,
-// returning ok if the union's switch indicated the value is valid.
-func (u StellarMessage) GetDontHave() (result DontHave, ok bool) {
-	armName, _ := u.ArmForSwitch(int32(u.Type))
-
-	if armName == "DontHave" {
-		result = *u.DontHave
-		ok = true
-	}
-
-	return
-}
-
-// MustPeers retrieves the Peers value from the union,
-// panicing if the value is not set.
-func (u StellarMessage) MustPeers() []PeerAddress {
-	val, ok := u.GetPeers()
-
-	if !ok {
-		panic("arm Peers is not set")
-	}
-
-	return val
-}
-
-// GetPeers retrieves the Peers value from the union,
-// returning ok if the union's switch indicated the value is valid.
-func (u StellarMessage) GetPeers() (result []PeerAddress, ok bool) {
-	armName, _ := u.ArmForSwitch(int32(u.Type))
-
-	if armName == "Peers" {
-		result = *u.Peers
-		ok = true
-	}
-
-	return
-}
-
-// MustTxSetHash retrieves the TxSetHash value from the union,
-// panicing if the value is not set.
-func (u StellarMessage) MustTxSetHash() Uint256 {
-	val, ok := u.GetTxSetHash()
-
-	if !ok {
-		panic("arm TxSetHash is not set")
-	}
-
-	return val
-}
-
-// GetTxSetHash retrieves the TxSetHash value from the union,
-// returning ok if the union's switch indicated the value is valid.
-func (u StellarMessage) GetTxSetHash() (result Uint256, ok bool) {
-	armName, _ := u.ArmForSwitch(int32(u.Type))
-
-	if armName == "TxSetHash" {
-		result = *u.TxSetHash
-		ok = true
-	}
-
-	return
-}
-
-// MustTxSet retrieves the TxSet value from the union,
-// panicing if the value is not set.
-func (u StellarMessage) MustTxSet() TransactionSet {
-	val, ok := u.GetTxSet()
-
-	if !ok {
-		panic("arm TxSet is not set")
-	}
-
-	return val
-}
-
-// GetTxSet retrieves the TxSet value from the union,
-// returning ok if the union's switch indicated the value is valid.
-func (u StellarMessage) GetTxSet() (result TransactionSet, ok bool) {
-	armName, _ := u.ArmForSwitch(int32(u.Type))
-
-	if armName == "TxSet" {
-		result = *u.TxSet
-		ok = true
-	}
-
-	return
-}
-
-// MustTransaction retrieves the Transaction value from the union,
-// panicing if the value is not set.
-func (u StellarMessage) MustTransaction() TransactionEnvelope {
-	val, ok := u.GetTransaction()
-
-	if !ok {
-		panic("arm Transaction is not set")
-	}
-
-	return val
-}
-
-// GetTransaction retrieves the Transaction value from the union,
-// returning ok if the union's switch indicated the value is valid.
-func (u StellarMessage) GetTransaction() (result TransactionEnvelope, ok bool) {
-	armName, _ := u.ArmForSwitch(int32(u.Type))
-
-	if armName == "Transaction" {
-		result = *u.Transaction
-		ok = true
-	}
-
-	return
-}
-
-// MustSignedSurveyRequestMessage retrieves the SignedSurveyRequestMessage value from the union,
-// panicing if the value is not set.
-func (u StellarMessage) MustSignedSurveyRequestMessage() SignedSurveyRequestMessage {
-	val, ok := u.GetSignedSurveyRequestMessage()
-
-	if !ok {
-		panic("arm SignedSurveyRequestMessage is not set")
-	}
-
-	return val
-}
-
-// GetSignedSurveyRequestMessage retrieves the SignedSurveyRequestMessage value from the union,
-// returning ok if the union's switch indicated the value is valid.
-func (u StellarMessage) GetSignedSurveyRequestMessage() (result SignedSurveyRequestMessage, ok bool) {
-	armName, _ := u.ArmForSwitch(int32(u.Type))
-
-	if armName == "SignedSurveyRequestMessage" {
-		result = *u.SignedSurveyRequestMessage
-		ok = true
-	}
-
-	return
-}
-
-// MustSignedSurveyResponseMessage retrieves the SignedSurveyResponseMessage value from the union,
-// panicing if the value is not set.
-func (u StellarMessage) MustSignedSurveyResponseMessage() SignedSurveyResponseMessage {
-	val, ok := u.GetSignedSurveyResponseMessage()
-
-	if !ok {
-		panic("arm SignedSurveyResponseMessage is not set")
-	}
-
-	return val
-}
-
-// GetSignedSurveyResponseMessage retrieves the SignedSurveyResponseMessage value from the union,
-// returning ok if the union's switch indicated the value is valid.
-func (u StellarMessage) GetSignedSurveyResponseMessage() (result SignedSurveyResponseMessage, ok bool) {
-	armName, _ := u.ArmForSwitch(int32(u.Type))
-
-	if armName == "SignedSurveyResponseMessage" {
-		result = *u.SignedSurveyResponseMessage
-		ok = true
-	}
-
-	return
-}
-
-// MustQSetHash retrieves the QSetHash value from the union,
-// panicing if the value is not set.
-func (u StellarMessage) MustQSetHash() Uint256 {
-	val, ok := u.GetQSetHash()
-
-	if !ok {
-		panic("arm QSetHash is not set")
-	}
-
-	return val
-}
-
-// GetQSetHash retrieves the QSetHash value from the union,
-// returning ok if the union's switch indicated the value is valid.
-func (u StellarMessage) GetQSetHash() (result Uint256, ok bool) {
-	armName, _ := u.ArmForSwitch(int32(u.Type))
-
-	if armName == "QSetHash" {
-		result = *u.QSetHash
-		ok = true
-	}
-
-	return
-}
-
-// MustQSet retrieves the QSet value from the union,
-// panicing if the value is not set.
-func (u StellarMessage) MustQSet() ScpQuorumSet {
-	val, ok := u.GetQSet()
-
-	if !ok {
-		panic("arm QSet is not set")
-	}
-
-	return val
-}
-
-// GetQSet retrieves the QSet value from the union,
-// returning ok if the union's switch indicated the value is valid.
-func (u StellarMessage) GetQSet() (result ScpQuorumSet, ok bool) {
-	armName, _ := u.ArmForSwitch(int32(u.Type))
-
-	if armName == "QSet" {
-		result = *u.QSet
-		ok = true
-	}
-
-	return
-}
-
-// MustEnvelope retrieves the Envelope value from the union,
-// panicing if the value is not set.
-func (u StellarMessage) MustEnvelope() ScpEnvelope {
-	val, ok := u.GetEnvelope()
-
-	if !ok {
-		panic("arm Envelope is not set")
-	}
-
-	return val
-}
-
-// GetEnvelope retrieves the Envelope value from the union,
-// returning ok if the union's switch indicated the value is valid.
-func (u StellarMessage) GetEnvelope() (result ScpEnvelope, ok bool) {
-	armName, _ := u.ArmForSwitch(int32(u.Type))
-
-	if armName == "Envelope" {
-		result = *u.Envelope
-		ok = true
-	}
-
-	return
-}
-
-// MustGetScpLedgerSeq retrieves the GetScpLedgerSeq value from the union,
-// panicing if the value is not set.
-func (u StellarMessage) MustGetScpLedgerSeq() Uint32 {
-	val, ok := u.GetGetScpLedgerSeq()
-
-	if !ok {
-		panic("arm GetScpLedgerSeq is not set")
-	}
-
-	return val
-}
-
-// GetGetScpLedgerSeq retrieves the GetScpLedgerSeq value from the union,
-// returning ok if the union's switch indicated the value is valid.
-func (u StellarMessage) GetGetScpLedgerSeq() (result Uint32, ok bool) {
-	armName, _ := u.ArmForSwitch(int32(u.Type))
-
-	if armName == "GetScpLedgerSeq" {
-		result = *u.GetScpLedgerSeq
-		ok = true
-	}
-
-	return
-}
-
-// MarshalBinary implements encoding.BinaryMarshaler.
-func (s StellarMessage) MarshalBinary() ([]byte, error) {
-	b := new(bytes.Buffer)
-	_, err := Marshal(b, s)
-	return b.Bytes(), err
-}
-
-// UnmarshalBinary implements encoding.BinaryUnmarshaler.
-func (s *StellarMessage) UnmarshalBinary(inp []byte) error {
-	_, err := Unmarshal(bytes.NewReader(inp), s)
-	return err
-}
-
-var (
-	_ encoding.BinaryMarshaler   = (*StellarMessage)(nil)
-	_ encoding.BinaryUnmarshaler = (*StellarMessage)(nil)
-)
-
-// AuthenticatedMessageV0 is an XDR NestedStruct defines as:
-//
-//   struct
-//    {
-//       uint64 sequence;
-//       StellarMessage message;
-//       HmacSha256Mac mac;
-//        }
-//
-type AuthenticatedMessageV0 struct {
-	Sequence Uint64
-	Message  StellarMessage
-	Mac      HmacSha256Mac
-}
-
-// MarshalBinary implements encoding.BinaryMarshaler.
-func (s AuthenticatedMessageV0) MarshalBinary() ([]byte, error) {
-	b := new(bytes.Buffer)
-	_, err := Marshal(b, s)
-	return b.Bytes(), err
-}
-
-// UnmarshalBinary implements encoding.BinaryUnmarshaler.
-func (s *AuthenticatedMessageV0) UnmarshalBinary(inp []byte) error {
-	_, err := Unmarshal(bytes.NewReader(inp), s)
-	return err
-}
-
-var (
-	_ encoding.BinaryMarshaler   = (*AuthenticatedMessageV0)(nil)
-	_ encoding.BinaryUnmarshaler = (*AuthenticatedMessageV0)(nil)
-)
-
-// AuthenticatedMessage is an XDR Union defines as:
-//
-//   union AuthenticatedMessage switch (uint32 v)
-//    {
-//    case 0:
-//        struct
-//    {
-//       uint64 sequence;
-//       StellarMessage message;
-//       HmacSha256Mac mac;
-//        } v0;
-//    };
-//
-type AuthenticatedMessage struct {
-	V  Uint32
-	V0 *AuthenticatedMessageV0
-}
-
-// SwitchFieldName returns the field name in which this union's
-// discriminant is stored
-func (u AuthenticatedMessage) SwitchFieldName() string {
-	return "V"
-}
-
-// ArmForSwitch returns which field name should be used for storing
-// the value for an instance of AuthenticatedMessage
-func (u AuthenticatedMessage) ArmForSwitch(sw int32) (string, bool) {
-	switch Uint32(sw) {
-	case 0:
-		return "V0", true
-	}
-	return "-", false
-}
-
-// NewAuthenticatedMessage creates a new  AuthenticatedMessage.
-func NewAuthenticatedMessage(v Uint32, value interface{}) (result AuthenticatedMessage, err error) {
-	result.V = v
-	switch Uint32(v) {
-	case 0:
-		tv, ok := value.(AuthenticatedMessageV0)
-		if !ok {
-			err = fmt.Errorf("invalid value, must be AuthenticatedMessageV0")
-			return
-		}
-		result.V0 = &tv
-	}
-	return
-}
-
-// MustV0 retrieves the V0 value from the union,
-// panicing if the value is not set.
-func (u AuthenticatedMessage) MustV0() AuthenticatedMessageV0 {
-	val, ok := u.GetV0()
-
-	if !ok {
-		panic("arm V0 is not set")
-	}
-
-	return val
-}
-
-// GetV0 retrieves the V0 value from the union,
-// returning ok if the union's switch indicated the value is valid.
-func (u AuthenticatedMessage) GetV0() (result AuthenticatedMessageV0, ok bool) {
-	armName, _ := u.ArmForSwitch(int32(u.V))
-
-	if armName == "V0" {
-		result = *u.V0
-		ok = true
-	}
-
-	return
-}
-
-// MarshalBinary implements encoding.BinaryMarshaler.
-func (s AuthenticatedMessage) MarshalBinary() ([]byte, error) {
-	b := new(bytes.Buffer)
-	_, err := Marshal(b, s)
-	return b.Bytes(), err
-}
-
-// UnmarshalBinary implements encoding.BinaryUnmarshaler.
-func (s *AuthenticatedMessage) UnmarshalBinary(inp []byte) error {
-	_, err := Unmarshal(bytes.NewReader(inp), s)
-	return err
-}
-
-var (
-	_ encoding.BinaryMarshaler   = (*AuthenticatedMessage)(nil)
-	_ encoding.BinaryUnmarshaler = (*AuthenticatedMessage)(nil)
 )
 
 // DecoratedSignature is an XDR Struct defines as:
@@ -12182,379 +8130,186 @@ var (
 	_ encoding.BinaryUnmarshaler = (*TransactionResult)(nil)
 )
 
-// Hash is an XDR Typedef defines as:
+// UpgradeType is an XDR Typedef defines as:
 //
-//   typedef opaque Hash[32];
+//   typedef opaque UpgradeType<128>;
 //
-type Hash [32]byte
+type UpgradeType []byte
 
-// XDRMaxSize implements the Sized interface for Hash
-func (e Hash) XDRMaxSize() int {
-	return 32
+// XDRMaxSize implements the Sized interface for UpgradeType
+func (e UpgradeType) XDRMaxSize() int {
+	return 128
 }
 
 // MarshalBinary implements encoding.BinaryMarshaler.
-func (s Hash) MarshalBinary() ([]byte, error) {
+func (s UpgradeType) MarshalBinary() ([]byte, error) {
 	b := new(bytes.Buffer)
 	_, err := Marshal(b, s)
 	return b.Bytes(), err
 }
 
 // UnmarshalBinary implements encoding.BinaryUnmarshaler.
-func (s *Hash) UnmarshalBinary(inp []byte) error {
+func (s *UpgradeType) UnmarshalBinary(inp []byte) error {
 	_, err := Unmarshal(bytes.NewReader(inp), s)
 	return err
 }
 
 var (
-	_ encoding.BinaryMarshaler   = (*Hash)(nil)
-	_ encoding.BinaryUnmarshaler = (*Hash)(nil)
+	_ encoding.BinaryMarshaler   = (*UpgradeType)(nil)
+	_ encoding.BinaryUnmarshaler = (*UpgradeType)(nil)
 )
 
-// Uint256 is an XDR Typedef defines as:
+// StellarValueType is an XDR Enum defines as:
 //
-//   typedef opaque uint256[32];
-//
-type Uint256 [32]byte
-
-// XDRMaxSize implements the Sized interface for Uint256
-func (e Uint256) XDRMaxSize() int {
-	return 32
-}
-
-// MarshalBinary implements encoding.BinaryMarshaler.
-func (s Uint256) MarshalBinary() ([]byte, error) {
-	b := new(bytes.Buffer)
-	_, err := Marshal(b, s)
-	return b.Bytes(), err
-}
-
-// UnmarshalBinary implements encoding.BinaryUnmarshaler.
-func (s *Uint256) UnmarshalBinary(inp []byte) error {
-	_, err := Unmarshal(bytes.NewReader(inp), s)
-	return err
-}
-
-var (
-	_ encoding.BinaryMarshaler   = (*Uint256)(nil)
-	_ encoding.BinaryUnmarshaler = (*Uint256)(nil)
-)
-
-// Uint32 is an XDR Typedef defines as:
-//
-//   typedef unsigned int uint32;
-//
-type Uint32 uint32
-
-// MarshalBinary implements encoding.BinaryMarshaler.
-func (s Uint32) MarshalBinary() ([]byte, error) {
-	b := new(bytes.Buffer)
-	_, err := Marshal(b, s)
-	return b.Bytes(), err
-}
-
-// UnmarshalBinary implements encoding.BinaryUnmarshaler.
-func (s *Uint32) UnmarshalBinary(inp []byte) error {
-	_, err := Unmarshal(bytes.NewReader(inp), s)
-	return err
-}
-
-var (
-	_ encoding.BinaryMarshaler   = (*Uint32)(nil)
-	_ encoding.BinaryUnmarshaler = (*Uint32)(nil)
-)
-
-// Int32 is an XDR Typedef defines as:
-//
-//   typedef int int32;
-//
-type Int32 int32
-
-// MarshalBinary implements encoding.BinaryMarshaler.
-func (s Int32) MarshalBinary() ([]byte, error) {
-	b := new(bytes.Buffer)
-	_, err := Marshal(b, s)
-	return b.Bytes(), err
-}
-
-// UnmarshalBinary implements encoding.BinaryUnmarshaler.
-func (s *Int32) UnmarshalBinary(inp []byte) error {
-	_, err := Unmarshal(bytes.NewReader(inp), s)
-	return err
-}
-
-var (
-	_ encoding.BinaryMarshaler   = (*Int32)(nil)
-	_ encoding.BinaryUnmarshaler = (*Int32)(nil)
-)
-
-// Uint64 is an XDR Typedef defines as:
-//
-//   typedef unsigned hyper uint64;
-//
-type Uint64 uint64
-
-// MarshalBinary implements encoding.BinaryMarshaler.
-func (s Uint64) MarshalBinary() ([]byte, error) {
-	b := new(bytes.Buffer)
-	_, err := Marshal(b, s)
-	return b.Bytes(), err
-}
-
-// UnmarshalBinary implements encoding.BinaryUnmarshaler.
-func (s *Uint64) UnmarshalBinary(inp []byte) error {
-	_, err := Unmarshal(bytes.NewReader(inp), s)
-	return err
-}
-
-var (
-	_ encoding.BinaryMarshaler   = (*Uint64)(nil)
-	_ encoding.BinaryUnmarshaler = (*Uint64)(nil)
-)
-
-// Int64 is an XDR Typedef defines as:
-//
-//   typedef hyper int64;
-//
-type Int64 int64
-
-// MarshalBinary implements encoding.BinaryMarshaler.
-func (s Int64) MarshalBinary() ([]byte, error) {
-	b := new(bytes.Buffer)
-	_, err := Marshal(b, s)
-	return b.Bytes(), err
-}
-
-// UnmarshalBinary implements encoding.BinaryUnmarshaler.
-func (s *Int64) UnmarshalBinary(inp []byte) error {
-	_, err := Unmarshal(bytes.NewReader(inp), s)
-	return err
-}
-
-var (
-	_ encoding.BinaryMarshaler   = (*Int64)(nil)
-	_ encoding.BinaryUnmarshaler = (*Int64)(nil)
-)
-
-// CryptoKeyType is an XDR Enum defines as:
-//
-//   enum CryptoKeyType
+//   enum StellarValueType
 //    {
-//        KEY_TYPE_ED25519 = 0,
-//        KEY_TYPE_PRE_AUTH_TX = 1,
-//        KEY_TYPE_HASH_X = 2
+//        STELLAR_VALUE_BASIC = 0,
+//        STELLAR_VALUE_SIGNED = 1
 //    };
 //
-type CryptoKeyType int32
+type StellarValueType int32
 
 const (
-	CryptoKeyTypeKeyTypeEd25519   CryptoKeyType = 0
-	CryptoKeyTypeKeyTypePreAuthTx CryptoKeyType = 1
-	CryptoKeyTypeKeyTypeHashX     CryptoKeyType = 2
+	StellarValueTypeStellarValueBasic  StellarValueType = 0
+	StellarValueTypeStellarValueSigned StellarValueType = 1
 )
 
-var cryptoKeyTypeMap = map[int32]string{
-	0: "CryptoKeyTypeKeyTypeEd25519",
-	1: "CryptoKeyTypeKeyTypePreAuthTx",
-	2: "CryptoKeyTypeKeyTypeHashX",
+var stellarValueTypeMap = map[int32]string{
+	0: "StellarValueTypeStellarValueBasic",
+	1: "StellarValueTypeStellarValueSigned",
 }
 
 // ValidEnum validates a proposed value for this enum.  Implements
-// the Enum interface for CryptoKeyType
-func (e CryptoKeyType) ValidEnum(v int32) bool {
-	_, ok := cryptoKeyTypeMap[v]
+// the Enum interface for StellarValueType
+func (e StellarValueType) ValidEnum(v int32) bool {
+	_, ok := stellarValueTypeMap[v]
 	return ok
 }
 
 // String returns the name of `e`
-func (e CryptoKeyType) String() string {
-	name, _ := cryptoKeyTypeMap[int32(e)]
+func (e StellarValueType) String() string {
+	name, _ := stellarValueTypeMap[int32(e)]
 	return name
 }
 
 // MarshalBinary implements encoding.BinaryMarshaler.
-func (s CryptoKeyType) MarshalBinary() ([]byte, error) {
+func (s StellarValueType) MarshalBinary() ([]byte, error) {
 	b := new(bytes.Buffer)
 	_, err := Marshal(b, s)
 	return b.Bytes(), err
 }
 
 // UnmarshalBinary implements encoding.BinaryUnmarshaler.
-func (s *CryptoKeyType) UnmarshalBinary(inp []byte) error {
+func (s *StellarValueType) UnmarshalBinary(inp []byte) error {
 	_, err := Unmarshal(bytes.NewReader(inp), s)
 	return err
 }
 
 var (
-	_ encoding.BinaryMarshaler   = (*CryptoKeyType)(nil)
-	_ encoding.BinaryUnmarshaler = (*CryptoKeyType)(nil)
+	_ encoding.BinaryMarshaler   = (*StellarValueType)(nil)
+	_ encoding.BinaryUnmarshaler = (*StellarValueType)(nil)
 )
 
-// PublicKeyType is an XDR Enum defines as:
+// LedgerCloseValueSignature is an XDR Struct defines as:
 //
-//   enum PublicKeyType
+//   struct LedgerCloseValueSignature
 //    {
-//        PUBLIC_KEY_TYPE_ED25519 = KEY_TYPE_ED25519
+//        NodeID nodeID;       // which node introduced the value
+//        Signature signature; // nodeID's signature
 //    };
 //
-type PublicKeyType int32
-
-const (
-	PublicKeyTypePublicKeyTypeEd25519 PublicKeyType = 0
-)
-
-var publicKeyTypeMap = map[int32]string{
-	0: "PublicKeyTypePublicKeyTypeEd25519",
-}
-
-// ValidEnum validates a proposed value for this enum.  Implements
-// the Enum interface for PublicKeyType
-func (e PublicKeyType) ValidEnum(v int32) bool {
-	_, ok := publicKeyTypeMap[v]
-	return ok
-}
-
-// String returns the name of `e`
-func (e PublicKeyType) String() string {
-	name, _ := publicKeyTypeMap[int32(e)]
-	return name
+type LedgerCloseValueSignature struct {
+	NodeId    NodeId
+	Signature Signature
 }
 
 // MarshalBinary implements encoding.BinaryMarshaler.
-func (s PublicKeyType) MarshalBinary() ([]byte, error) {
+func (s LedgerCloseValueSignature) MarshalBinary() ([]byte, error) {
 	b := new(bytes.Buffer)
 	_, err := Marshal(b, s)
 	return b.Bytes(), err
 }
 
 // UnmarshalBinary implements encoding.BinaryUnmarshaler.
-func (s *PublicKeyType) UnmarshalBinary(inp []byte) error {
+func (s *LedgerCloseValueSignature) UnmarshalBinary(inp []byte) error {
 	_, err := Unmarshal(bytes.NewReader(inp), s)
 	return err
 }
 
 var (
-	_ encoding.BinaryMarshaler   = (*PublicKeyType)(nil)
-	_ encoding.BinaryUnmarshaler = (*PublicKeyType)(nil)
+	_ encoding.BinaryMarshaler   = (*LedgerCloseValueSignature)(nil)
+	_ encoding.BinaryUnmarshaler = (*LedgerCloseValueSignature)(nil)
 )
 
-// SignerKeyType is an XDR Enum defines as:
+// StellarValueExt is an XDR NestedUnion defines as:
 //
-//   enum SignerKeyType
-//    {
-//        SIGNER_KEY_TYPE_ED25519 = KEY_TYPE_ED25519,
-//        SIGNER_KEY_TYPE_PRE_AUTH_TX = KEY_TYPE_PRE_AUTH_TX,
-//        SIGNER_KEY_TYPE_HASH_X = KEY_TYPE_HASH_X
-//    };
+//   union switch (StellarValueType v)
+//        {
+//        case STELLAR_VALUE_BASIC:
+//            void;
+//        case STELLAR_VALUE_SIGNED:
+//            LedgerCloseValueSignature lcValueSignature;
+//        }
 //
-type SignerKeyType int32
-
-const (
-	SignerKeyTypeSignerKeyTypeEd25519   SignerKeyType = 0
-	SignerKeyTypeSignerKeyTypePreAuthTx SignerKeyType = 1
-	SignerKeyTypeSignerKeyTypeHashX     SignerKeyType = 2
-)
-
-var signerKeyTypeMap = map[int32]string{
-	0: "SignerKeyTypeSignerKeyTypeEd25519",
-	1: "SignerKeyTypeSignerKeyTypePreAuthTx",
-	2: "SignerKeyTypeSignerKeyTypeHashX",
-}
-
-// ValidEnum validates a proposed value for this enum.  Implements
-// the Enum interface for SignerKeyType
-func (e SignerKeyType) ValidEnum(v int32) bool {
-	_, ok := signerKeyTypeMap[v]
-	return ok
-}
-
-// String returns the name of `e`
-func (e SignerKeyType) String() string {
-	name, _ := signerKeyTypeMap[int32(e)]
-	return name
-}
-
-// MarshalBinary implements encoding.BinaryMarshaler.
-func (s SignerKeyType) MarshalBinary() ([]byte, error) {
-	b := new(bytes.Buffer)
-	_, err := Marshal(b, s)
-	return b.Bytes(), err
-}
-
-// UnmarshalBinary implements encoding.BinaryUnmarshaler.
-func (s *SignerKeyType) UnmarshalBinary(inp []byte) error {
-	_, err := Unmarshal(bytes.NewReader(inp), s)
-	return err
-}
-
-var (
-	_ encoding.BinaryMarshaler   = (*SignerKeyType)(nil)
-	_ encoding.BinaryUnmarshaler = (*SignerKeyType)(nil)
-)
-
-// PublicKey is an XDR Union defines as:
-//
-//   union PublicKey switch (PublicKeyType type)
-//    {
-//    case PUBLIC_KEY_TYPE_ED25519:
-//        uint256 ed25519;
-//    };
-//
-type PublicKey struct {
-	Type    PublicKeyType
-	Ed25519 *Uint256
+type StellarValueExt struct {
+	V                StellarValueType
+	LcValueSignature *LedgerCloseValueSignature
 }
 
 // SwitchFieldName returns the field name in which this union's
 // discriminant is stored
-func (u PublicKey) SwitchFieldName() string {
-	return "Type"
+func (u StellarValueExt) SwitchFieldName() string {
+	return "V"
 }
 
 // ArmForSwitch returns which field name should be used for storing
-// the value for an instance of PublicKey
-func (u PublicKey) ArmForSwitch(sw int32) (string, bool) {
-	switch PublicKeyType(sw) {
-	case PublicKeyTypePublicKeyTypeEd25519:
-		return "Ed25519", true
+// the value for an instance of StellarValueExt
+func (u StellarValueExt) ArmForSwitch(sw int32) (string, bool) {
+	switch StellarValueType(sw) {
+	case StellarValueTypeStellarValueBasic:
+		return "", true
+	case StellarValueTypeStellarValueSigned:
+		return "LcValueSignature", true
 	}
 	return "-", false
 }
 
-// NewPublicKey creates a new  PublicKey.
-func NewPublicKey(aType PublicKeyType, value interface{}) (result PublicKey, err error) {
-	result.Type = aType
-	switch PublicKeyType(aType) {
-	case PublicKeyTypePublicKeyTypeEd25519:
-		tv, ok := value.(Uint256)
+// NewStellarValueExt creates a new  StellarValueExt.
+func NewStellarValueExt(v StellarValueType, value interface{}) (result StellarValueExt, err error) {
+	result.V = v
+	switch StellarValueType(v) {
+	case StellarValueTypeStellarValueBasic:
+		// void
+	case StellarValueTypeStellarValueSigned:
+		tv, ok := value.(LedgerCloseValueSignature)
 		if !ok {
-			err = fmt.Errorf("invalid value, must be Uint256")
+			err = fmt.Errorf("invalid value, must be LedgerCloseValueSignature")
 			return
 		}
-		result.Ed25519 = &tv
+		result.LcValueSignature = &tv
 	}
 	return
 }
 
-// MustEd25519 retrieves the Ed25519 value from the union,
+// MustLcValueSignature retrieves the LcValueSignature value from the union,
 // panicing if the value is not set.
-func (u PublicKey) MustEd25519() Uint256 {
-	val, ok := u.GetEd25519()
+func (u StellarValueExt) MustLcValueSignature() LedgerCloseValueSignature {
+	val, ok := u.GetLcValueSignature()
 
 	if !ok {
-		panic("arm Ed25519 is not set")
+		panic("arm LcValueSignature is not set")
 	}
 
 	return val
 }
 
-// GetEd25519 retrieves the Ed25519 value from the union,
+// GetLcValueSignature retrieves the LcValueSignature value from the union,
 // returning ok if the union's switch indicated the value is valid.
-func (u PublicKey) GetEd25519() (result Uint256, ok bool) {
-	armName, _ := u.ArmForSwitch(int32(u.Type))
+func (u StellarValueExt) GetLcValueSignature() (result LedgerCloseValueSignature, ok bool) {
+	armName, _ := u.ArmForSwitch(int32(u.V))
 
-	if armName == "Ed25519" {
-		result = *u.Ed25519
+	if armName == "LcValueSignature" {
+		result = *u.LcValueSignature
 		ok = true
 	}
 
@@ -12562,413 +8317,4656 @@ func (u PublicKey) GetEd25519() (result Uint256, ok bool) {
 }
 
 // MarshalBinary implements encoding.BinaryMarshaler.
-func (s PublicKey) MarshalBinary() ([]byte, error) {
+func (s StellarValueExt) MarshalBinary() ([]byte, error) {
 	b := new(bytes.Buffer)
 	_, err := Marshal(b, s)
 	return b.Bytes(), err
 }
 
 // UnmarshalBinary implements encoding.BinaryUnmarshaler.
-func (s *PublicKey) UnmarshalBinary(inp []byte) error {
+func (s *StellarValueExt) UnmarshalBinary(inp []byte) error {
 	_, err := Unmarshal(bytes.NewReader(inp), s)
 	return err
 }
 
 var (
-	_ encoding.BinaryMarshaler   = (*PublicKey)(nil)
-	_ encoding.BinaryUnmarshaler = (*PublicKey)(nil)
+	_ encoding.BinaryMarshaler   = (*StellarValueExt)(nil)
+	_ encoding.BinaryUnmarshaler = (*StellarValueExt)(nil)
 )
 
-// SignerKey is an XDR Union defines as:
+// StellarValue is an XDR Struct defines as:
 //
-//   union SignerKey switch (SignerKeyType type)
+//   struct StellarValue
 //    {
-//    case SIGNER_KEY_TYPE_ED25519:
-//        uint256 ed25519;
-//    case SIGNER_KEY_TYPE_PRE_AUTH_TX:
-//        /* SHA-256 Hash of TransactionSignaturePayload structure */
-//        uint256 preAuthTx;
-//    case SIGNER_KEY_TYPE_HASH_X:
-//        /* Hash of random 256 bit preimage X */
-//        uint256 hashX;
+//        Hash txSetHash;      // transaction set to apply to previous ledger
+//        TimePoint closeTime; // network close time
+//
+//        // upgrades to apply to the previous ledger (usually empty)
+//        // this is a vector of encoded 'LedgerUpgrade' so that nodes can drop
+//        // unknown steps during consensus if needed.
+//        // see notes below on 'LedgerUpgrade' for more detail
+//        // max size is dictated by number of upgrade types (+ room for future)
+//        UpgradeType upgrades<6>;
+//
+//        // reserved for future use
+//        union switch (StellarValueType v)
+//        {
+//        case STELLAR_VALUE_BASIC:
+//            void;
+//        case STELLAR_VALUE_SIGNED:
+//            LedgerCloseValueSignature lcValueSignature;
+//        }
+//        ext;
 //    };
 //
-type SignerKey struct {
-	Type      SignerKeyType
-	Ed25519   *Uint256
-	PreAuthTx *Uint256
-	HashX     *Uint256
+type StellarValue struct {
+	TxSetHash Hash
+	CloseTime TimePoint
+	Upgrades  []UpgradeType `xdrmaxsize:"6"`
+	Ext       StellarValueExt
+}
+
+// MarshalBinary implements encoding.BinaryMarshaler.
+func (s StellarValue) MarshalBinary() ([]byte, error) {
+	b := new(bytes.Buffer)
+	_, err := Marshal(b, s)
+	return b.Bytes(), err
+}
+
+// UnmarshalBinary implements encoding.BinaryUnmarshaler.
+func (s *StellarValue) UnmarshalBinary(inp []byte) error {
+	_, err := Unmarshal(bytes.NewReader(inp), s)
+	return err
+}
+
+var (
+	_ encoding.BinaryMarshaler   = (*StellarValue)(nil)
+	_ encoding.BinaryUnmarshaler = (*StellarValue)(nil)
+)
+
+// LedgerHeaderExt is an XDR NestedUnion defines as:
+//
+//   union switch (int v)
+//        {
+//        case 0:
+//            void;
+//        }
+//
+type LedgerHeaderExt struct {
+	V int32
 }
 
 // SwitchFieldName returns the field name in which this union's
 // discriminant is stored
-func (u SignerKey) SwitchFieldName() string {
-	return "Type"
+func (u LedgerHeaderExt) SwitchFieldName() string {
+	return "V"
 }
 
 // ArmForSwitch returns which field name should be used for storing
-// the value for an instance of SignerKey
-func (u SignerKey) ArmForSwitch(sw int32) (string, bool) {
-	switch SignerKeyType(sw) {
-	case SignerKeyTypeSignerKeyTypeEd25519:
-		return "Ed25519", true
-	case SignerKeyTypeSignerKeyTypePreAuthTx:
-		return "PreAuthTx", true
-	case SignerKeyTypeSignerKeyTypeHashX:
-		return "HashX", true
+// the value for an instance of LedgerHeaderExt
+func (u LedgerHeaderExt) ArmForSwitch(sw int32) (string, bool) {
+	switch int32(sw) {
+	case 0:
+		return "", true
 	}
 	return "-", false
 }
 
-// NewSignerKey creates a new  SignerKey.
-func NewSignerKey(aType SignerKeyType, value interface{}) (result SignerKey, err error) {
-	result.Type = aType
-	switch SignerKeyType(aType) {
-	case SignerKeyTypeSignerKeyTypeEd25519:
-		tv, ok := value.(Uint256)
-		if !ok {
-			err = fmt.Errorf("invalid value, must be Uint256")
-			return
-		}
-		result.Ed25519 = &tv
-	case SignerKeyTypeSignerKeyTypePreAuthTx:
-		tv, ok := value.(Uint256)
-		if !ok {
-			err = fmt.Errorf("invalid value, must be Uint256")
-			return
-		}
-		result.PreAuthTx = &tv
-	case SignerKeyTypeSignerKeyTypeHashX:
-		tv, ok := value.(Uint256)
-		if !ok {
-			err = fmt.Errorf("invalid value, must be Uint256")
-			return
-		}
-		result.HashX = &tv
+// NewLedgerHeaderExt creates a new  LedgerHeaderExt.
+func NewLedgerHeaderExt(v int32, value interface{}) (result LedgerHeaderExt, err error) {
+	result.V = v
+	switch int32(v) {
+	case 0:
+		// void
 	}
-	return
-}
-
-// MustEd25519 retrieves the Ed25519 value from the union,
-// panicing if the value is not set.
-func (u SignerKey) MustEd25519() Uint256 {
-	val, ok := u.GetEd25519()
-
-	if !ok {
-		panic("arm Ed25519 is not set")
-	}
-
-	return val
-}
-
-// GetEd25519 retrieves the Ed25519 value from the union,
-// returning ok if the union's switch indicated the value is valid.
-func (u SignerKey) GetEd25519() (result Uint256, ok bool) {
-	armName, _ := u.ArmForSwitch(int32(u.Type))
-
-	if armName == "Ed25519" {
-		result = *u.Ed25519
-		ok = true
-	}
-
-	return
-}
-
-// MustPreAuthTx retrieves the PreAuthTx value from the union,
-// panicing if the value is not set.
-func (u SignerKey) MustPreAuthTx() Uint256 {
-	val, ok := u.GetPreAuthTx()
-
-	if !ok {
-		panic("arm PreAuthTx is not set")
-	}
-
-	return val
-}
-
-// GetPreAuthTx retrieves the PreAuthTx value from the union,
-// returning ok if the union's switch indicated the value is valid.
-func (u SignerKey) GetPreAuthTx() (result Uint256, ok bool) {
-	armName, _ := u.ArmForSwitch(int32(u.Type))
-
-	if armName == "PreAuthTx" {
-		result = *u.PreAuthTx
-		ok = true
-	}
-
-	return
-}
-
-// MustHashX retrieves the HashX value from the union,
-// panicing if the value is not set.
-func (u SignerKey) MustHashX() Uint256 {
-	val, ok := u.GetHashX()
-
-	if !ok {
-		panic("arm HashX is not set")
-	}
-
-	return val
-}
-
-// GetHashX retrieves the HashX value from the union,
-// returning ok if the union's switch indicated the value is valid.
-func (u SignerKey) GetHashX() (result Uint256, ok bool) {
-	armName, _ := u.ArmForSwitch(int32(u.Type))
-
-	if armName == "HashX" {
-		result = *u.HashX
-		ok = true
-	}
-
 	return
 }
 
 // MarshalBinary implements encoding.BinaryMarshaler.
-func (s SignerKey) MarshalBinary() ([]byte, error) {
+func (s LedgerHeaderExt) MarshalBinary() ([]byte, error) {
 	b := new(bytes.Buffer)
 	_, err := Marshal(b, s)
 	return b.Bytes(), err
 }
 
 // UnmarshalBinary implements encoding.BinaryUnmarshaler.
-func (s *SignerKey) UnmarshalBinary(inp []byte) error {
+func (s *LedgerHeaderExt) UnmarshalBinary(inp []byte) error {
 	_, err := Unmarshal(bytes.NewReader(inp), s)
 	return err
 }
 
 var (
-	_ encoding.BinaryMarshaler   = (*SignerKey)(nil)
-	_ encoding.BinaryUnmarshaler = (*SignerKey)(nil)
+	_ encoding.BinaryMarshaler   = (*LedgerHeaderExt)(nil)
+	_ encoding.BinaryUnmarshaler = (*LedgerHeaderExt)(nil)
 )
 
-// Signature is an XDR Typedef defines as:
+// LedgerHeader is an XDR Struct defines as:
 //
-//   typedef opaque Signature<64>;
+//   struct LedgerHeader
+//    {
+//        uint32 ledgerVersion;    // the protocol version of the ledger
+//        Hash previousLedgerHash; // hash of the previous ledger header
+//        StellarValue scpValue;   // what consensus agreed to
+//        Hash txSetResultHash;    // the TransactionResultSet that led to this ledger
+//        Hash bucketListHash;     // hash of the ledger state
 //
-type Signature []byte
-
-// XDRMaxSize implements the Sized interface for Signature
-func (e Signature) XDRMaxSize() int {
-	return 64
+//        uint32 ledgerSeq; // sequence number of this ledger
+//
+//        int64 totalCoins; // total number of stroops in existence.
+//                          // 10,000,000 stroops in 1 XLM
+//
+//        int64 feePool;       // fees burned since last inflation run
+//        uint32 inflationSeq; // inflation sequence number
+//
+//        uint64 idPool; // last used global ID, used for generating objects
+//
+//        uint32 baseFee;     // base fee per operation in stroops
+//        uint32 baseReserve; // account base reserve in stroops
+//
+//        uint32 maxTxSetSize; // maximum size a transaction set can be
+//
+//        Hash skipList[4]; // hashes of ledgers in the past. allows you to jump back
+//                          // in time without walking the chain back ledger by ledger
+//                          // each slot contains the oldest ledger that is mod of
+//                          // either 50  5000  50000 or 500000 depending on index
+//                          // skipList[0] mod(50), skipList[1] mod(5000), etc
+//
+//        // reserved for future use
+//        union switch (int v)
+//        {
+//        case 0:
+//            void;
+//        }
+//        ext;
+//    };
+//
+type LedgerHeader struct {
+	LedgerVersion      Uint32
+	PreviousLedgerHash Hash
+	ScpValue           StellarValue
+	TxSetResultHash    Hash
+	BucketListHash     Hash
+	LedgerSeq          Uint32
+	TotalCoins         Int64
+	FeePool            Int64
+	InflationSeq       Uint32
+	IdPool             Uint64
+	BaseFee            Uint32
+	BaseReserve        Uint32
+	MaxTxSetSize       Uint32
+	SkipList           [4]Hash
+	Ext                LedgerHeaderExt
 }
 
 // MarshalBinary implements encoding.BinaryMarshaler.
-func (s Signature) MarshalBinary() ([]byte, error) {
+func (s LedgerHeader) MarshalBinary() ([]byte, error) {
 	b := new(bytes.Buffer)
 	_, err := Marshal(b, s)
 	return b.Bytes(), err
 }
 
 // UnmarshalBinary implements encoding.BinaryUnmarshaler.
-func (s *Signature) UnmarshalBinary(inp []byte) error {
+func (s *LedgerHeader) UnmarshalBinary(inp []byte) error {
 	_, err := Unmarshal(bytes.NewReader(inp), s)
 	return err
 }
 
 var (
-	_ encoding.BinaryMarshaler   = (*Signature)(nil)
-	_ encoding.BinaryUnmarshaler = (*Signature)(nil)
+	_ encoding.BinaryMarshaler   = (*LedgerHeader)(nil)
+	_ encoding.BinaryUnmarshaler = (*LedgerHeader)(nil)
 )
 
-// SignatureHint is an XDR Typedef defines as:
+// LedgerUpgradeType is an XDR Enum defines as:
 //
-//   typedef opaque SignatureHint[4];
+//   enum LedgerUpgradeType
+//    {
+//        LEDGER_UPGRADE_VERSION = 1,
+//        LEDGER_UPGRADE_BASE_FEE = 2,
+//        LEDGER_UPGRADE_MAX_TX_SET_SIZE = 3,
+//        LEDGER_UPGRADE_BASE_RESERVE = 4
+//    };
 //
-type SignatureHint [4]byte
+type LedgerUpgradeType int32
 
-// XDRMaxSize implements the Sized interface for SignatureHint
-func (e SignatureHint) XDRMaxSize() int {
-	return 4
+const (
+	LedgerUpgradeTypeLedgerUpgradeVersion      LedgerUpgradeType = 1
+	LedgerUpgradeTypeLedgerUpgradeBaseFee      LedgerUpgradeType = 2
+	LedgerUpgradeTypeLedgerUpgradeMaxTxSetSize LedgerUpgradeType = 3
+	LedgerUpgradeTypeLedgerUpgradeBaseReserve  LedgerUpgradeType = 4
+)
+
+var ledgerUpgradeTypeMap = map[int32]string{
+	1: "LedgerUpgradeTypeLedgerUpgradeVersion",
+	2: "LedgerUpgradeTypeLedgerUpgradeBaseFee",
+	3: "LedgerUpgradeTypeLedgerUpgradeMaxTxSetSize",
+	4: "LedgerUpgradeTypeLedgerUpgradeBaseReserve",
+}
+
+// ValidEnum validates a proposed value for this enum.  Implements
+// the Enum interface for LedgerUpgradeType
+func (e LedgerUpgradeType) ValidEnum(v int32) bool {
+	_, ok := ledgerUpgradeTypeMap[v]
+	return ok
+}
+
+// String returns the name of `e`
+func (e LedgerUpgradeType) String() string {
+	name, _ := ledgerUpgradeTypeMap[int32(e)]
+	return name
 }
 
 // MarshalBinary implements encoding.BinaryMarshaler.
-func (s SignatureHint) MarshalBinary() ([]byte, error) {
+func (s LedgerUpgradeType) MarshalBinary() ([]byte, error) {
 	b := new(bytes.Buffer)
 	_, err := Marshal(b, s)
 	return b.Bytes(), err
 }
 
 // UnmarshalBinary implements encoding.BinaryUnmarshaler.
-func (s *SignatureHint) UnmarshalBinary(inp []byte) error {
+func (s *LedgerUpgradeType) UnmarshalBinary(inp []byte) error {
 	_, err := Unmarshal(bytes.NewReader(inp), s)
 	return err
 }
 
 var (
-	_ encoding.BinaryMarshaler   = (*SignatureHint)(nil)
-	_ encoding.BinaryUnmarshaler = (*SignatureHint)(nil)
+	_ encoding.BinaryMarshaler   = (*LedgerUpgradeType)(nil)
+	_ encoding.BinaryUnmarshaler = (*LedgerUpgradeType)(nil)
 )
 
-// NodeId is an XDR Typedef defines as:
+// LedgerUpgrade is an XDR Union defines as:
 //
-//   typedef PublicKey NodeID;
+//   union LedgerUpgrade switch (LedgerUpgradeType type)
+//    {
+//    case LEDGER_UPGRADE_VERSION:
+//        uint32 newLedgerVersion; // update ledgerVersion
+//    case LEDGER_UPGRADE_BASE_FEE:
+//        uint32 newBaseFee; // update baseFee
+//    case LEDGER_UPGRADE_MAX_TX_SET_SIZE:
+//        uint32 newMaxTxSetSize; // update maxTxSetSize
+//    case LEDGER_UPGRADE_BASE_RESERVE:
+//        uint32 newBaseReserve; // update baseReserve
+//    };
 //
-type NodeId PublicKey
+type LedgerUpgrade struct {
+	Type             LedgerUpgradeType
+	NewLedgerVersion *Uint32
+	NewBaseFee       *Uint32
+	NewMaxTxSetSize  *Uint32
+	NewBaseReserve   *Uint32
+}
 
 // SwitchFieldName returns the field name in which this union's
 // discriminant is stored
-func (u NodeId) SwitchFieldName() string {
-	return PublicKey(u).SwitchFieldName()
+func (u LedgerUpgrade) SwitchFieldName() string {
+	return "Type"
 }
 
 // ArmForSwitch returns which field name should be used for storing
-// the value for an instance of PublicKey
-func (u NodeId) ArmForSwitch(sw int32) (string, bool) {
-	return PublicKey(u).ArmForSwitch(sw)
+// the value for an instance of LedgerUpgrade
+func (u LedgerUpgrade) ArmForSwitch(sw int32) (string, bool) {
+	switch LedgerUpgradeType(sw) {
+	case LedgerUpgradeTypeLedgerUpgradeVersion:
+		return "NewLedgerVersion", true
+	case LedgerUpgradeTypeLedgerUpgradeBaseFee:
+		return "NewBaseFee", true
+	case LedgerUpgradeTypeLedgerUpgradeMaxTxSetSize:
+		return "NewMaxTxSetSize", true
+	case LedgerUpgradeTypeLedgerUpgradeBaseReserve:
+		return "NewBaseReserve", true
+	}
+	return "-", false
 }
 
-// NewNodeId creates a new  NodeId.
-func NewNodeId(aType PublicKeyType, value interface{}) (result NodeId, err error) {
-	u, err := NewPublicKey(aType, value)
-	result = NodeId(u)
+// NewLedgerUpgrade creates a new  LedgerUpgrade.
+func NewLedgerUpgrade(aType LedgerUpgradeType, value interface{}) (result LedgerUpgrade, err error) {
+	result.Type = aType
+	switch LedgerUpgradeType(aType) {
+	case LedgerUpgradeTypeLedgerUpgradeVersion:
+		tv, ok := value.(Uint32)
+		if !ok {
+			err = fmt.Errorf("invalid value, must be Uint32")
+			return
+		}
+		result.NewLedgerVersion = &tv
+	case LedgerUpgradeTypeLedgerUpgradeBaseFee:
+		tv, ok := value.(Uint32)
+		if !ok {
+			err = fmt.Errorf("invalid value, must be Uint32")
+			return
+		}
+		result.NewBaseFee = &tv
+	case LedgerUpgradeTypeLedgerUpgradeMaxTxSetSize:
+		tv, ok := value.(Uint32)
+		if !ok {
+			err = fmt.Errorf("invalid value, must be Uint32")
+			return
+		}
+		result.NewMaxTxSetSize = &tv
+	case LedgerUpgradeTypeLedgerUpgradeBaseReserve:
+		tv, ok := value.(Uint32)
+		if !ok {
+			err = fmt.Errorf("invalid value, must be Uint32")
+			return
+		}
+		result.NewBaseReserve = &tv
+	}
 	return
 }
 
-// MustEd25519 retrieves the Ed25519 value from the union,
+// MustNewLedgerVersion retrieves the NewLedgerVersion value from the union,
 // panicing if the value is not set.
-func (u NodeId) MustEd25519() Uint256 {
-	return PublicKey(u).MustEd25519()
+func (u LedgerUpgrade) MustNewLedgerVersion() Uint32 {
+	val, ok := u.GetNewLedgerVersion()
+
+	if !ok {
+		panic("arm NewLedgerVersion is not set")
+	}
+
+	return val
 }
 
-// GetEd25519 retrieves the Ed25519 value from the union,
+// GetNewLedgerVersion retrieves the NewLedgerVersion value from the union,
 // returning ok if the union's switch indicated the value is valid.
-func (u NodeId) GetEd25519() (result Uint256, ok bool) {
-	return PublicKey(u).GetEd25519()
+func (u LedgerUpgrade) GetNewLedgerVersion() (result Uint32, ok bool) {
+	armName, _ := u.ArmForSwitch(int32(u.Type))
+
+	if armName == "NewLedgerVersion" {
+		result = *u.NewLedgerVersion
+		ok = true
+	}
+
+	return
+}
+
+// MustNewBaseFee retrieves the NewBaseFee value from the union,
+// panicing if the value is not set.
+func (u LedgerUpgrade) MustNewBaseFee() Uint32 {
+	val, ok := u.GetNewBaseFee()
+
+	if !ok {
+		panic("arm NewBaseFee is not set")
+	}
+
+	return val
+}
+
+// GetNewBaseFee retrieves the NewBaseFee value from the union,
+// returning ok if the union's switch indicated the value is valid.
+func (u LedgerUpgrade) GetNewBaseFee() (result Uint32, ok bool) {
+	armName, _ := u.ArmForSwitch(int32(u.Type))
+
+	if armName == "NewBaseFee" {
+		result = *u.NewBaseFee
+		ok = true
+	}
+
+	return
+}
+
+// MustNewMaxTxSetSize retrieves the NewMaxTxSetSize value from the union,
+// panicing if the value is not set.
+func (u LedgerUpgrade) MustNewMaxTxSetSize() Uint32 {
+	val, ok := u.GetNewMaxTxSetSize()
+
+	if !ok {
+		panic("arm NewMaxTxSetSize is not set")
+	}
+
+	return val
+}
+
+// GetNewMaxTxSetSize retrieves the NewMaxTxSetSize value from the union,
+// returning ok if the union's switch indicated the value is valid.
+func (u LedgerUpgrade) GetNewMaxTxSetSize() (result Uint32, ok bool) {
+	armName, _ := u.ArmForSwitch(int32(u.Type))
+
+	if armName == "NewMaxTxSetSize" {
+		result = *u.NewMaxTxSetSize
+		ok = true
+	}
+
+	return
+}
+
+// MustNewBaseReserve retrieves the NewBaseReserve value from the union,
+// panicing if the value is not set.
+func (u LedgerUpgrade) MustNewBaseReserve() Uint32 {
+	val, ok := u.GetNewBaseReserve()
+
+	if !ok {
+		panic("arm NewBaseReserve is not set")
+	}
+
+	return val
+}
+
+// GetNewBaseReserve retrieves the NewBaseReserve value from the union,
+// returning ok if the union's switch indicated the value is valid.
+func (u LedgerUpgrade) GetNewBaseReserve() (result Uint32, ok bool) {
+	armName, _ := u.ArmForSwitch(int32(u.Type))
+
+	if armName == "NewBaseReserve" {
+		result = *u.NewBaseReserve
+		ok = true
+	}
+
+	return
 }
 
 // MarshalBinary implements encoding.BinaryMarshaler.
-func (s NodeId) MarshalBinary() ([]byte, error) {
+func (s LedgerUpgrade) MarshalBinary() ([]byte, error) {
 	b := new(bytes.Buffer)
 	_, err := Marshal(b, s)
 	return b.Bytes(), err
 }
 
 // UnmarshalBinary implements encoding.BinaryUnmarshaler.
-func (s *NodeId) UnmarshalBinary(inp []byte) error {
+func (s *LedgerUpgrade) UnmarshalBinary(inp []byte) error {
 	_, err := Unmarshal(bytes.NewReader(inp), s)
 	return err
 }
 
 var (
-	_ encoding.BinaryMarshaler   = (*NodeId)(nil)
-	_ encoding.BinaryUnmarshaler = (*NodeId)(nil)
+	_ encoding.BinaryMarshaler   = (*LedgerUpgrade)(nil)
+	_ encoding.BinaryUnmarshaler = (*LedgerUpgrade)(nil)
 )
 
-// Curve25519Secret is an XDR Struct defines as:
+// LedgerKeyAccount is an XDR NestedStruct defines as:
 //
-//   struct Curve25519Secret
-//    {
-//            opaque key[32];
-//    };
+//   struct
+//        {
+//            AccountID accountID;
+//        }
 //
-type Curve25519Secret struct {
-	Key [32]byte `xdrmaxsize:"32"`
+type LedgerKeyAccount struct {
+	AccountId AccountId
 }
 
 // MarshalBinary implements encoding.BinaryMarshaler.
-func (s Curve25519Secret) MarshalBinary() ([]byte, error) {
+func (s LedgerKeyAccount) MarshalBinary() ([]byte, error) {
 	b := new(bytes.Buffer)
 	_, err := Marshal(b, s)
 	return b.Bytes(), err
 }
 
 // UnmarshalBinary implements encoding.BinaryUnmarshaler.
-func (s *Curve25519Secret) UnmarshalBinary(inp []byte) error {
+func (s *LedgerKeyAccount) UnmarshalBinary(inp []byte) error {
 	_, err := Unmarshal(bytes.NewReader(inp), s)
 	return err
 }
 
 var (
-	_ encoding.BinaryMarshaler   = (*Curve25519Secret)(nil)
-	_ encoding.BinaryUnmarshaler = (*Curve25519Secret)(nil)
+	_ encoding.BinaryMarshaler   = (*LedgerKeyAccount)(nil)
+	_ encoding.BinaryUnmarshaler = (*LedgerKeyAccount)(nil)
 )
 
-// Curve25519Public is an XDR Struct defines as:
+// LedgerKeyTrustLine is an XDR NestedStruct defines as:
 //
-//   struct Curve25519Public
-//    {
-//            opaque key[32];
-//    };
+//   struct
+//        {
+//            AccountID accountID;
+//            Asset asset;
+//        }
 //
-type Curve25519Public struct {
-	Key [32]byte `xdrmaxsize:"32"`
+type LedgerKeyTrustLine struct {
+	AccountId AccountId
+	Asset     Asset
 }
 
 // MarshalBinary implements encoding.BinaryMarshaler.
-func (s Curve25519Public) MarshalBinary() ([]byte, error) {
+func (s LedgerKeyTrustLine) MarshalBinary() ([]byte, error) {
 	b := new(bytes.Buffer)
 	_, err := Marshal(b, s)
 	return b.Bytes(), err
 }
 
 // UnmarshalBinary implements encoding.BinaryUnmarshaler.
-func (s *Curve25519Public) UnmarshalBinary(inp []byte) error {
+func (s *LedgerKeyTrustLine) UnmarshalBinary(inp []byte) error {
 	_, err := Unmarshal(bytes.NewReader(inp), s)
 	return err
 }
 
 var (
-	_ encoding.BinaryMarshaler   = (*Curve25519Public)(nil)
-	_ encoding.BinaryUnmarshaler = (*Curve25519Public)(nil)
+	_ encoding.BinaryMarshaler   = (*LedgerKeyTrustLine)(nil)
+	_ encoding.BinaryUnmarshaler = (*LedgerKeyTrustLine)(nil)
 )
 
-// HmacSha256Key is an XDR Struct defines as:
+// LedgerKeyOffer is an XDR NestedStruct defines as:
 //
-//   struct HmacSha256Key
-//    {
-//            opaque key[32];
-//    };
+//   struct
+//        {
+//            AccountID sellerID;
+//            int64 offerID;
+//        }
 //
-type HmacSha256Key struct {
-	Key [32]byte `xdrmaxsize:"32"`
+type LedgerKeyOffer struct {
+	SellerId AccountId
+	OfferId  Int64
 }
 
 // MarshalBinary implements encoding.BinaryMarshaler.
-func (s HmacSha256Key) MarshalBinary() ([]byte, error) {
+func (s LedgerKeyOffer) MarshalBinary() ([]byte, error) {
 	b := new(bytes.Buffer)
 	_, err := Marshal(b, s)
 	return b.Bytes(), err
 }
 
 // UnmarshalBinary implements encoding.BinaryUnmarshaler.
-func (s *HmacSha256Key) UnmarshalBinary(inp []byte) error {
+func (s *LedgerKeyOffer) UnmarshalBinary(inp []byte) error {
 	_, err := Unmarshal(bytes.NewReader(inp), s)
 	return err
 }
 
 var (
-	_ encoding.BinaryMarshaler   = (*HmacSha256Key)(nil)
-	_ encoding.BinaryUnmarshaler = (*HmacSha256Key)(nil)
+	_ encoding.BinaryMarshaler   = (*LedgerKeyOffer)(nil)
+	_ encoding.BinaryUnmarshaler = (*LedgerKeyOffer)(nil)
 )
 
-// HmacSha256Mac is an XDR Struct defines as:
+// LedgerKeyData is an XDR NestedStruct defines as:
 //
-//   struct HmacSha256Mac
-//    {
-//            opaque mac[32];
-//    };
+//   struct
+//        {
+//            AccountID accountID;
+//            string64 dataName;
+//        }
 //
-type HmacSha256Mac struct {
-	Mac [32]byte `xdrmaxsize:"32"`
+type LedgerKeyData struct {
+	AccountId AccountId
+	DataName  String64
 }
 
 // MarshalBinary implements encoding.BinaryMarshaler.
-func (s HmacSha256Mac) MarshalBinary() ([]byte, error) {
+func (s LedgerKeyData) MarshalBinary() ([]byte, error) {
 	b := new(bytes.Buffer)
 	_, err := Marshal(b, s)
 	return b.Bytes(), err
 }
 
 // UnmarshalBinary implements encoding.BinaryUnmarshaler.
-func (s *HmacSha256Mac) UnmarshalBinary(inp []byte) error {
+func (s *LedgerKeyData) UnmarshalBinary(inp []byte) error {
 	_, err := Unmarshal(bytes.NewReader(inp), s)
 	return err
 }
 
 var (
-	_ encoding.BinaryMarshaler   = (*HmacSha256Mac)(nil)
-	_ encoding.BinaryUnmarshaler = (*HmacSha256Mac)(nil)
+	_ encoding.BinaryMarshaler   = (*LedgerKeyData)(nil)
+	_ encoding.BinaryUnmarshaler = (*LedgerKeyData)(nil)
+)
+
+// LedgerKey is an XDR Union defines as:
+//
+//   union LedgerKey switch (LedgerEntryType type)
+//    {
+//    case ACCOUNT:
+//        struct
+//        {
+//            AccountID accountID;
+//        } account;
+//
+//    case TRUSTLINE:
+//        struct
+//        {
+//            AccountID accountID;
+//            Asset asset;
+//        } trustLine;
+//
+//    case OFFER:
+//        struct
+//        {
+//            AccountID sellerID;
+//            int64 offerID;
+//        } offer;
+//
+//    case DATA:
+//        struct
+//        {
+//            AccountID accountID;
+//            string64 dataName;
+//        } data;
+//    };
+//
+type LedgerKey struct {
+	Type      LedgerEntryType
+	Account   *LedgerKeyAccount
+	TrustLine *LedgerKeyTrustLine
+	Offer     *LedgerKeyOffer
+	Data      *LedgerKeyData
+}
+
+// SwitchFieldName returns the field name in which this union's
+// discriminant is stored
+func (u LedgerKey) SwitchFieldName() string {
+	return "Type"
+}
+
+// ArmForSwitch returns which field name should be used for storing
+// the value for an instance of LedgerKey
+func (u LedgerKey) ArmForSwitch(sw int32) (string, bool) {
+	switch LedgerEntryType(sw) {
+	case LedgerEntryTypeAccount:
+		return "Account", true
+	case LedgerEntryTypeTrustline:
+		return "TrustLine", true
+	case LedgerEntryTypeOffer:
+		return "Offer", true
+	case LedgerEntryTypeData:
+		return "Data", true
+	}
+	return "-", false
+}
+
+// NewLedgerKey creates a new  LedgerKey.
+func NewLedgerKey(aType LedgerEntryType, value interface{}) (result LedgerKey, err error) {
+	result.Type = aType
+	switch LedgerEntryType(aType) {
+	case LedgerEntryTypeAccount:
+		tv, ok := value.(LedgerKeyAccount)
+		if !ok {
+			err = fmt.Errorf("invalid value, must be LedgerKeyAccount")
+			return
+		}
+		result.Account = &tv
+	case LedgerEntryTypeTrustline:
+		tv, ok := value.(LedgerKeyTrustLine)
+		if !ok {
+			err = fmt.Errorf("invalid value, must be LedgerKeyTrustLine")
+			return
+		}
+		result.TrustLine = &tv
+	case LedgerEntryTypeOffer:
+		tv, ok := value.(LedgerKeyOffer)
+		if !ok {
+			err = fmt.Errorf("invalid value, must be LedgerKeyOffer")
+			return
+		}
+		result.Offer = &tv
+	case LedgerEntryTypeData:
+		tv, ok := value.(LedgerKeyData)
+		if !ok {
+			err = fmt.Errorf("invalid value, must be LedgerKeyData")
+			return
+		}
+		result.Data = &tv
+	}
+	return
+}
+
+// MustAccount retrieves the Account value from the union,
+// panicing if the value is not set.
+func (u LedgerKey) MustAccount() LedgerKeyAccount {
+	val, ok := u.GetAccount()
+
+	if !ok {
+		panic("arm Account is not set")
+	}
+
+	return val
+}
+
+// GetAccount retrieves the Account value from the union,
+// returning ok if the union's switch indicated the value is valid.
+func (u LedgerKey) GetAccount() (result LedgerKeyAccount, ok bool) {
+	armName, _ := u.ArmForSwitch(int32(u.Type))
+
+	if armName == "Account" {
+		result = *u.Account
+		ok = true
+	}
+
+	return
+}
+
+// MustTrustLine retrieves the TrustLine value from the union,
+// panicing if the value is not set.
+func (u LedgerKey) MustTrustLine() LedgerKeyTrustLine {
+	val, ok := u.GetTrustLine()
+
+	if !ok {
+		panic("arm TrustLine is not set")
+	}
+
+	return val
+}
+
+// GetTrustLine retrieves the TrustLine value from the union,
+// returning ok if the union's switch indicated the value is valid.
+func (u LedgerKey) GetTrustLine() (result LedgerKeyTrustLine, ok bool) {
+	armName, _ := u.ArmForSwitch(int32(u.Type))
+
+	if armName == "TrustLine" {
+		result = *u.TrustLine
+		ok = true
+	}
+
+	return
+}
+
+// MustOffer retrieves the Offer value from the union,
+// panicing if the value is not set.
+func (u LedgerKey) MustOffer() LedgerKeyOffer {
+	val, ok := u.GetOffer()
+
+	if !ok {
+		panic("arm Offer is not set")
+	}
+
+	return val
+}
+
+// GetOffer retrieves the Offer value from the union,
+// returning ok if the union's switch indicated the value is valid.
+func (u LedgerKey) GetOffer() (result LedgerKeyOffer, ok bool) {
+	armName, _ := u.ArmForSwitch(int32(u.Type))
+
+	if armName == "Offer" {
+		result = *u.Offer
+		ok = true
+	}
+
+	return
+}
+
+// MustData retrieves the Data value from the union,
+// panicing if the value is not set.
+func (u LedgerKey) MustData() LedgerKeyData {
+	val, ok := u.GetData()
+
+	if !ok {
+		panic("arm Data is not set")
+	}
+
+	return val
+}
+
+// GetData retrieves the Data value from the union,
+// returning ok if the union's switch indicated the value is valid.
+func (u LedgerKey) GetData() (result LedgerKeyData, ok bool) {
+	armName, _ := u.ArmForSwitch(int32(u.Type))
+
+	if armName == "Data" {
+		result = *u.Data
+		ok = true
+	}
+
+	return
+}
+
+// MarshalBinary implements encoding.BinaryMarshaler.
+func (s LedgerKey) MarshalBinary() ([]byte, error) {
+	b := new(bytes.Buffer)
+	_, err := Marshal(b, s)
+	return b.Bytes(), err
+}
+
+// UnmarshalBinary implements encoding.BinaryUnmarshaler.
+func (s *LedgerKey) UnmarshalBinary(inp []byte) error {
+	_, err := Unmarshal(bytes.NewReader(inp), s)
+	return err
+}
+
+var (
+	_ encoding.BinaryMarshaler   = (*LedgerKey)(nil)
+	_ encoding.BinaryUnmarshaler = (*LedgerKey)(nil)
+)
+
+// BucketEntryType is an XDR Enum defines as:
+//
+//   enum BucketEntryType
+//    {
+//        METAENTRY =
+//            -1, // At-and-after protocol 11: bucket metadata, should come first.
+//        LIVEENTRY = 0, // Before protocol 11: created-or-updated;
+//                       // At-and-after protocol 11: only updated.
+//        DEADENTRY = 1,
+//        INITENTRY = 2 // At-and-after protocol 11: only created.
+//    };
+//
+type BucketEntryType int32
+
+const (
+	BucketEntryTypeMetaentry BucketEntryType = -1
+	BucketEntryTypeLiveentry BucketEntryType = 0
+	BucketEntryTypeDeadentry BucketEntryType = 1
+	BucketEntryTypeInitentry BucketEntryType = 2
+)
+
+var bucketEntryTypeMap = map[int32]string{
+	-1: "BucketEntryTypeMetaentry",
+	0:  "BucketEntryTypeLiveentry",
+	1:  "BucketEntryTypeDeadentry",
+	2:  "BucketEntryTypeInitentry",
+}
+
+// ValidEnum validates a proposed value for this enum.  Implements
+// the Enum interface for BucketEntryType
+func (e BucketEntryType) ValidEnum(v int32) bool {
+	_, ok := bucketEntryTypeMap[v]
+	return ok
+}
+
+// String returns the name of `e`
+func (e BucketEntryType) String() string {
+	name, _ := bucketEntryTypeMap[int32(e)]
+	return name
+}
+
+// MarshalBinary implements encoding.BinaryMarshaler.
+func (s BucketEntryType) MarshalBinary() ([]byte, error) {
+	b := new(bytes.Buffer)
+	_, err := Marshal(b, s)
+	return b.Bytes(), err
+}
+
+// UnmarshalBinary implements encoding.BinaryUnmarshaler.
+func (s *BucketEntryType) UnmarshalBinary(inp []byte) error {
+	_, err := Unmarshal(bytes.NewReader(inp), s)
+	return err
+}
+
+var (
+	_ encoding.BinaryMarshaler   = (*BucketEntryType)(nil)
+	_ encoding.BinaryUnmarshaler = (*BucketEntryType)(nil)
+)
+
+// BucketMetadataExt is an XDR NestedUnion defines as:
+//
+//   union switch (int v)
+//        {
+//        case 0:
+//            void;
+//        }
+//
+type BucketMetadataExt struct {
+	V int32
+}
+
+// SwitchFieldName returns the field name in which this union's
+// discriminant is stored
+func (u BucketMetadataExt) SwitchFieldName() string {
+	return "V"
+}
+
+// ArmForSwitch returns which field name should be used for storing
+// the value for an instance of BucketMetadataExt
+func (u BucketMetadataExt) ArmForSwitch(sw int32) (string, bool) {
+	switch int32(sw) {
+	case 0:
+		return "", true
+	}
+	return "-", false
+}
+
+// NewBucketMetadataExt creates a new  BucketMetadataExt.
+func NewBucketMetadataExt(v int32, value interface{}) (result BucketMetadataExt, err error) {
+	result.V = v
+	switch int32(v) {
+	case 0:
+		// void
+	}
+	return
+}
+
+// MarshalBinary implements encoding.BinaryMarshaler.
+func (s BucketMetadataExt) MarshalBinary() ([]byte, error) {
+	b := new(bytes.Buffer)
+	_, err := Marshal(b, s)
+	return b.Bytes(), err
+}
+
+// UnmarshalBinary implements encoding.BinaryUnmarshaler.
+func (s *BucketMetadataExt) UnmarshalBinary(inp []byte) error {
+	_, err := Unmarshal(bytes.NewReader(inp), s)
+	return err
+}
+
+var (
+	_ encoding.BinaryMarshaler   = (*BucketMetadataExt)(nil)
+	_ encoding.BinaryUnmarshaler = (*BucketMetadataExt)(nil)
+)
+
+// BucketMetadata is an XDR Struct defines as:
+//
+//   struct BucketMetadata
+//    {
+//        // Indicates the protocol version used to create / merge this bucket.
+//        uint32 ledgerVersion;
+//
+//        // reserved for future use
+//        union switch (int v)
+//        {
+//        case 0:
+//            void;
+//        }
+//        ext;
+//    };
+//
+type BucketMetadata struct {
+	LedgerVersion Uint32
+	Ext           BucketMetadataExt
+}
+
+// MarshalBinary implements encoding.BinaryMarshaler.
+func (s BucketMetadata) MarshalBinary() ([]byte, error) {
+	b := new(bytes.Buffer)
+	_, err := Marshal(b, s)
+	return b.Bytes(), err
+}
+
+// UnmarshalBinary implements encoding.BinaryUnmarshaler.
+func (s *BucketMetadata) UnmarshalBinary(inp []byte) error {
+	_, err := Unmarshal(bytes.NewReader(inp), s)
+	return err
+}
+
+var (
+	_ encoding.BinaryMarshaler   = (*BucketMetadata)(nil)
+	_ encoding.BinaryUnmarshaler = (*BucketMetadata)(nil)
+)
+
+// BucketEntry is an XDR Union defines as:
+//
+//   union BucketEntry switch (BucketEntryType type)
+//    {
+//    case LIVEENTRY:
+//    case INITENTRY:
+//        LedgerEntry liveEntry;
+//
+//    case DEADENTRY:
+//        LedgerKey deadEntry;
+//    case METAENTRY:
+//        BucketMetadata metaEntry;
+//    };
+//
+type BucketEntry struct {
+	Type      BucketEntryType
+	LiveEntry *LedgerEntry
+	DeadEntry *LedgerKey
+	MetaEntry *BucketMetadata
+}
+
+// SwitchFieldName returns the field name in which this union's
+// discriminant is stored
+func (u BucketEntry) SwitchFieldName() string {
+	return "Type"
+}
+
+// ArmForSwitch returns which field name should be used for storing
+// the value for an instance of BucketEntry
+func (u BucketEntry) ArmForSwitch(sw int32) (string, bool) {
+	switch BucketEntryType(sw) {
+	case BucketEntryTypeLiveentry:
+		return "LiveEntry", true
+	case BucketEntryTypeInitentry:
+		return "LiveEntry", true
+	case BucketEntryTypeDeadentry:
+		return "DeadEntry", true
+	case BucketEntryTypeMetaentry:
+		return "MetaEntry", true
+	}
+	return "-", false
+}
+
+// NewBucketEntry creates a new  BucketEntry.
+func NewBucketEntry(aType BucketEntryType, value interface{}) (result BucketEntry, err error) {
+	result.Type = aType
+	switch BucketEntryType(aType) {
+	case BucketEntryTypeLiveentry:
+		tv, ok := value.(LedgerEntry)
+		if !ok {
+			err = fmt.Errorf("invalid value, must be LedgerEntry")
+			return
+		}
+		result.LiveEntry = &tv
+	case BucketEntryTypeInitentry:
+		tv, ok := value.(LedgerEntry)
+		if !ok {
+			err = fmt.Errorf("invalid value, must be LedgerEntry")
+			return
+		}
+		result.LiveEntry = &tv
+	case BucketEntryTypeDeadentry:
+		tv, ok := value.(LedgerKey)
+		if !ok {
+			err = fmt.Errorf("invalid value, must be LedgerKey")
+			return
+		}
+		result.DeadEntry = &tv
+	case BucketEntryTypeMetaentry:
+		tv, ok := value.(BucketMetadata)
+		if !ok {
+			err = fmt.Errorf("invalid value, must be BucketMetadata")
+			return
+		}
+		result.MetaEntry = &tv
+	}
+	return
+}
+
+// MustLiveEntry retrieves the LiveEntry value from the union,
+// panicing if the value is not set.
+func (u BucketEntry) MustLiveEntry() LedgerEntry {
+	val, ok := u.GetLiveEntry()
+
+	if !ok {
+		panic("arm LiveEntry is not set")
+	}
+
+	return val
+}
+
+// GetLiveEntry retrieves the LiveEntry value from the union,
+// returning ok if the union's switch indicated the value is valid.
+func (u BucketEntry) GetLiveEntry() (result LedgerEntry, ok bool) {
+	armName, _ := u.ArmForSwitch(int32(u.Type))
+
+	if armName == "LiveEntry" {
+		result = *u.LiveEntry
+		ok = true
+	}
+
+	return
+}
+
+// MustDeadEntry retrieves the DeadEntry value from the union,
+// panicing if the value is not set.
+func (u BucketEntry) MustDeadEntry() LedgerKey {
+	val, ok := u.GetDeadEntry()
+
+	if !ok {
+		panic("arm DeadEntry is not set")
+	}
+
+	return val
+}
+
+// GetDeadEntry retrieves the DeadEntry value from the union,
+// returning ok if the union's switch indicated the value is valid.
+func (u BucketEntry) GetDeadEntry() (result LedgerKey, ok bool) {
+	armName, _ := u.ArmForSwitch(int32(u.Type))
+
+	if armName == "DeadEntry" {
+		result = *u.DeadEntry
+		ok = true
+	}
+
+	return
+}
+
+// MustMetaEntry retrieves the MetaEntry value from the union,
+// panicing if the value is not set.
+func (u BucketEntry) MustMetaEntry() BucketMetadata {
+	val, ok := u.GetMetaEntry()
+
+	if !ok {
+		panic("arm MetaEntry is not set")
+	}
+
+	return val
+}
+
+// GetMetaEntry retrieves the MetaEntry value from the union,
+// returning ok if the union's switch indicated the value is valid.
+func (u BucketEntry) GetMetaEntry() (result BucketMetadata, ok bool) {
+	armName, _ := u.ArmForSwitch(int32(u.Type))
+
+	if armName == "MetaEntry" {
+		result = *u.MetaEntry
+		ok = true
+	}
+
+	return
+}
+
+// MarshalBinary implements encoding.BinaryMarshaler.
+func (s BucketEntry) MarshalBinary() ([]byte, error) {
+	b := new(bytes.Buffer)
+	_, err := Marshal(b, s)
+	return b.Bytes(), err
+}
+
+// UnmarshalBinary implements encoding.BinaryUnmarshaler.
+func (s *BucketEntry) UnmarshalBinary(inp []byte) error {
+	_, err := Unmarshal(bytes.NewReader(inp), s)
+	return err
+}
+
+var (
+	_ encoding.BinaryMarshaler   = (*BucketEntry)(nil)
+	_ encoding.BinaryUnmarshaler = (*BucketEntry)(nil)
+)
+
+// TransactionSet is an XDR Struct defines as:
+//
+//   struct TransactionSet
+//    {
+//        Hash previousLedgerHash;
+//        TransactionEnvelope txs<>;
+//    };
+//
+type TransactionSet struct {
+	PreviousLedgerHash Hash
+	Txs                []TransactionEnvelope
+}
+
+// MarshalBinary implements encoding.BinaryMarshaler.
+func (s TransactionSet) MarshalBinary() ([]byte, error) {
+	b := new(bytes.Buffer)
+	_, err := Marshal(b, s)
+	return b.Bytes(), err
+}
+
+// UnmarshalBinary implements encoding.BinaryUnmarshaler.
+func (s *TransactionSet) UnmarshalBinary(inp []byte) error {
+	_, err := Unmarshal(bytes.NewReader(inp), s)
+	return err
+}
+
+var (
+	_ encoding.BinaryMarshaler   = (*TransactionSet)(nil)
+	_ encoding.BinaryUnmarshaler = (*TransactionSet)(nil)
+)
+
+// TransactionResultPair is an XDR Struct defines as:
+//
+//   struct TransactionResultPair
+//    {
+//        Hash transactionHash;
+//        TransactionResult result; // result for the transaction
+//    };
+//
+type TransactionResultPair struct {
+	TransactionHash Hash
+	Result          TransactionResult
+}
+
+// MarshalBinary implements encoding.BinaryMarshaler.
+func (s TransactionResultPair) MarshalBinary() ([]byte, error) {
+	b := new(bytes.Buffer)
+	_, err := Marshal(b, s)
+	return b.Bytes(), err
+}
+
+// UnmarshalBinary implements encoding.BinaryUnmarshaler.
+func (s *TransactionResultPair) UnmarshalBinary(inp []byte) error {
+	_, err := Unmarshal(bytes.NewReader(inp), s)
+	return err
+}
+
+var (
+	_ encoding.BinaryMarshaler   = (*TransactionResultPair)(nil)
+	_ encoding.BinaryUnmarshaler = (*TransactionResultPair)(nil)
+)
+
+// TransactionResultSet is an XDR Struct defines as:
+//
+//   struct TransactionResultSet
+//    {
+//        TransactionResultPair results<>;
+//    };
+//
+type TransactionResultSet struct {
+	Results []TransactionResultPair
+}
+
+// MarshalBinary implements encoding.BinaryMarshaler.
+func (s TransactionResultSet) MarshalBinary() ([]byte, error) {
+	b := new(bytes.Buffer)
+	_, err := Marshal(b, s)
+	return b.Bytes(), err
+}
+
+// UnmarshalBinary implements encoding.BinaryUnmarshaler.
+func (s *TransactionResultSet) UnmarshalBinary(inp []byte) error {
+	_, err := Unmarshal(bytes.NewReader(inp), s)
+	return err
+}
+
+var (
+	_ encoding.BinaryMarshaler   = (*TransactionResultSet)(nil)
+	_ encoding.BinaryUnmarshaler = (*TransactionResultSet)(nil)
+)
+
+// TransactionHistoryEntryExt is an XDR NestedUnion defines as:
+//
+//   union switch (int v)
+//        {
+//        case 0:
+//            void;
+//        }
+//
+type TransactionHistoryEntryExt struct {
+	V int32
+}
+
+// SwitchFieldName returns the field name in which this union's
+// discriminant is stored
+func (u TransactionHistoryEntryExt) SwitchFieldName() string {
+	return "V"
+}
+
+// ArmForSwitch returns which field name should be used for storing
+// the value for an instance of TransactionHistoryEntryExt
+func (u TransactionHistoryEntryExt) ArmForSwitch(sw int32) (string, bool) {
+	switch int32(sw) {
+	case 0:
+		return "", true
+	}
+	return "-", false
+}
+
+// NewTransactionHistoryEntryExt creates a new  TransactionHistoryEntryExt.
+func NewTransactionHistoryEntryExt(v int32, value interface{}) (result TransactionHistoryEntryExt, err error) {
+	result.V = v
+	switch int32(v) {
+	case 0:
+		// void
+	}
+	return
+}
+
+// MarshalBinary implements encoding.BinaryMarshaler.
+func (s TransactionHistoryEntryExt) MarshalBinary() ([]byte, error) {
+	b := new(bytes.Buffer)
+	_, err := Marshal(b, s)
+	return b.Bytes(), err
+}
+
+// UnmarshalBinary implements encoding.BinaryUnmarshaler.
+func (s *TransactionHistoryEntryExt) UnmarshalBinary(inp []byte) error {
+	_, err := Unmarshal(bytes.NewReader(inp), s)
+	return err
+}
+
+var (
+	_ encoding.BinaryMarshaler   = (*TransactionHistoryEntryExt)(nil)
+	_ encoding.BinaryUnmarshaler = (*TransactionHistoryEntryExt)(nil)
+)
+
+// TransactionHistoryEntry is an XDR Struct defines as:
+//
+//   struct TransactionHistoryEntry
+//    {
+//        uint32 ledgerSeq;
+//        TransactionSet txSet;
+//
+//        // reserved for future use
+//        union switch (int v)
+//        {
+//        case 0:
+//            void;
+//        }
+//        ext;
+//    };
+//
+type TransactionHistoryEntry struct {
+	LedgerSeq Uint32
+	TxSet     TransactionSet
+	Ext       TransactionHistoryEntryExt
+}
+
+// MarshalBinary implements encoding.BinaryMarshaler.
+func (s TransactionHistoryEntry) MarshalBinary() ([]byte, error) {
+	b := new(bytes.Buffer)
+	_, err := Marshal(b, s)
+	return b.Bytes(), err
+}
+
+// UnmarshalBinary implements encoding.BinaryUnmarshaler.
+func (s *TransactionHistoryEntry) UnmarshalBinary(inp []byte) error {
+	_, err := Unmarshal(bytes.NewReader(inp), s)
+	return err
+}
+
+var (
+	_ encoding.BinaryMarshaler   = (*TransactionHistoryEntry)(nil)
+	_ encoding.BinaryUnmarshaler = (*TransactionHistoryEntry)(nil)
+)
+
+// TransactionHistoryResultEntryExt is an XDR NestedUnion defines as:
+//
+//   union switch (int v)
+//        {
+//        case 0:
+//            void;
+//        }
+//
+type TransactionHistoryResultEntryExt struct {
+	V int32
+}
+
+// SwitchFieldName returns the field name in which this union's
+// discriminant is stored
+func (u TransactionHistoryResultEntryExt) SwitchFieldName() string {
+	return "V"
+}
+
+// ArmForSwitch returns which field name should be used for storing
+// the value for an instance of TransactionHistoryResultEntryExt
+func (u TransactionHistoryResultEntryExt) ArmForSwitch(sw int32) (string, bool) {
+	switch int32(sw) {
+	case 0:
+		return "", true
+	}
+	return "-", false
+}
+
+// NewTransactionHistoryResultEntryExt creates a new  TransactionHistoryResultEntryExt.
+func NewTransactionHistoryResultEntryExt(v int32, value interface{}) (result TransactionHistoryResultEntryExt, err error) {
+	result.V = v
+	switch int32(v) {
+	case 0:
+		// void
+	}
+	return
+}
+
+// MarshalBinary implements encoding.BinaryMarshaler.
+func (s TransactionHistoryResultEntryExt) MarshalBinary() ([]byte, error) {
+	b := new(bytes.Buffer)
+	_, err := Marshal(b, s)
+	return b.Bytes(), err
+}
+
+// UnmarshalBinary implements encoding.BinaryUnmarshaler.
+func (s *TransactionHistoryResultEntryExt) UnmarshalBinary(inp []byte) error {
+	_, err := Unmarshal(bytes.NewReader(inp), s)
+	return err
+}
+
+var (
+	_ encoding.BinaryMarshaler   = (*TransactionHistoryResultEntryExt)(nil)
+	_ encoding.BinaryUnmarshaler = (*TransactionHistoryResultEntryExt)(nil)
+)
+
+// TransactionHistoryResultEntry is an XDR Struct defines as:
+//
+//   struct TransactionHistoryResultEntry
+//    {
+//        uint32 ledgerSeq;
+//        TransactionResultSet txResultSet;
+//
+//        // reserved for future use
+//        union switch (int v)
+//        {
+//        case 0:
+//            void;
+//        }
+//        ext;
+//    };
+//
+type TransactionHistoryResultEntry struct {
+	LedgerSeq   Uint32
+	TxResultSet TransactionResultSet
+	Ext         TransactionHistoryResultEntryExt
+}
+
+// MarshalBinary implements encoding.BinaryMarshaler.
+func (s TransactionHistoryResultEntry) MarshalBinary() ([]byte, error) {
+	b := new(bytes.Buffer)
+	_, err := Marshal(b, s)
+	return b.Bytes(), err
+}
+
+// UnmarshalBinary implements encoding.BinaryUnmarshaler.
+func (s *TransactionHistoryResultEntry) UnmarshalBinary(inp []byte) error {
+	_, err := Unmarshal(bytes.NewReader(inp), s)
+	return err
+}
+
+var (
+	_ encoding.BinaryMarshaler   = (*TransactionHistoryResultEntry)(nil)
+	_ encoding.BinaryUnmarshaler = (*TransactionHistoryResultEntry)(nil)
+)
+
+// LedgerHeaderHistoryEntryExt is an XDR NestedUnion defines as:
+//
+//   union switch (int v)
+//        {
+//        case 0:
+//            void;
+//        }
+//
+type LedgerHeaderHistoryEntryExt struct {
+	V int32
+}
+
+// SwitchFieldName returns the field name in which this union's
+// discriminant is stored
+func (u LedgerHeaderHistoryEntryExt) SwitchFieldName() string {
+	return "V"
+}
+
+// ArmForSwitch returns which field name should be used for storing
+// the value for an instance of LedgerHeaderHistoryEntryExt
+func (u LedgerHeaderHistoryEntryExt) ArmForSwitch(sw int32) (string, bool) {
+	switch int32(sw) {
+	case 0:
+		return "", true
+	}
+	return "-", false
+}
+
+// NewLedgerHeaderHistoryEntryExt creates a new  LedgerHeaderHistoryEntryExt.
+func NewLedgerHeaderHistoryEntryExt(v int32, value interface{}) (result LedgerHeaderHistoryEntryExt, err error) {
+	result.V = v
+	switch int32(v) {
+	case 0:
+		// void
+	}
+	return
+}
+
+// MarshalBinary implements encoding.BinaryMarshaler.
+func (s LedgerHeaderHistoryEntryExt) MarshalBinary() ([]byte, error) {
+	b := new(bytes.Buffer)
+	_, err := Marshal(b, s)
+	return b.Bytes(), err
+}
+
+// UnmarshalBinary implements encoding.BinaryUnmarshaler.
+func (s *LedgerHeaderHistoryEntryExt) UnmarshalBinary(inp []byte) error {
+	_, err := Unmarshal(bytes.NewReader(inp), s)
+	return err
+}
+
+var (
+	_ encoding.BinaryMarshaler   = (*LedgerHeaderHistoryEntryExt)(nil)
+	_ encoding.BinaryUnmarshaler = (*LedgerHeaderHistoryEntryExt)(nil)
+)
+
+// LedgerHeaderHistoryEntry is an XDR Struct defines as:
+//
+//   struct LedgerHeaderHistoryEntry
+//    {
+//        Hash hash;
+//        LedgerHeader header;
+//
+//        // reserved for future use
+//        union switch (int v)
+//        {
+//        case 0:
+//            void;
+//        }
+//        ext;
+//    };
+//
+type LedgerHeaderHistoryEntry struct {
+	Hash   Hash
+	Header LedgerHeader
+	Ext    LedgerHeaderHistoryEntryExt
+}
+
+// MarshalBinary implements encoding.BinaryMarshaler.
+func (s LedgerHeaderHistoryEntry) MarshalBinary() ([]byte, error) {
+	b := new(bytes.Buffer)
+	_, err := Marshal(b, s)
+	return b.Bytes(), err
+}
+
+// UnmarshalBinary implements encoding.BinaryUnmarshaler.
+func (s *LedgerHeaderHistoryEntry) UnmarshalBinary(inp []byte) error {
+	_, err := Unmarshal(bytes.NewReader(inp), s)
+	return err
+}
+
+var (
+	_ encoding.BinaryMarshaler   = (*LedgerHeaderHistoryEntry)(nil)
+	_ encoding.BinaryUnmarshaler = (*LedgerHeaderHistoryEntry)(nil)
+)
+
+// LedgerScpMessages is an XDR Struct defines as:
+//
+//   struct LedgerSCPMessages
+//    {
+//        uint32 ledgerSeq;
+//        SCPEnvelope messages<>;
+//    };
+//
+type LedgerScpMessages struct {
+	LedgerSeq Uint32
+	Messages  []ScpEnvelope
+}
+
+// MarshalBinary implements encoding.BinaryMarshaler.
+func (s LedgerScpMessages) MarshalBinary() ([]byte, error) {
+	b := new(bytes.Buffer)
+	_, err := Marshal(b, s)
+	return b.Bytes(), err
+}
+
+// UnmarshalBinary implements encoding.BinaryUnmarshaler.
+func (s *LedgerScpMessages) UnmarshalBinary(inp []byte) error {
+	_, err := Unmarshal(bytes.NewReader(inp), s)
+	return err
+}
+
+var (
+	_ encoding.BinaryMarshaler   = (*LedgerScpMessages)(nil)
+	_ encoding.BinaryUnmarshaler = (*LedgerScpMessages)(nil)
+)
+
+// ScpHistoryEntryV0 is an XDR Struct defines as:
+//
+//   struct SCPHistoryEntryV0
+//    {
+//        SCPQuorumSet quorumSets<>; // additional quorum sets used by ledgerMessages
+//        LedgerSCPMessages ledgerMessages;
+//    };
+//
+type ScpHistoryEntryV0 struct {
+	QuorumSets     []ScpQuorumSet
+	LedgerMessages LedgerScpMessages
+}
+
+// MarshalBinary implements encoding.BinaryMarshaler.
+func (s ScpHistoryEntryV0) MarshalBinary() ([]byte, error) {
+	b := new(bytes.Buffer)
+	_, err := Marshal(b, s)
+	return b.Bytes(), err
+}
+
+// UnmarshalBinary implements encoding.BinaryUnmarshaler.
+func (s *ScpHistoryEntryV0) UnmarshalBinary(inp []byte) error {
+	_, err := Unmarshal(bytes.NewReader(inp), s)
+	return err
+}
+
+var (
+	_ encoding.BinaryMarshaler   = (*ScpHistoryEntryV0)(nil)
+	_ encoding.BinaryUnmarshaler = (*ScpHistoryEntryV0)(nil)
+)
+
+// ScpHistoryEntry is an XDR Union defines as:
+//
+//   union SCPHistoryEntry switch (int v)
+//    {
+//    case 0:
+//        SCPHistoryEntryV0 v0;
+//    };
+//
+type ScpHistoryEntry struct {
+	V  int32
+	V0 *ScpHistoryEntryV0
+}
+
+// SwitchFieldName returns the field name in which this union's
+// discriminant is stored
+func (u ScpHistoryEntry) SwitchFieldName() string {
+	return "V"
+}
+
+// ArmForSwitch returns which field name should be used for storing
+// the value for an instance of ScpHistoryEntry
+func (u ScpHistoryEntry) ArmForSwitch(sw int32) (string, bool) {
+	switch int32(sw) {
+	case 0:
+		return "V0", true
+	}
+	return "-", false
+}
+
+// NewScpHistoryEntry creates a new  ScpHistoryEntry.
+func NewScpHistoryEntry(v int32, value interface{}) (result ScpHistoryEntry, err error) {
+	result.V = v
+	switch int32(v) {
+	case 0:
+		tv, ok := value.(ScpHistoryEntryV0)
+		if !ok {
+			err = fmt.Errorf("invalid value, must be ScpHistoryEntryV0")
+			return
+		}
+		result.V0 = &tv
+	}
+	return
+}
+
+// MustV0 retrieves the V0 value from the union,
+// panicing if the value is not set.
+func (u ScpHistoryEntry) MustV0() ScpHistoryEntryV0 {
+	val, ok := u.GetV0()
+
+	if !ok {
+		panic("arm V0 is not set")
+	}
+
+	return val
+}
+
+// GetV0 retrieves the V0 value from the union,
+// returning ok if the union's switch indicated the value is valid.
+func (u ScpHistoryEntry) GetV0() (result ScpHistoryEntryV0, ok bool) {
+	armName, _ := u.ArmForSwitch(int32(u.V))
+
+	if armName == "V0" {
+		result = *u.V0
+		ok = true
+	}
+
+	return
+}
+
+// MarshalBinary implements encoding.BinaryMarshaler.
+func (s ScpHistoryEntry) MarshalBinary() ([]byte, error) {
+	b := new(bytes.Buffer)
+	_, err := Marshal(b, s)
+	return b.Bytes(), err
+}
+
+// UnmarshalBinary implements encoding.BinaryUnmarshaler.
+func (s *ScpHistoryEntry) UnmarshalBinary(inp []byte) error {
+	_, err := Unmarshal(bytes.NewReader(inp), s)
+	return err
+}
+
+var (
+	_ encoding.BinaryMarshaler   = (*ScpHistoryEntry)(nil)
+	_ encoding.BinaryUnmarshaler = (*ScpHistoryEntry)(nil)
+)
+
+// LedgerEntryChangeType is an XDR Enum defines as:
+//
+//   enum LedgerEntryChangeType
+//    {
+//        LEDGER_ENTRY_CREATED = 0, // entry was added to the ledger
+//        LEDGER_ENTRY_UPDATED = 1, // entry was modified in the ledger
+//        LEDGER_ENTRY_REMOVED = 2, // entry was removed from the ledger
+//        LEDGER_ENTRY_STATE = 3    // value of the entry
+//    };
+//
+type LedgerEntryChangeType int32
+
+const (
+	LedgerEntryChangeTypeLedgerEntryCreated LedgerEntryChangeType = 0
+	LedgerEntryChangeTypeLedgerEntryUpdated LedgerEntryChangeType = 1
+	LedgerEntryChangeTypeLedgerEntryRemoved LedgerEntryChangeType = 2
+	LedgerEntryChangeTypeLedgerEntryState   LedgerEntryChangeType = 3
+)
+
+var ledgerEntryChangeTypeMap = map[int32]string{
+	0: "LedgerEntryChangeTypeLedgerEntryCreated",
+	1: "LedgerEntryChangeTypeLedgerEntryUpdated",
+	2: "LedgerEntryChangeTypeLedgerEntryRemoved",
+	3: "LedgerEntryChangeTypeLedgerEntryState",
+}
+
+// ValidEnum validates a proposed value for this enum.  Implements
+// the Enum interface for LedgerEntryChangeType
+func (e LedgerEntryChangeType) ValidEnum(v int32) bool {
+	_, ok := ledgerEntryChangeTypeMap[v]
+	return ok
+}
+
+// String returns the name of `e`
+func (e LedgerEntryChangeType) String() string {
+	name, _ := ledgerEntryChangeTypeMap[int32(e)]
+	return name
+}
+
+// MarshalBinary implements encoding.BinaryMarshaler.
+func (s LedgerEntryChangeType) MarshalBinary() ([]byte, error) {
+	b := new(bytes.Buffer)
+	_, err := Marshal(b, s)
+	return b.Bytes(), err
+}
+
+// UnmarshalBinary implements encoding.BinaryUnmarshaler.
+func (s *LedgerEntryChangeType) UnmarshalBinary(inp []byte) error {
+	_, err := Unmarshal(bytes.NewReader(inp), s)
+	return err
+}
+
+var (
+	_ encoding.BinaryMarshaler   = (*LedgerEntryChangeType)(nil)
+	_ encoding.BinaryUnmarshaler = (*LedgerEntryChangeType)(nil)
+)
+
+// LedgerEntryChange is an XDR Union defines as:
+//
+//   union LedgerEntryChange switch (LedgerEntryChangeType type)
+//    {
+//    case LEDGER_ENTRY_CREATED:
+//        LedgerEntry created;
+//    case LEDGER_ENTRY_UPDATED:
+//        LedgerEntry updated;
+//    case LEDGER_ENTRY_REMOVED:
+//        LedgerKey removed;
+//    case LEDGER_ENTRY_STATE:
+//        LedgerEntry state;
+//    };
+//
+type LedgerEntryChange struct {
+	Type    LedgerEntryChangeType
+	Created *LedgerEntry
+	Updated *LedgerEntry
+	Removed *LedgerKey
+	State   *LedgerEntry
+}
+
+// SwitchFieldName returns the field name in which this union's
+// discriminant is stored
+func (u LedgerEntryChange) SwitchFieldName() string {
+	return "Type"
+}
+
+// ArmForSwitch returns which field name should be used for storing
+// the value for an instance of LedgerEntryChange
+func (u LedgerEntryChange) ArmForSwitch(sw int32) (string, bool) {
+	switch LedgerEntryChangeType(sw) {
+	case LedgerEntryChangeTypeLedgerEntryCreated:
+		return "Created", true
+	case LedgerEntryChangeTypeLedgerEntryUpdated:
+		return "Updated", true
+	case LedgerEntryChangeTypeLedgerEntryRemoved:
+		return "Removed", true
+	case LedgerEntryChangeTypeLedgerEntryState:
+		return "State", true
+	}
+	return "-", false
+}
+
+// NewLedgerEntryChange creates a new  LedgerEntryChange.
+func NewLedgerEntryChange(aType LedgerEntryChangeType, value interface{}) (result LedgerEntryChange, err error) {
+	result.Type = aType
+	switch LedgerEntryChangeType(aType) {
+	case LedgerEntryChangeTypeLedgerEntryCreated:
+		tv, ok := value.(LedgerEntry)
+		if !ok {
+			err = fmt.Errorf("invalid value, must be LedgerEntry")
+			return
+		}
+		result.Created = &tv
+	case LedgerEntryChangeTypeLedgerEntryUpdated:
+		tv, ok := value.(LedgerEntry)
+		if !ok {
+			err = fmt.Errorf("invalid value, must be LedgerEntry")
+			return
+		}
+		result.Updated = &tv
+	case LedgerEntryChangeTypeLedgerEntryRemoved:
+		tv, ok := value.(LedgerKey)
+		if !ok {
+			err = fmt.Errorf("invalid value, must be LedgerKey")
+			return
+		}
+		result.Removed = &tv
+	case LedgerEntryChangeTypeLedgerEntryState:
+		tv, ok := value.(LedgerEntry)
+		if !ok {
+			err = fmt.Errorf("invalid value, must be LedgerEntry")
+			return
+		}
+		result.State = &tv
+	}
+	return
+}
+
+// MustCreated retrieves the Created value from the union,
+// panicing if the value is not set.
+func (u LedgerEntryChange) MustCreated() LedgerEntry {
+	val, ok := u.GetCreated()
+
+	if !ok {
+		panic("arm Created is not set")
+	}
+
+	return val
+}
+
+// GetCreated retrieves the Created value from the union,
+// returning ok if the union's switch indicated the value is valid.
+func (u LedgerEntryChange) GetCreated() (result LedgerEntry, ok bool) {
+	armName, _ := u.ArmForSwitch(int32(u.Type))
+
+	if armName == "Created" {
+		result = *u.Created
+		ok = true
+	}
+
+	return
+}
+
+// MustUpdated retrieves the Updated value from the union,
+// panicing if the value is not set.
+func (u LedgerEntryChange) MustUpdated() LedgerEntry {
+	val, ok := u.GetUpdated()
+
+	if !ok {
+		panic("arm Updated is not set")
+	}
+
+	return val
+}
+
+// GetUpdated retrieves the Updated value from the union,
+// returning ok if the union's switch indicated the value is valid.
+func (u LedgerEntryChange) GetUpdated() (result LedgerEntry, ok bool) {
+	armName, _ := u.ArmForSwitch(int32(u.Type))
+
+	if armName == "Updated" {
+		result = *u.Updated
+		ok = true
+	}
+
+	return
+}
+
+// MustRemoved retrieves the Removed value from the union,
+// panicing if the value is not set.
+func (u LedgerEntryChange) MustRemoved() LedgerKey {
+	val, ok := u.GetRemoved()
+
+	if !ok {
+		panic("arm Removed is not set")
+	}
+
+	return val
+}
+
+// GetRemoved retrieves the Removed value from the union,
+// returning ok if the union's switch indicated the value is valid.
+func (u LedgerEntryChange) GetRemoved() (result LedgerKey, ok bool) {
+	armName, _ := u.ArmForSwitch(int32(u.Type))
+
+	if armName == "Removed" {
+		result = *u.Removed
+		ok = true
+	}
+
+	return
+}
+
+// MustState retrieves the State value from the union,
+// panicing if the value is not set.
+func (u LedgerEntryChange) MustState() LedgerEntry {
+	val, ok := u.GetState()
+
+	if !ok {
+		panic("arm State is not set")
+	}
+
+	return val
+}
+
+// GetState retrieves the State value from the union,
+// returning ok if the union's switch indicated the value is valid.
+func (u LedgerEntryChange) GetState() (result LedgerEntry, ok bool) {
+	armName, _ := u.ArmForSwitch(int32(u.Type))
+
+	if armName == "State" {
+		result = *u.State
+		ok = true
+	}
+
+	return
+}
+
+// MarshalBinary implements encoding.BinaryMarshaler.
+func (s LedgerEntryChange) MarshalBinary() ([]byte, error) {
+	b := new(bytes.Buffer)
+	_, err := Marshal(b, s)
+	return b.Bytes(), err
+}
+
+// UnmarshalBinary implements encoding.BinaryUnmarshaler.
+func (s *LedgerEntryChange) UnmarshalBinary(inp []byte) error {
+	_, err := Unmarshal(bytes.NewReader(inp), s)
+	return err
+}
+
+var (
+	_ encoding.BinaryMarshaler   = (*LedgerEntryChange)(nil)
+	_ encoding.BinaryUnmarshaler = (*LedgerEntryChange)(nil)
+)
+
+// LedgerEntryChanges is an XDR Typedef defines as:
+//
+//   typedef LedgerEntryChange LedgerEntryChanges<>;
+//
+type LedgerEntryChanges []LedgerEntryChange
+
+// MarshalBinary implements encoding.BinaryMarshaler.
+func (s LedgerEntryChanges) MarshalBinary() ([]byte, error) {
+	b := new(bytes.Buffer)
+	_, err := Marshal(b, s)
+	return b.Bytes(), err
+}
+
+// UnmarshalBinary implements encoding.BinaryUnmarshaler.
+func (s *LedgerEntryChanges) UnmarshalBinary(inp []byte) error {
+	_, err := Unmarshal(bytes.NewReader(inp), s)
+	return err
+}
+
+var (
+	_ encoding.BinaryMarshaler   = (*LedgerEntryChanges)(nil)
+	_ encoding.BinaryUnmarshaler = (*LedgerEntryChanges)(nil)
+)
+
+// OperationMeta is an XDR Struct defines as:
+//
+//   struct OperationMeta
+//    {
+//        LedgerEntryChanges changes;
+//    };
+//
+type OperationMeta struct {
+	Changes LedgerEntryChanges
+}
+
+// MarshalBinary implements encoding.BinaryMarshaler.
+func (s OperationMeta) MarshalBinary() ([]byte, error) {
+	b := new(bytes.Buffer)
+	_, err := Marshal(b, s)
+	return b.Bytes(), err
+}
+
+// UnmarshalBinary implements encoding.BinaryUnmarshaler.
+func (s *OperationMeta) UnmarshalBinary(inp []byte) error {
+	_, err := Unmarshal(bytes.NewReader(inp), s)
+	return err
+}
+
+var (
+	_ encoding.BinaryMarshaler   = (*OperationMeta)(nil)
+	_ encoding.BinaryUnmarshaler = (*OperationMeta)(nil)
+)
+
+// TransactionMetaV1 is an XDR Struct defines as:
+//
+//   struct TransactionMetaV1
+//    {
+//        LedgerEntryChanges txChanges; // tx level changes if any
+//        OperationMeta operations<>;   // meta for each operation
+//    };
+//
+type TransactionMetaV1 struct {
+	TxChanges  LedgerEntryChanges
+	Operations []OperationMeta
+}
+
+// MarshalBinary implements encoding.BinaryMarshaler.
+func (s TransactionMetaV1) MarshalBinary() ([]byte, error) {
+	b := new(bytes.Buffer)
+	_, err := Marshal(b, s)
+	return b.Bytes(), err
+}
+
+// UnmarshalBinary implements encoding.BinaryUnmarshaler.
+func (s *TransactionMetaV1) UnmarshalBinary(inp []byte) error {
+	_, err := Unmarshal(bytes.NewReader(inp), s)
+	return err
+}
+
+var (
+	_ encoding.BinaryMarshaler   = (*TransactionMetaV1)(nil)
+	_ encoding.BinaryUnmarshaler = (*TransactionMetaV1)(nil)
+)
+
+// TransactionMetaV2 is an XDR Struct defines as:
+//
+//   struct TransactionMetaV2
+//    {
+//        LedgerEntryChanges txChangesBefore; // tx level changes before operations
+//                                            // are applied if any
+//        OperationMeta operations<>;         // meta for each operation
+//        LedgerEntryChanges txChangesAfter;  // tx level changes after operations are
+//                                            // applied if any
+//    };
+//
+type TransactionMetaV2 struct {
+	TxChangesBefore LedgerEntryChanges
+	Operations      []OperationMeta
+	TxChangesAfter  LedgerEntryChanges
+}
+
+// MarshalBinary implements encoding.BinaryMarshaler.
+func (s TransactionMetaV2) MarshalBinary() ([]byte, error) {
+	b := new(bytes.Buffer)
+	_, err := Marshal(b, s)
+	return b.Bytes(), err
+}
+
+// UnmarshalBinary implements encoding.BinaryUnmarshaler.
+func (s *TransactionMetaV2) UnmarshalBinary(inp []byte) error {
+	_, err := Unmarshal(bytes.NewReader(inp), s)
+	return err
+}
+
+var (
+	_ encoding.BinaryMarshaler   = (*TransactionMetaV2)(nil)
+	_ encoding.BinaryUnmarshaler = (*TransactionMetaV2)(nil)
+)
+
+// TransactionMeta is an XDR Union defines as:
+//
+//   union TransactionMeta switch (int v)
+//    {
+//    case 0:
+//        OperationMeta operations<>;
+//    case 1:
+//        TransactionMetaV1 v1;
+//    case 2:
+//        TransactionMetaV2 v2;
+//    };
+//
+type TransactionMeta struct {
+	V          int32
+	Operations *[]OperationMeta
+	V1         *TransactionMetaV1
+	V2         *TransactionMetaV2
+}
+
+// SwitchFieldName returns the field name in which this union's
+// discriminant is stored
+func (u TransactionMeta) SwitchFieldName() string {
+	return "V"
+}
+
+// ArmForSwitch returns which field name should be used for storing
+// the value for an instance of TransactionMeta
+func (u TransactionMeta) ArmForSwitch(sw int32) (string, bool) {
+	switch int32(sw) {
+	case 0:
+		return "Operations", true
+	case 1:
+		return "V1", true
+	case 2:
+		return "V2", true
+	}
+	return "-", false
+}
+
+// NewTransactionMeta creates a new  TransactionMeta.
+func NewTransactionMeta(v int32, value interface{}) (result TransactionMeta, err error) {
+	result.V = v
+	switch int32(v) {
+	case 0:
+		tv, ok := value.([]OperationMeta)
+		if !ok {
+			err = fmt.Errorf("invalid value, must be []OperationMeta")
+			return
+		}
+		result.Operations = &tv
+	case 1:
+		tv, ok := value.(TransactionMetaV1)
+		if !ok {
+			err = fmt.Errorf("invalid value, must be TransactionMetaV1")
+			return
+		}
+		result.V1 = &tv
+	case 2:
+		tv, ok := value.(TransactionMetaV2)
+		if !ok {
+			err = fmt.Errorf("invalid value, must be TransactionMetaV2")
+			return
+		}
+		result.V2 = &tv
+	}
+	return
+}
+
+// MustOperations retrieves the Operations value from the union,
+// panicing if the value is not set.
+func (u TransactionMeta) MustOperations() []OperationMeta {
+	val, ok := u.GetOperations()
+
+	if !ok {
+		panic("arm Operations is not set")
+	}
+
+	return val
+}
+
+// GetOperations retrieves the Operations value from the union,
+// returning ok if the union's switch indicated the value is valid.
+func (u TransactionMeta) GetOperations() (result []OperationMeta, ok bool) {
+	armName, _ := u.ArmForSwitch(int32(u.V))
+
+	if armName == "Operations" {
+		result = *u.Operations
+		ok = true
+	}
+
+	return
+}
+
+// MustV1 retrieves the V1 value from the union,
+// panicing if the value is not set.
+func (u TransactionMeta) MustV1() TransactionMetaV1 {
+	val, ok := u.GetV1()
+
+	if !ok {
+		panic("arm V1 is not set")
+	}
+
+	return val
+}
+
+// GetV1 retrieves the V1 value from the union,
+// returning ok if the union's switch indicated the value is valid.
+func (u TransactionMeta) GetV1() (result TransactionMetaV1, ok bool) {
+	armName, _ := u.ArmForSwitch(int32(u.V))
+
+	if armName == "V1" {
+		result = *u.V1
+		ok = true
+	}
+
+	return
+}
+
+// MustV2 retrieves the V2 value from the union,
+// panicing if the value is not set.
+func (u TransactionMeta) MustV2() TransactionMetaV2 {
+	val, ok := u.GetV2()
+
+	if !ok {
+		panic("arm V2 is not set")
+	}
+
+	return val
+}
+
+// GetV2 retrieves the V2 value from the union,
+// returning ok if the union's switch indicated the value is valid.
+func (u TransactionMeta) GetV2() (result TransactionMetaV2, ok bool) {
+	armName, _ := u.ArmForSwitch(int32(u.V))
+
+	if armName == "V2" {
+		result = *u.V2
+		ok = true
+	}
+
+	return
+}
+
+// MarshalBinary implements encoding.BinaryMarshaler.
+func (s TransactionMeta) MarshalBinary() ([]byte, error) {
+	b := new(bytes.Buffer)
+	_, err := Marshal(b, s)
+	return b.Bytes(), err
+}
+
+// UnmarshalBinary implements encoding.BinaryUnmarshaler.
+func (s *TransactionMeta) UnmarshalBinary(inp []byte) error {
+	_, err := Unmarshal(bytes.NewReader(inp), s)
+	return err
+}
+
+var (
+	_ encoding.BinaryMarshaler   = (*TransactionMeta)(nil)
+	_ encoding.BinaryUnmarshaler = (*TransactionMeta)(nil)
+)
+
+// TransactionResultMeta is an XDR Struct defines as:
+//
+//   struct TransactionResultMeta
+//    {
+//        TransactionResultPair result;
+//        LedgerEntryChanges feeProcessing;
+//        TransactionMeta txApplyProcessing;
+//    };
+//
+type TransactionResultMeta struct {
+	Result            TransactionResultPair
+	FeeProcessing     LedgerEntryChanges
+	TxApplyProcessing TransactionMeta
+}
+
+// MarshalBinary implements encoding.BinaryMarshaler.
+func (s TransactionResultMeta) MarshalBinary() ([]byte, error) {
+	b := new(bytes.Buffer)
+	_, err := Marshal(b, s)
+	return b.Bytes(), err
+}
+
+// UnmarshalBinary implements encoding.BinaryUnmarshaler.
+func (s *TransactionResultMeta) UnmarshalBinary(inp []byte) error {
+	_, err := Unmarshal(bytes.NewReader(inp), s)
+	return err
+}
+
+var (
+	_ encoding.BinaryMarshaler   = (*TransactionResultMeta)(nil)
+	_ encoding.BinaryUnmarshaler = (*TransactionResultMeta)(nil)
+)
+
+// UpgradeEntryMeta is an XDR Struct defines as:
+//
+//   struct UpgradeEntryMeta
+//    {
+//        LedgerUpgrade upgrade;
+//        LedgerEntryChanges changes;
+//    };
+//
+type UpgradeEntryMeta struct {
+	Upgrade LedgerUpgrade
+	Changes LedgerEntryChanges
+}
+
+// MarshalBinary implements encoding.BinaryMarshaler.
+func (s UpgradeEntryMeta) MarshalBinary() ([]byte, error) {
+	b := new(bytes.Buffer)
+	_, err := Marshal(b, s)
+	return b.Bytes(), err
+}
+
+// UnmarshalBinary implements encoding.BinaryUnmarshaler.
+func (s *UpgradeEntryMeta) UnmarshalBinary(inp []byte) error {
+	_, err := Unmarshal(bytes.NewReader(inp), s)
+	return err
+}
+
+var (
+	_ encoding.BinaryMarshaler   = (*UpgradeEntryMeta)(nil)
+	_ encoding.BinaryUnmarshaler = (*UpgradeEntryMeta)(nil)
+)
+
+// LedgerCloseMetaV0 is an XDR Struct defines as:
+//
+//   struct LedgerCloseMetaV0
+//    {
+//        LedgerHeaderHistoryEntry ledgerHeader;
+//        // NB: txSet is sorted in "Hash order"
+//        TransactionSet txSet;
+//
+//        // NB: transactions are sorted in apply order here
+//        // fees for all transactions are processed first
+//        // followed by applying transactions
+//        TransactionResultMeta txProcessing<>;
+//
+//        // upgrades are applied last
+//        UpgradeEntryMeta upgradesProcessing<>;
+//
+//        // other misc information attached to the ledger close
+//        SCPHistoryEntry scpInfo<>;
+//    };
+//
+type LedgerCloseMetaV0 struct {
+	LedgerHeader       LedgerHeaderHistoryEntry
+	TxSet              TransactionSet
+	TxProcessing       []TransactionResultMeta
+	UpgradesProcessing []UpgradeEntryMeta
+	ScpInfo            []ScpHistoryEntry
+}
+
+// MarshalBinary implements encoding.BinaryMarshaler.
+func (s LedgerCloseMetaV0) MarshalBinary() ([]byte, error) {
+	b := new(bytes.Buffer)
+	_, err := Marshal(b, s)
+	return b.Bytes(), err
+}
+
+// UnmarshalBinary implements encoding.BinaryUnmarshaler.
+func (s *LedgerCloseMetaV0) UnmarshalBinary(inp []byte) error {
+	_, err := Unmarshal(bytes.NewReader(inp), s)
+	return err
+}
+
+var (
+	_ encoding.BinaryMarshaler   = (*LedgerCloseMetaV0)(nil)
+	_ encoding.BinaryUnmarshaler = (*LedgerCloseMetaV0)(nil)
+)
+
+// LedgerCloseMeta is an XDR Union defines as:
+//
+//   union LedgerCloseMeta switch (int v)
+//    {
+//    case 0:
+//         LedgerCloseMetaV0 v0;
+//    };
+//
+type LedgerCloseMeta struct {
+	V  int32
+	V0 *LedgerCloseMetaV0
+}
+
+// SwitchFieldName returns the field name in which this union's
+// discriminant is stored
+func (u LedgerCloseMeta) SwitchFieldName() string {
+	return "V"
+}
+
+// ArmForSwitch returns which field name should be used for storing
+// the value for an instance of LedgerCloseMeta
+func (u LedgerCloseMeta) ArmForSwitch(sw int32) (string, bool) {
+	switch int32(sw) {
+	case 0:
+		return "V0", true
+	}
+	return "-", false
+}
+
+// NewLedgerCloseMeta creates a new  LedgerCloseMeta.
+func NewLedgerCloseMeta(v int32, value interface{}) (result LedgerCloseMeta, err error) {
+	result.V = v
+	switch int32(v) {
+	case 0:
+		tv, ok := value.(LedgerCloseMetaV0)
+		if !ok {
+			err = fmt.Errorf("invalid value, must be LedgerCloseMetaV0")
+			return
+		}
+		result.V0 = &tv
+	}
+	return
+}
+
+// MustV0 retrieves the V0 value from the union,
+// panicing if the value is not set.
+func (u LedgerCloseMeta) MustV0() LedgerCloseMetaV0 {
+	val, ok := u.GetV0()
+
+	if !ok {
+		panic("arm V0 is not set")
+	}
+
+	return val
+}
+
+// GetV0 retrieves the V0 value from the union,
+// returning ok if the union's switch indicated the value is valid.
+func (u LedgerCloseMeta) GetV0() (result LedgerCloseMetaV0, ok bool) {
+	armName, _ := u.ArmForSwitch(int32(u.V))
+
+	if armName == "V0" {
+		result = *u.V0
+		ok = true
+	}
+
+	return
+}
+
+// MarshalBinary implements encoding.BinaryMarshaler.
+func (s LedgerCloseMeta) MarshalBinary() ([]byte, error) {
+	b := new(bytes.Buffer)
+	_, err := Marshal(b, s)
+	return b.Bytes(), err
+}
+
+// UnmarshalBinary implements encoding.BinaryUnmarshaler.
+func (s *LedgerCloseMeta) UnmarshalBinary(inp []byte) error {
+	_, err := Unmarshal(bytes.NewReader(inp), s)
+	return err
+}
+
+var (
+	_ encoding.BinaryMarshaler   = (*LedgerCloseMeta)(nil)
+	_ encoding.BinaryUnmarshaler = (*LedgerCloseMeta)(nil)
+)
+
+// ErrorCode is an XDR Enum defines as:
+//
+//   enum ErrorCode
+//    {
+//        ERR_MISC = 0, // Unspecific error
+//        ERR_DATA = 1, // Malformed data
+//        ERR_CONF = 2, // Misconfiguration error
+//        ERR_AUTH = 3, // Authentication failure
+//        ERR_LOAD = 4  // System overloaded
+//    };
+//
+type ErrorCode int32
+
+const (
+	ErrorCodeErrMisc ErrorCode = 0
+	ErrorCodeErrData ErrorCode = 1
+	ErrorCodeErrConf ErrorCode = 2
+	ErrorCodeErrAuth ErrorCode = 3
+	ErrorCodeErrLoad ErrorCode = 4
+)
+
+var errorCodeMap = map[int32]string{
+	0: "ErrorCodeErrMisc",
+	1: "ErrorCodeErrData",
+	2: "ErrorCodeErrConf",
+	3: "ErrorCodeErrAuth",
+	4: "ErrorCodeErrLoad",
+}
+
+// ValidEnum validates a proposed value for this enum.  Implements
+// the Enum interface for ErrorCode
+func (e ErrorCode) ValidEnum(v int32) bool {
+	_, ok := errorCodeMap[v]
+	return ok
+}
+
+// String returns the name of `e`
+func (e ErrorCode) String() string {
+	name, _ := errorCodeMap[int32(e)]
+	return name
+}
+
+// MarshalBinary implements encoding.BinaryMarshaler.
+func (s ErrorCode) MarshalBinary() ([]byte, error) {
+	b := new(bytes.Buffer)
+	_, err := Marshal(b, s)
+	return b.Bytes(), err
+}
+
+// UnmarshalBinary implements encoding.BinaryUnmarshaler.
+func (s *ErrorCode) UnmarshalBinary(inp []byte) error {
+	_, err := Unmarshal(bytes.NewReader(inp), s)
+	return err
+}
+
+var (
+	_ encoding.BinaryMarshaler   = (*ErrorCode)(nil)
+	_ encoding.BinaryUnmarshaler = (*ErrorCode)(nil)
+)
+
+// Error is an XDR Struct defines as:
+//
+//   struct Error
+//    {
+//        ErrorCode code;
+//        string msg<100>;
+//    };
+//
+type Error struct {
+	Code ErrorCode
+	Msg  string `xdrmaxsize:"100"`
+}
+
+// MarshalBinary implements encoding.BinaryMarshaler.
+func (s Error) MarshalBinary() ([]byte, error) {
+	b := new(bytes.Buffer)
+	_, err := Marshal(b, s)
+	return b.Bytes(), err
+}
+
+// UnmarshalBinary implements encoding.BinaryUnmarshaler.
+func (s *Error) UnmarshalBinary(inp []byte) error {
+	_, err := Unmarshal(bytes.NewReader(inp), s)
+	return err
+}
+
+var (
+	_ encoding.BinaryMarshaler   = (*Error)(nil)
+	_ encoding.BinaryUnmarshaler = (*Error)(nil)
+)
+
+// AuthCert is an XDR Struct defines as:
+//
+//   struct AuthCert
+//    {
+//        Curve25519Public pubkey;
+//        uint64 expiration;
+//        Signature sig;
+//    };
+//
+type AuthCert struct {
+	Pubkey     Curve25519Public
+	Expiration Uint64
+	Sig        Signature
+}
+
+// MarshalBinary implements encoding.BinaryMarshaler.
+func (s AuthCert) MarshalBinary() ([]byte, error) {
+	b := new(bytes.Buffer)
+	_, err := Marshal(b, s)
+	return b.Bytes(), err
+}
+
+// UnmarshalBinary implements encoding.BinaryUnmarshaler.
+func (s *AuthCert) UnmarshalBinary(inp []byte) error {
+	_, err := Unmarshal(bytes.NewReader(inp), s)
+	return err
+}
+
+var (
+	_ encoding.BinaryMarshaler   = (*AuthCert)(nil)
+	_ encoding.BinaryUnmarshaler = (*AuthCert)(nil)
+)
+
+// Hello is an XDR Struct defines as:
+//
+//   struct Hello
+//    {
+//        uint32 ledgerVersion;
+//        uint32 overlayVersion;
+//        uint32 overlayMinVersion;
+//        Hash networkID;
+//        string versionStr<100>;
+//        int listeningPort;
+//        NodeID peerID;
+//        AuthCert cert;
+//        uint256 nonce;
+//    };
+//
+type Hello struct {
+	LedgerVersion     Uint32
+	OverlayVersion    Uint32
+	OverlayMinVersion Uint32
+	NetworkId         Hash
+	VersionStr        string `xdrmaxsize:"100"`
+	ListeningPort     int32
+	PeerId            NodeId
+	Cert              AuthCert
+	Nonce             Uint256
+}
+
+// MarshalBinary implements encoding.BinaryMarshaler.
+func (s Hello) MarshalBinary() ([]byte, error) {
+	b := new(bytes.Buffer)
+	_, err := Marshal(b, s)
+	return b.Bytes(), err
+}
+
+// UnmarshalBinary implements encoding.BinaryUnmarshaler.
+func (s *Hello) UnmarshalBinary(inp []byte) error {
+	_, err := Unmarshal(bytes.NewReader(inp), s)
+	return err
+}
+
+var (
+	_ encoding.BinaryMarshaler   = (*Hello)(nil)
+	_ encoding.BinaryUnmarshaler = (*Hello)(nil)
+)
+
+// Auth is an XDR Struct defines as:
+//
+//   struct Auth
+//    {
+//        // Empty message, just to confirm
+//        // establishment of MAC keys.
+//        int unused;
+//    };
+//
+type Auth struct {
+	Unused int32
+}
+
+// MarshalBinary implements encoding.BinaryMarshaler.
+func (s Auth) MarshalBinary() ([]byte, error) {
+	b := new(bytes.Buffer)
+	_, err := Marshal(b, s)
+	return b.Bytes(), err
+}
+
+// UnmarshalBinary implements encoding.BinaryUnmarshaler.
+func (s *Auth) UnmarshalBinary(inp []byte) error {
+	_, err := Unmarshal(bytes.NewReader(inp), s)
+	return err
+}
+
+var (
+	_ encoding.BinaryMarshaler   = (*Auth)(nil)
+	_ encoding.BinaryUnmarshaler = (*Auth)(nil)
+)
+
+// IpAddrType is an XDR Enum defines as:
+//
+//   enum IPAddrType
+//    {
+//        IPv4 = 0,
+//        IPv6 = 1
+//    };
+//
+type IpAddrType int32
+
+const (
+	IpAddrTypeIPv4 IpAddrType = 0
+	IpAddrTypeIPv6 IpAddrType = 1
+)
+
+var ipAddrTypeMap = map[int32]string{
+	0: "IpAddrTypeIPv4",
+	1: "IpAddrTypeIPv6",
+}
+
+// ValidEnum validates a proposed value for this enum.  Implements
+// the Enum interface for IpAddrType
+func (e IpAddrType) ValidEnum(v int32) bool {
+	_, ok := ipAddrTypeMap[v]
+	return ok
+}
+
+// String returns the name of `e`
+func (e IpAddrType) String() string {
+	name, _ := ipAddrTypeMap[int32(e)]
+	return name
+}
+
+// MarshalBinary implements encoding.BinaryMarshaler.
+func (s IpAddrType) MarshalBinary() ([]byte, error) {
+	b := new(bytes.Buffer)
+	_, err := Marshal(b, s)
+	return b.Bytes(), err
+}
+
+// UnmarshalBinary implements encoding.BinaryUnmarshaler.
+func (s *IpAddrType) UnmarshalBinary(inp []byte) error {
+	_, err := Unmarshal(bytes.NewReader(inp), s)
+	return err
+}
+
+var (
+	_ encoding.BinaryMarshaler   = (*IpAddrType)(nil)
+	_ encoding.BinaryUnmarshaler = (*IpAddrType)(nil)
+)
+
+// PeerAddressIp is an XDR NestedUnion defines as:
+//
+//   union switch (IPAddrType type)
+//        {
+//        case IPv4:
+//            opaque ipv4[4];
+//        case IPv6:
+//            opaque ipv6[16];
+//        }
+//
+type PeerAddressIp struct {
+	Type IpAddrType
+	Ipv4 *[4]byte  `xdrmaxsize:"4"`
+	Ipv6 *[16]byte `xdrmaxsize:"16"`
+}
+
+// SwitchFieldName returns the field name in which this union's
+// discriminant is stored
+func (u PeerAddressIp) SwitchFieldName() string {
+	return "Type"
+}
+
+// ArmForSwitch returns which field name should be used for storing
+// the value for an instance of PeerAddressIp
+func (u PeerAddressIp) ArmForSwitch(sw int32) (string, bool) {
+	switch IpAddrType(sw) {
+	case IpAddrTypeIPv4:
+		return "Ipv4", true
+	case IpAddrTypeIPv6:
+		return "Ipv6", true
+	}
+	return "-", false
+}
+
+// NewPeerAddressIp creates a new  PeerAddressIp.
+func NewPeerAddressIp(aType IpAddrType, value interface{}) (result PeerAddressIp, err error) {
+	result.Type = aType
+	switch IpAddrType(aType) {
+	case IpAddrTypeIPv4:
+		tv, ok := value.([4]byte)
+		if !ok {
+			err = fmt.Errorf("invalid value, must be [4]byte")
+			return
+		}
+		result.Ipv4 = &tv
+	case IpAddrTypeIPv6:
+		tv, ok := value.([16]byte)
+		if !ok {
+			err = fmt.Errorf("invalid value, must be [16]byte")
+			return
+		}
+		result.Ipv6 = &tv
+	}
+	return
+}
+
+// MustIpv4 retrieves the Ipv4 value from the union,
+// panicing if the value is not set.
+func (u PeerAddressIp) MustIpv4() [4]byte {
+	val, ok := u.GetIpv4()
+
+	if !ok {
+		panic("arm Ipv4 is not set")
+	}
+
+	return val
+}
+
+// GetIpv4 retrieves the Ipv4 value from the union,
+// returning ok if the union's switch indicated the value is valid.
+func (u PeerAddressIp) GetIpv4() (result [4]byte, ok bool) {
+	armName, _ := u.ArmForSwitch(int32(u.Type))
+
+	if armName == "Ipv4" {
+		result = *u.Ipv4
+		ok = true
+	}
+
+	return
+}
+
+// MustIpv6 retrieves the Ipv6 value from the union,
+// panicing if the value is not set.
+func (u PeerAddressIp) MustIpv6() [16]byte {
+	val, ok := u.GetIpv6()
+
+	if !ok {
+		panic("arm Ipv6 is not set")
+	}
+
+	return val
+}
+
+// GetIpv6 retrieves the Ipv6 value from the union,
+// returning ok if the union's switch indicated the value is valid.
+func (u PeerAddressIp) GetIpv6() (result [16]byte, ok bool) {
+	armName, _ := u.ArmForSwitch(int32(u.Type))
+
+	if armName == "Ipv6" {
+		result = *u.Ipv6
+		ok = true
+	}
+
+	return
+}
+
+// MarshalBinary implements encoding.BinaryMarshaler.
+func (s PeerAddressIp) MarshalBinary() ([]byte, error) {
+	b := new(bytes.Buffer)
+	_, err := Marshal(b, s)
+	return b.Bytes(), err
+}
+
+// UnmarshalBinary implements encoding.BinaryUnmarshaler.
+func (s *PeerAddressIp) UnmarshalBinary(inp []byte) error {
+	_, err := Unmarshal(bytes.NewReader(inp), s)
+	return err
+}
+
+var (
+	_ encoding.BinaryMarshaler   = (*PeerAddressIp)(nil)
+	_ encoding.BinaryUnmarshaler = (*PeerAddressIp)(nil)
+)
+
+// PeerAddress is an XDR Struct defines as:
+//
+//   struct PeerAddress
+//    {
+//        union switch (IPAddrType type)
+//        {
+//        case IPv4:
+//            opaque ipv4[4];
+//        case IPv6:
+//            opaque ipv6[16];
+//        }
+//        ip;
+//        uint32 port;
+//        uint32 numFailures;
+//    };
+//
+type PeerAddress struct {
+	Ip          PeerAddressIp
+	Port        Uint32
+	NumFailures Uint32
+}
+
+// MarshalBinary implements encoding.BinaryMarshaler.
+func (s PeerAddress) MarshalBinary() ([]byte, error) {
+	b := new(bytes.Buffer)
+	_, err := Marshal(b, s)
+	return b.Bytes(), err
+}
+
+// UnmarshalBinary implements encoding.BinaryUnmarshaler.
+func (s *PeerAddress) UnmarshalBinary(inp []byte) error {
+	_, err := Unmarshal(bytes.NewReader(inp), s)
+	return err
+}
+
+var (
+	_ encoding.BinaryMarshaler   = (*PeerAddress)(nil)
+	_ encoding.BinaryUnmarshaler = (*PeerAddress)(nil)
+)
+
+// MessageType is an XDR Enum defines as:
+//
+//   enum MessageType
+//    {
+//        ERROR_MSG = 0,
+//        AUTH = 2,
+//        DONT_HAVE = 3,
+//
+//        GET_PEERS = 4, // gets a list of peers this guy knows about
+//        PEERS = 5,
+//
+//        GET_TX_SET = 6, // gets a particular txset by hash
+//        TX_SET = 7,
+//
+//        TRANSACTION = 8, // pass on a tx you have heard about
+//
+//        // SCP
+//        GET_SCP_QUORUMSET = 9,
+//        SCP_QUORUMSET = 10,
+//        SCP_MESSAGE = 11,
+//        GET_SCP_STATE = 12,
+//
+//        // new messages
+//        HELLO = 13,
+//
+//        SURVEY_REQUEST = 14,
+//        SURVEY_RESPONSE = 15
+//    };
+//
+type MessageType int32
+
+const (
+	MessageTypeErrorMsg        MessageType = 0
+	MessageTypeAuth            MessageType = 2
+	MessageTypeDontHave        MessageType = 3
+	MessageTypeGetPeers        MessageType = 4
+	MessageTypePeers           MessageType = 5
+	MessageTypeGetTxSet        MessageType = 6
+	MessageTypeTxSet           MessageType = 7
+	MessageTypeTransaction     MessageType = 8
+	MessageTypeGetScpQuorumset MessageType = 9
+	MessageTypeScpQuorumset    MessageType = 10
+	MessageTypeScpMessage      MessageType = 11
+	MessageTypeGetScpState     MessageType = 12
+	MessageTypeHello           MessageType = 13
+	MessageTypeSurveyRequest   MessageType = 14
+	MessageTypeSurveyResponse  MessageType = 15
+)
+
+var messageTypeMap = map[int32]string{
+	0:  "MessageTypeErrorMsg",
+	2:  "MessageTypeAuth",
+	3:  "MessageTypeDontHave",
+	4:  "MessageTypeGetPeers",
+	5:  "MessageTypePeers",
+	6:  "MessageTypeGetTxSet",
+	7:  "MessageTypeTxSet",
+	8:  "MessageTypeTransaction",
+	9:  "MessageTypeGetScpQuorumset",
+	10: "MessageTypeScpQuorumset",
+	11: "MessageTypeScpMessage",
+	12: "MessageTypeGetScpState",
+	13: "MessageTypeHello",
+	14: "MessageTypeSurveyRequest",
+	15: "MessageTypeSurveyResponse",
+}
+
+// ValidEnum validates a proposed value for this enum.  Implements
+// the Enum interface for MessageType
+func (e MessageType) ValidEnum(v int32) bool {
+	_, ok := messageTypeMap[v]
+	return ok
+}
+
+// String returns the name of `e`
+func (e MessageType) String() string {
+	name, _ := messageTypeMap[int32(e)]
+	return name
+}
+
+// MarshalBinary implements encoding.BinaryMarshaler.
+func (s MessageType) MarshalBinary() ([]byte, error) {
+	b := new(bytes.Buffer)
+	_, err := Marshal(b, s)
+	return b.Bytes(), err
+}
+
+// UnmarshalBinary implements encoding.BinaryUnmarshaler.
+func (s *MessageType) UnmarshalBinary(inp []byte) error {
+	_, err := Unmarshal(bytes.NewReader(inp), s)
+	return err
+}
+
+var (
+	_ encoding.BinaryMarshaler   = (*MessageType)(nil)
+	_ encoding.BinaryUnmarshaler = (*MessageType)(nil)
+)
+
+// DontHave is an XDR Struct defines as:
+//
+//   struct DontHave
+//    {
+//        MessageType type;
+//        uint256 reqHash;
+//    };
+//
+type DontHave struct {
+	Type    MessageType
+	ReqHash Uint256
+}
+
+// MarshalBinary implements encoding.BinaryMarshaler.
+func (s DontHave) MarshalBinary() ([]byte, error) {
+	b := new(bytes.Buffer)
+	_, err := Marshal(b, s)
+	return b.Bytes(), err
+}
+
+// UnmarshalBinary implements encoding.BinaryUnmarshaler.
+func (s *DontHave) UnmarshalBinary(inp []byte) error {
+	_, err := Unmarshal(bytes.NewReader(inp), s)
+	return err
+}
+
+var (
+	_ encoding.BinaryMarshaler   = (*DontHave)(nil)
+	_ encoding.BinaryUnmarshaler = (*DontHave)(nil)
+)
+
+// SurveyMessageCommandType is an XDR Enum defines as:
+//
+//   enum SurveyMessageCommandType
+//    {
+//        SURVEY_TOPOLOGY = 0
+//    };
+//
+type SurveyMessageCommandType int32
+
+const (
+	SurveyMessageCommandTypeSurveyTopology SurveyMessageCommandType = 0
+)
+
+var surveyMessageCommandTypeMap = map[int32]string{
+	0: "SurveyMessageCommandTypeSurveyTopology",
+}
+
+// ValidEnum validates a proposed value for this enum.  Implements
+// the Enum interface for SurveyMessageCommandType
+func (e SurveyMessageCommandType) ValidEnum(v int32) bool {
+	_, ok := surveyMessageCommandTypeMap[v]
+	return ok
+}
+
+// String returns the name of `e`
+func (e SurveyMessageCommandType) String() string {
+	name, _ := surveyMessageCommandTypeMap[int32(e)]
+	return name
+}
+
+// MarshalBinary implements encoding.BinaryMarshaler.
+func (s SurveyMessageCommandType) MarshalBinary() ([]byte, error) {
+	b := new(bytes.Buffer)
+	_, err := Marshal(b, s)
+	return b.Bytes(), err
+}
+
+// UnmarshalBinary implements encoding.BinaryUnmarshaler.
+func (s *SurveyMessageCommandType) UnmarshalBinary(inp []byte) error {
+	_, err := Unmarshal(bytes.NewReader(inp), s)
+	return err
+}
+
+var (
+	_ encoding.BinaryMarshaler   = (*SurveyMessageCommandType)(nil)
+	_ encoding.BinaryUnmarshaler = (*SurveyMessageCommandType)(nil)
+)
+
+// SurveyRequestMessage is an XDR Struct defines as:
+//
+//   struct SurveyRequestMessage
+//    {
+//        NodeID surveyorPeerID;
+//        NodeID surveyedPeerID;
+//        uint32 ledgerNum;
+//        Curve25519Public encryptionKey;
+//        SurveyMessageCommandType commandType;
+//    };
+//
+type SurveyRequestMessage struct {
+	SurveyorPeerId NodeId
+	SurveyedPeerId NodeId
+	LedgerNum      Uint32
+	EncryptionKey  Curve25519Public
+	CommandType    SurveyMessageCommandType
+}
+
+// MarshalBinary implements encoding.BinaryMarshaler.
+func (s SurveyRequestMessage) MarshalBinary() ([]byte, error) {
+	b := new(bytes.Buffer)
+	_, err := Marshal(b, s)
+	return b.Bytes(), err
+}
+
+// UnmarshalBinary implements encoding.BinaryUnmarshaler.
+func (s *SurveyRequestMessage) UnmarshalBinary(inp []byte) error {
+	_, err := Unmarshal(bytes.NewReader(inp), s)
+	return err
+}
+
+var (
+	_ encoding.BinaryMarshaler   = (*SurveyRequestMessage)(nil)
+	_ encoding.BinaryUnmarshaler = (*SurveyRequestMessage)(nil)
+)
+
+// SignedSurveyRequestMessage is an XDR Struct defines as:
+//
+//   struct SignedSurveyRequestMessage
+//    {
+//        Signature requestSignature;
+//        SurveyRequestMessage request;
+//    };
+//
+type SignedSurveyRequestMessage struct {
+	RequestSignature Signature
+	Request          SurveyRequestMessage
+}
+
+// MarshalBinary implements encoding.BinaryMarshaler.
+func (s SignedSurveyRequestMessage) MarshalBinary() ([]byte, error) {
+	b := new(bytes.Buffer)
+	_, err := Marshal(b, s)
+	return b.Bytes(), err
+}
+
+// UnmarshalBinary implements encoding.BinaryUnmarshaler.
+func (s *SignedSurveyRequestMessage) UnmarshalBinary(inp []byte) error {
+	_, err := Unmarshal(bytes.NewReader(inp), s)
+	return err
+}
+
+var (
+	_ encoding.BinaryMarshaler   = (*SignedSurveyRequestMessage)(nil)
+	_ encoding.BinaryUnmarshaler = (*SignedSurveyRequestMessage)(nil)
+)
+
+// EncryptedBody is an XDR Typedef defines as:
+//
+//   typedef opaque EncryptedBody<64000>;
+//
+type EncryptedBody []byte
+
+// XDRMaxSize implements the Sized interface for EncryptedBody
+func (e EncryptedBody) XDRMaxSize() int {
+	return 64000
+}
+
+// MarshalBinary implements encoding.BinaryMarshaler.
+func (s EncryptedBody) MarshalBinary() ([]byte, error) {
+	b := new(bytes.Buffer)
+	_, err := Marshal(b, s)
+	return b.Bytes(), err
+}
+
+// UnmarshalBinary implements encoding.BinaryUnmarshaler.
+func (s *EncryptedBody) UnmarshalBinary(inp []byte) error {
+	_, err := Unmarshal(bytes.NewReader(inp), s)
+	return err
+}
+
+var (
+	_ encoding.BinaryMarshaler   = (*EncryptedBody)(nil)
+	_ encoding.BinaryUnmarshaler = (*EncryptedBody)(nil)
+)
+
+// SurveyResponseMessage is an XDR Struct defines as:
+//
+//   struct SurveyResponseMessage
+//    {
+//        NodeID surveyorPeerID;
+//        NodeID surveyedPeerID;
+//        uint32 ledgerNum;
+//        SurveyMessageCommandType commandType;
+//        EncryptedBody encryptedBody;
+//    };
+//
+type SurveyResponseMessage struct {
+	SurveyorPeerId NodeId
+	SurveyedPeerId NodeId
+	LedgerNum      Uint32
+	CommandType    SurveyMessageCommandType
+	EncryptedBody  EncryptedBody
+}
+
+// MarshalBinary implements encoding.BinaryMarshaler.
+func (s SurveyResponseMessage) MarshalBinary() ([]byte, error) {
+	b := new(bytes.Buffer)
+	_, err := Marshal(b, s)
+	return b.Bytes(), err
+}
+
+// UnmarshalBinary implements encoding.BinaryUnmarshaler.
+func (s *SurveyResponseMessage) UnmarshalBinary(inp []byte) error {
+	_, err := Unmarshal(bytes.NewReader(inp), s)
+	return err
+}
+
+var (
+	_ encoding.BinaryMarshaler   = (*SurveyResponseMessage)(nil)
+	_ encoding.BinaryUnmarshaler = (*SurveyResponseMessage)(nil)
+)
+
+// SignedSurveyResponseMessage is an XDR Struct defines as:
+//
+//   struct SignedSurveyResponseMessage
+//    {
+//        Signature responseSignature;
+//        SurveyResponseMessage response;
+//    };
+//
+type SignedSurveyResponseMessage struct {
+	ResponseSignature Signature
+	Response          SurveyResponseMessage
+}
+
+// MarshalBinary implements encoding.BinaryMarshaler.
+func (s SignedSurveyResponseMessage) MarshalBinary() ([]byte, error) {
+	b := new(bytes.Buffer)
+	_, err := Marshal(b, s)
+	return b.Bytes(), err
+}
+
+// UnmarshalBinary implements encoding.BinaryUnmarshaler.
+func (s *SignedSurveyResponseMessage) UnmarshalBinary(inp []byte) error {
+	_, err := Unmarshal(bytes.NewReader(inp), s)
+	return err
+}
+
+var (
+	_ encoding.BinaryMarshaler   = (*SignedSurveyResponseMessage)(nil)
+	_ encoding.BinaryUnmarshaler = (*SignedSurveyResponseMessage)(nil)
+)
+
+// PeerStats is an XDR Struct defines as:
+//
+//   struct PeerStats
+//    {
+//        NodeID id;
+//        string versionStr<100>;
+//        uint64 messagesRead;
+//        uint64 messagesWritten;
+//        uint64 bytesRead;
+//        uint64 bytesWritten;
+//        uint64 secondsConnected;
+//
+//        uint64 uniqueFloodBytesRecv;
+//        uint64 duplicateFloodBytesRecv;
+//        uint64 uniqueFetchBytesRecv;
+//        uint64 duplicateFetchBytesRecv;
+//
+//        uint64 uniqueFloodMessageRecv;
+//        uint64 duplicateFloodMessageRecv;
+//        uint64 uniqueFetchMessageRecv;
+//        uint64 duplicateFetchMessageRecv;
+//    };
+//
+type PeerStats struct {
+	Id                        NodeId
+	VersionStr                string `xdrmaxsize:"100"`
+	MessagesRead              Uint64
+	MessagesWritten           Uint64
+	BytesRead                 Uint64
+	BytesWritten              Uint64
+	SecondsConnected          Uint64
+	UniqueFloodBytesRecv      Uint64
+	DuplicateFloodBytesRecv   Uint64
+	UniqueFetchBytesRecv      Uint64
+	DuplicateFetchBytesRecv   Uint64
+	UniqueFloodMessageRecv    Uint64
+	DuplicateFloodMessageRecv Uint64
+	UniqueFetchMessageRecv    Uint64
+	DuplicateFetchMessageRecv Uint64
+}
+
+// MarshalBinary implements encoding.BinaryMarshaler.
+func (s PeerStats) MarshalBinary() ([]byte, error) {
+	b := new(bytes.Buffer)
+	_, err := Marshal(b, s)
+	return b.Bytes(), err
+}
+
+// UnmarshalBinary implements encoding.BinaryUnmarshaler.
+func (s *PeerStats) UnmarshalBinary(inp []byte) error {
+	_, err := Unmarshal(bytes.NewReader(inp), s)
+	return err
+}
+
+var (
+	_ encoding.BinaryMarshaler   = (*PeerStats)(nil)
+	_ encoding.BinaryUnmarshaler = (*PeerStats)(nil)
+)
+
+// PeerStatList is an XDR Typedef defines as:
+//
+//   typedef PeerStats PeerStatList<25>;
+//
+type PeerStatList []PeerStats
+
+// XDRMaxSize implements the Sized interface for PeerStatList
+func (e PeerStatList) XDRMaxSize() int {
+	return 25
+}
+
+// MarshalBinary implements encoding.BinaryMarshaler.
+func (s PeerStatList) MarshalBinary() ([]byte, error) {
+	b := new(bytes.Buffer)
+	_, err := Marshal(b, s)
+	return b.Bytes(), err
+}
+
+// UnmarshalBinary implements encoding.BinaryUnmarshaler.
+func (s *PeerStatList) UnmarshalBinary(inp []byte) error {
+	_, err := Unmarshal(bytes.NewReader(inp), s)
+	return err
+}
+
+var (
+	_ encoding.BinaryMarshaler   = (*PeerStatList)(nil)
+	_ encoding.BinaryUnmarshaler = (*PeerStatList)(nil)
+)
+
+// TopologyResponseBody is an XDR Struct defines as:
+//
+//   struct TopologyResponseBody
+//    {
+//        PeerStatList inboundPeers;
+//        PeerStatList outboundPeers;
+//
+//        uint32 totalInboundPeerCount;
+//        uint32 totalOutboundPeerCount;
+//    };
+//
+type TopologyResponseBody struct {
+	InboundPeers           PeerStatList
+	OutboundPeers          PeerStatList
+	TotalInboundPeerCount  Uint32
+	TotalOutboundPeerCount Uint32
+}
+
+// MarshalBinary implements encoding.BinaryMarshaler.
+func (s TopologyResponseBody) MarshalBinary() ([]byte, error) {
+	b := new(bytes.Buffer)
+	_, err := Marshal(b, s)
+	return b.Bytes(), err
+}
+
+// UnmarshalBinary implements encoding.BinaryUnmarshaler.
+func (s *TopologyResponseBody) UnmarshalBinary(inp []byte) error {
+	_, err := Unmarshal(bytes.NewReader(inp), s)
+	return err
+}
+
+var (
+	_ encoding.BinaryMarshaler   = (*TopologyResponseBody)(nil)
+	_ encoding.BinaryUnmarshaler = (*TopologyResponseBody)(nil)
+)
+
+// SurveyResponseBody is an XDR Union defines as:
+//
+//   union SurveyResponseBody switch (SurveyMessageCommandType type)
+//    {
+//        case SURVEY_TOPOLOGY:
+//            TopologyResponseBody topologyResponseBody;
+//    };
+//
+type SurveyResponseBody struct {
+	Type                 SurveyMessageCommandType
+	TopologyResponseBody *TopologyResponseBody
+}
+
+// SwitchFieldName returns the field name in which this union's
+// discriminant is stored
+func (u SurveyResponseBody) SwitchFieldName() string {
+	return "Type"
+}
+
+// ArmForSwitch returns which field name should be used for storing
+// the value for an instance of SurveyResponseBody
+func (u SurveyResponseBody) ArmForSwitch(sw int32) (string, bool) {
+	switch SurveyMessageCommandType(sw) {
+	case SurveyMessageCommandTypeSurveyTopology:
+		return "TopologyResponseBody", true
+	}
+	return "-", false
+}
+
+// NewSurveyResponseBody creates a new  SurveyResponseBody.
+func NewSurveyResponseBody(aType SurveyMessageCommandType, value interface{}) (result SurveyResponseBody, err error) {
+	result.Type = aType
+	switch SurveyMessageCommandType(aType) {
+	case SurveyMessageCommandTypeSurveyTopology:
+		tv, ok := value.(TopologyResponseBody)
+		if !ok {
+			err = fmt.Errorf("invalid value, must be TopologyResponseBody")
+			return
+		}
+		result.TopologyResponseBody = &tv
+	}
+	return
+}
+
+// MustTopologyResponseBody retrieves the TopologyResponseBody value from the union,
+// panicing if the value is not set.
+func (u SurveyResponseBody) MustTopologyResponseBody() TopologyResponseBody {
+	val, ok := u.GetTopologyResponseBody()
+
+	if !ok {
+		panic("arm TopologyResponseBody is not set")
+	}
+
+	return val
+}
+
+// GetTopologyResponseBody retrieves the TopologyResponseBody value from the union,
+// returning ok if the union's switch indicated the value is valid.
+func (u SurveyResponseBody) GetTopologyResponseBody() (result TopologyResponseBody, ok bool) {
+	armName, _ := u.ArmForSwitch(int32(u.Type))
+
+	if armName == "TopologyResponseBody" {
+		result = *u.TopologyResponseBody
+		ok = true
+	}
+
+	return
+}
+
+// MarshalBinary implements encoding.BinaryMarshaler.
+func (s SurveyResponseBody) MarshalBinary() ([]byte, error) {
+	b := new(bytes.Buffer)
+	_, err := Marshal(b, s)
+	return b.Bytes(), err
+}
+
+// UnmarshalBinary implements encoding.BinaryUnmarshaler.
+func (s *SurveyResponseBody) UnmarshalBinary(inp []byte) error {
+	_, err := Unmarshal(bytes.NewReader(inp), s)
+	return err
+}
+
+var (
+	_ encoding.BinaryMarshaler   = (*SurveyResponseBody)(nil)
+	_ encoding.BinaryUnmarshaler = (*SurveyResponseBody)(nil)
+)
+
+// StellarMessage is an XDR Union defines as:
+//
+//   union StellarMessage switch (MessageType type)
+//    {
+//    case ERROR_MSG:
+//        Error error;
+//    case HELLO:
+//        Hello hello;
+//    case AUTH:
+//        Auth auth;
+//    case DONT_HAVE:
+//        DontHave dontHave;
+//    case GET_PEERS:
+//        void;
+//    case PEERS:
+//        PeerAddress peers<100>;
+//
+//    case GET_TX_SET:
+//        uint256 txSetHash;
+//    case TX_SET:
+//        TransactionSet txSet;
+//
+//    case TRANSACTION:
+//        TransactionEnvelope transaction;
+//
+//    case SURVEY_REQUEST:
+//        SignedSurveyRequestMessage signedSurveyRequestMessage;
+//
+//    case SURVEY_RESPONSE:
+//        SignedSurveyResponseMessage signedSurveyResponseMessage;
+//
+//    // SCP
+//    case GET_SCP_QUORUMSET:
+//        uint256 qSetHash;
+//    case SCP_QUORUMSET:
+//        SCPQuorumSet qSet;
+//    case SCP_MESSAGE:
+//        SCPEnvelope envelope;
+//    case GET_SCP_STATE:
+//        uint32 getSCPLedgerSeq; // ledger seq requested ; if 0, requests the latest
+//    };
+//
+type StellarMessage struct {
+	Type                        MessageType
+	Error                       *Error
+	Hello                       *Hello
+	Auth                        *Auth
+	DontHave                    *DontHave
+	Peers                       *[]PeerAddress `xdrmaxsize:"100"`
+	TxSetHash                   *Uint256
+	TxSet                       *TransactionSet
+	Transaction                 *TransactionEnvelope
+	SignedSurveyRequestMessage  *SignedSurveyRequestMessage
+	SignedSurveyResponseMessage *SignedSurveyResponseMessage
+	QSetHash                    *Uint256
+	QSet                        *ScpQuorumSet
+	Envelope                    *ScpEnvelope
+	GetScpLedgerSeq             *Uint32
+}
+
+// SwitchFieldName returns the field name in which this union's
+// discriminant is stored
+func (u StellarMessage) SwitchFieldName() string {
+	return "Type"
+}
+
+// ArmForSwitch returns which field name should be used for storing
+// the value for an instance of StellarMessage
+func (u StellarMessage) ArmForSwitch(sw int32) (string, bool) {
+	switch MessageType(sw) {
+	case MessageTypeErrorMsg:
+		return "Error", true
+	case MessageTypeHello:
+		return "Hello", true
+	case MessageTypeAuth:
+		return "Auth", true
+	case MessageTypeDontHave:
+		return "DontHave", true
+	case MessageTypeGetPeers:
+		return "", true
+	case MessageTypePeers:
+		return "Peers", true
+	case MessageTypeGetTxSet:
+		return "TxSetHash", true
+	case MessageTypeTxSet:
+		return "TxSet", true
+	case MessageTypeTransaction:
+		return "Transaction", true
+	case MessageTypeSurveyRequest:
+		return "SignedSurveyRequestMessage", true
+	case MessageTypeSurveyResponse:
+		return "SignedSurveyResponseMessage", true
+	case MessageTypeGetScpQuorumset:
+		return "QSetHash", true
+	case MessageTypeScpQuorumset:
+		return "QSet", true
+	case MessageTypeScpMessage:
+		return "Envelope", true
+	case MessageTypeGetScpState:
+		return "GetScpLedgerSeq", true
+	}
+	return "-", false
+}
+
+// NewStellarMessage creates a new  StellarMessage.
+func NewStellarMessage(aType MessageType, value interface{}) (result StellarMessage, err error) {
+	result.Type = aType
+	switch MessageType(aType) {
+	case MessageTypeErrorMsg:
+		tv, ok := value.(Error)
+		if !ok {
+			err = fmt.Errorf("invalid value, must be Error")
+			return
+		}
+		result.Error = &tv
+	case MessageTypeHello:
+		tv, ok := value.(Hello)
+		if !ok {
+			err = fmt.Errorf("invalid value, must be Hello")
+			return
+		}
+		result.Hello = &tv
+	case MessageTypeAuth:
+		tv, ok := value.(Auth)
+		if !ok {
+			err = fmt.Errorf("invalid value, must be Auth")
+			return
+		}
+		result.Auth = &tv
+	case MessageTypeDontHave:
+		tv, ok := value.(DontHave)
+		if !ok {
+			err = fmt.Errorf("invalid value, must be DontHave")
+			return
+		}
+		result.DontHave = &tv
+	case MessageTypeGetPeers:
+		// void
+	case MessageTypePeers:
+		tv, ok := value.([]PeerAddress)
+		if !ok {
+			err = fmt.Errorf("invalid value, must be []PeerAddress")
+			return
+		}
+		result.Peers = &tv
+	case MessageTypeGetTxSet:
+		tv, ok := value.(Uint256)
+		if !ok {
+			err = fmt.Errorf("invalid value, must be Uint256")
+			return
+		}
+		result.TxSetHash = &tv
+	case MessageTypeTxSet:
+		tv, ok := value.(TransactionSet)
+		if !ok {
+			err = fmt.Errorf("invalid value, must be TransactionSet")
+			return
+		}
+		result.TxSet = &tv
+	case MessageTypeTransaction:
+		tv, ok := value.(TransactionEnvelope)
+		if !ok {
+			err = fmt.Errorf("invalid value, must be TransactionEnvelope")
+			return
+		}
+		result.Transaction = &tv
+	case MessageTypeSurveyRequest:
+		tv, ok := value.(SignedSurveyRequestMessage)
+		if !ok {
+			err = fmt.Errorf("invalid value, must be SignedSurveyRequestMessage")
+			return
+		}
+		result.SignedSurveyRequestMessage = &tv
+	case MessageTypeSurveyResponse:
+		tv, ok := value.(SignedSurveyResponseMessage)
+		if !ok {
+			err = fmt.Errorf("invalid value, must be SignedSurveyResponseMessage")
+			return
+		}
+		result.SignedSurveyResponseMessage = &tv
+	case MessageTypeGetScpQuorumset:
+		tv, ok := value.(Uint256)
+		if !ok {
+			err = fmt.Errorf("invalid value, must be Uint256")
+			return
+		}
+		result.QSetHash = &tv
+	case MessageTypeScpQuorumset:
+		tv, ok := value.(ScpQuorumSet)
+		if !ok {
+			err = fmt.Errorf("invalid value, must be ScpQuorumSet")
+			return
+		}
+		result.QSet = &tv
+	case MessageTypeScpMessage:
+		tv, ok := value.(ScpEnvelope)
+		if !ok {
+			err = fmt.Errorf("invalid value, must be ScpEnvelope")
+			return
+		}
+		result.Envelope = &tv
+	case MessageTypeGetScpState:
+		tv, ok := value.(Uint32)
+		if !ok {
+			err = fmt.Errorf("invalid value, must be Uint32")
+			return
+		}
+		result.GetScpLedgerSeq = &tv
+	}
+	return
+}
+
+// MustError retrieves the Error value from the union,
+// panicing if the value is not set.
+func (u StellarMessage) MustError() Error {
+	val, ok := u.GetError()
+
+	if !ok {
+		panic("arm Error is not set")
+	}
+
+	return val
+}
+
+// GetError retrieves the Error value from the union,
+// returning ok if the union's switch indicated the value is valid.
+func (u StellarMessage) GetError() (result Error, ok bool) {
+	armName, _ := u.ArmForSwitch(int32(u.Type))
+
+	if armName == "Error" {
+		result = *u.Error
+		ok = true
+	}
+
+	return
+}
+
+// MustHello retrieves the Hello value from the union,
+// panicing if the value is not set.
+func (u StellarMessage) MustHello() Hello {
+	val, ok := u.GetHello()
+
+	if !ok {
+		panic("arm Hello is not set")
+	}
+
+	return val
+}
+
+// GetHello retrieves the Hello value from the union,
+// returning ok if the union's switch indicated the value is valid.
+func (u StellarMessage) GetHello() (result Hello, ok bool) {
+	armName, _ := u.ArmForSwitch(int32(u.Type))
+
+	if armName == "Hello" {
+		result = *u.Hello
+		ok = true
+	}
+
+	return
+}
+
+// MustAuth retrieves the Auth value from the union,
+// panicing if the value is not set.
+func (u StellarMessage) MustAuth() Auth {
+	val, ok := u.GetAuth()
+
+	if !ok {
+		panic("arm Auth is not set")
+	}
+
+	return val
+}
+
+// GetAuth retrieves the Auth value from the union,
+// returning ok if the union's switch indicated the value is valid.
+func (u StellarMessage) GetAuth() (result Auth, ok bool) {
+	armName, _ := u.ArmForSwitch(int32(u.Type))
+
+	if armName == "Auth" {
+		result = *u.Auth
+		ok = true
+	}
+
+	return
+}
+
+// MustDontHave retrieves the DontHave value from the union,
+// panicing if the value is not set.
+func (u StellarMessage) MustDontHave() DontHave {
+	val, ok := u.GetDontHave()
+
+	if !ok {
+		panic("arm DontHave is not set")
+	}
+
+	return val
+}
+
+// GetDontHave retrieves the DontHave value from the union,
+// returning ok if the union's switch indicated the value is valid.
+func (u StellarMessage) GetDontHave() (result DontHave, ok bool) {
+	armName, _ := u.ArmForSwitch(int32(u.Type))
+
+	if armName == "DontHave" {
+		result = *u.DontHave
+		ok = true
+	}
+
+	return
+}
+
+// MustPeers retrieves the Peers value from the union,
+// panicing if the value is not set.
+func (u StellarMessage) MustPeers() []PeerAddress {
+	val, ok := u.GetPeers()
+
+	if !ok {
+		panic("arm Peers is not set")
+	}
+
+	return val
+}
+
+// GetPeers retrieves the Peers value from the union,
+// returning ok if the union's switch indicated the value is valid.
+func (u StellarMessage) GetPeers() (result []PeerAddress, ok bool) {
+	armName, _ := u.ArmForSwitch(int32(u.Type))
+
+	if armName == "Peers" {
+		result = *u.Peers
+		ok = true
+	}
+
+	return
+}
+
+// MustTxSetHash retrieves the TxSetHash value from the union,
+// panicing if the value is not set.
+func (u StellarMessage) MustTxSetHash() Uint256 {
+	val, ok := u.GetTxSetHash()
+
+	if !ok {
+		panic("arm TxSetHash is not set")
+	}
+
+	return val
+}
+
+// GetTxSetHash retrieves the TxSetHash value from the union,
+// returning ok if the union's switch indicated the value is valid.
+func (u StellarMessage) GetTxSetHash() (result Uint256, ok bool) {
+	armName, _ := u.ArmForSwitch(int32(u.Type))
+
+	if armName == "TxSetHash" {
+		result = *u.TxSetHash
+		ok = true
+	}
+
+	return
+}
+
+// MustTxSet retrieves the TxSet value from the union,
+// panicing if the value is not set.
+func (u StellarMessage) MustTxSet() TransactionSet {
+	val, ok := u.GetTxSet()
+
+	if !ok {
+		panic("arm TxSet is not set")
+	}
+
+	return val
+}
+
+// GetTxSet retrieves the TxSet value from the union,
+// returning ok if the union's switch indicated the value is valid.
+func (u StellarMessage) GetTxSet() (result TransactionSet, ok bool) {
+	armName, _ := u.ArmForSwitch(int32(u.Type))
+
+	if armName == "TxSet" {
+		result = *u.TxSet
+		ok = true
+	}
+
+	return
+}
+
+// MustTransaction retrieves the Transaction value from the union,
+// panicing if the value is not set.
+func (u StellarMessage) MustTransaction() TransactionEnvelope {
+	val, ok := u.GetTransaction()
+
+	if !ok {
+		panic("arm Transaction is not set")
+	}
+
+	return val
+}
+
+// GetTransaction retrieves the Transaction value from the union,
+// returning ok if the union's switch indicated the value is valid.
+func (u StellarMessage) GetTransaction() (result TransactionEnvelope, ok bool) {
+	armName, _ := u.ArmForSwitch(int32(u.Type))
+
+	if armName == "Transaction" {
+		result = *u.Transaction
+		ok = true
+	}
+
+	return
+}
+
+// MustSignedSurveyRequestMessage retrieves the SignedSurveyRequestMessage value from the union,
+// panicing if the value is not set.
+func (u StellarMessage) MustSignedSurveyRequestMessage() SignedSurveyRequestMessage {
+	val, ok := u.GetSignedSurveyRequestMessage()
+
+	if !ok {
+		panic("arm SignedSurveyRequestMessage is not set")
+	}
+
+	return val
+}
+
+// GetSignedSurveyRequestMessage retrieves the SignedSurveyRequestMessage value from the union,
+// returning ok if the union's switch indicated the value is valid.
+func (u StellarMessage) GetSignedSurveyRequestMessage() (result SignedSurveyRequestMessage, ok bool) {
+	armName, _ := u.ArmForSwitch(int32(u.Type))
+
+	if armName == "SignedSurveyRequestMessage" {
+		result = *u.SignedSurveyRequestMessage
+		ok = true
+	}
+
+	return
+}
+
+// MustSignedSurveyResponseMessage retrieves the SignedSurveyResponseMessage value from the union,
+// panicing if the value is not set.
+func (u StellarMessage) MustSignedSurveyResponseMessage() SignedSurveyResponseMessage {
+	val, ok := u.GetSignedSurveyResponseMessage()
+
+	if !ok {
+		panic("arm SignedSurveyResponseMessage is not set")
+	}
+
+	return val
+}
+
+// GetSignedSurveyResponseMessage retrieves the SignedSurveyResponseMessage value from the union,
+// returning ok if the union's switch indicated the value is valid.
+func (u StellarMessage) GetSignedSurveyResponseMessage() (result SignedSurveyResponseMessage, ok bool) {
+	armName, _ := u.ArmForSwitch(int32(u.Type))
+
+	if armName == "SignedSurveyResponseMessage" {
+		result = *u.SignedSurveyResponseMessage
+		ok = true
+	}
+
+	return
+}
+
+// MustQSetHash retrieves the QSetHash value from the union,
+// panicing if the value is not set.
+func (u StellarMessage) MustQSetHash() Uint256 {
+	val, ok := u.GetQSetHash()
+
+	if !ok {
+		panic("arm QSetHash is not set")
+	}
+
+	return val
+}
+
+// GetQSetHash retrieves the QSetHash value from the union,
+// returning ok if the union's switch indicated the value is valid.
+func (u StellarMessage) GetQSetHash() (result Uint256, ok bool) {
+	armName, _ := u.ArmForSwitch(int32(u.Type))
+
+	if armName == "QSetHash" {
+		result = *u.QSetHash
+		ok = true
+	}
+
+	return
+}
+
+// MustQSet retrieves the QSet value from the union,
+// panicing if the value is not set.
+func (u StellarMessage) MustQSet() ScpQuorumSet {
+	val, ok := u.GetQSet()
+
+	if !ok {
+		panic("arm QSet is not set")
+	}
+
+	return val
+}
+
+// GetQSet retrieves the QSet value from the union,
+// returning ok if the union's switch indicated the value is valid.
+func (u StellarMessage) GetQSet() (result ScpQuorumSet, ok bool) {
+	armName, _ := u.ArmForSwitch(int32(u.Type))
+
+	if armName == "QSet" {
+		result = *u.QSet
+		ok = true
+	}
+
+	return
+}
+
+// MustEnvelope retrieves the Envelope value from the union,
+// panicing if the value is not set.
+func (u StellarMessage) MustEnvelope() ScpEnvelope {
+	val, ok := u.GetEnvelope()
+
+	if !ok {
+		panic("arm Envelope is not set")
+	}
+
+	return val
+}
+
+// GetEnvelope retrieves the Envelope value from the union,
+// returning ok if the union's switch indicated the value is valid.
+func (u StellarMessage) GetEnvelope() (result ScpEnvelope, ok bool) {
+	armName, _ := u.ArmForSwitch(int32(u.Type))
+
+	if armName == "Envelope" {
+		result = *u.Envelope
+		ok = true
+	}
+
+	return
+}
+
+// MustGetScpLedgerSeq retrieves the GetScpLedgerSeq value from the union,
+// panicing if the value is not set.
+func (u StellarMessage) MustGetScpLedgerSeq() Uint32 {
+	val, ok := u.GetGetScpLedgerSeq()
+
+	if !ok {
+		panic("arm GetScpLedgerSeq is not set")
+	}
+
+	return val
+}
+
+// GetGetScpLedgerSeq retrieves the GetScpLedgerSeq value from the union,
+// returning ok if the union's switch indicated the value is valid.
+func (u StellarMessage) GetGetScpLedgerSeq() (result Uint32, ok bool) {
+	armName, _ := u.ArmForSwitch(int32(u.Type))
+
+	if armName == "GetScpLedgerSeq" {
+		result = *u.GetScpLedgerSeq
+		ok = true
+	}
+
+	return
+}
+
+// MarshalBinary implements encoding.BinaryMarshaler.
+func (s StellarMessage) MarshalBinary() ([]byte, error) {
+	b := new(bytes.Buffer)
+	_, err := Marshal(b, s)
+	return b.Bytes(), err
+}
+
+// UnmarshalBinary implements encoding.BinaryUnmarshaler.
+func (s *StellarMessage) UnmarshalBinary(inp []byte) error {
+	_, err := Unmarshal(bytes.NewReader(inp), s)
+	return err
+}
+
+var (
+	_ encoding.BinaryMarshaler   = (*StellarMessage)(nil)
+	_ encoding.BinaryUnmarshaler = (*StellarMessage)(nil)
+)
+
+// AuthenticatedMessageV0 is an XDR NestedStruct defines as:
+//
+//   struct
+//    {
+//       uint64 sequence;
+//       StellarMessage message;
+//       HmacSha256Mac mac;
+//        }
+//
+type AuthenticatedMessageV0 struct {
+	Sequence Uint64
+	Message  StellarMessage
+	Mac      HmacSha256Mac
+}
+
+// MarshalBinary implements encoding.BinaryMarshaler.
+func (s AuthenticatedMessageV0) MarshalBinary() ([]byte, error) {
+	b := new(bytes.Buffer)
+	_, err := Marshal(b, s)
+	return b.Bytes(), err
+}
+
+// UnmarshalBinary implements encoding.BinaryUnmarshaler.
+func (s *AuthenticatedMessageV0) UnmarshalBinary(inp []byte) error {
+	_, err := Unmarshal(bytes.NewReader(inp), s)
+	return err
+}
+
+var (
+	_ encoding.BinaryMarshaler   = (*AuthenticatedMessageV0)(nil)
+	_ encoding.BinaryUnmarshaler = (*AuthenticatedMessageV0)(nil)
+)
+
+// AuthenticatedMessage is an XDR Union defines as:
+//
+//   union AuthenticatedMessage switch (uint32 v)
+//    {
+//    case 0:
+//        struct
+//    {
+//       uint64 sequence;
+//       StellarMessage message;
+//       HmacSha256Mac mac;
+//        } v0;
+//    };
+//
+type AuthenticatedMessage struct {
+	V  Uint32
+	V0 *AuthenticatedMessageV0
+}
+
+// SwitchFieldName returns the field name in which this union's
+// discriminant is stored
+func (u AuthenticatedMessage) SwitchFieldName() string {
+	return "V"
+}
+
+// ArmForSwitch returns which field name should be used for storing
+// the value for an instance of AuthenticatedMessage
+func (u AuthenticatedMessage) ArmForSwitch(sw int32) (string, bool) {
+	switch Uint32(sw) {
+	case 0:
+		return "V0", true
+	}
+	return "-", false
+}
+
+// NewAuthenticatedMessage creates a new  AuthenticatedMessage.
+func NewAuthenticatedMessage(v Uint32, value interface{}) (result AuthenticatedMessage, err error) {
+	result.V = v
+	switch Uint32(v) {
+	case 0:
+		tv, ok := value.(AuthenticatedMessageV0)
+		if !ok {
+			err = fmt.Errorf("invalid value, must be AuthenticatedMessageV0")
+			return
+		}
+		result.V0 = &tv
+	}
+	return
+}
+
+// MustV0 retrieves the V0 value from the union,
+// panicing if the value is not set.
+func (u AuthenticatedMessage) MustV0() AuthenticatedMessageV0 {
+	val, ok := u.GetV0()
+
+	if !ok {
+		panic("arm V0 is not set")
+	}
+
+	return val
+}
+
+// GetV0 retrieves the V0 value from the union,
+// returning ok if the union's switch indicated the value is valid.
+func (u AuthenticatedMessage) GetV0() (result AuthenticatedMessageV0, ok bool) {
+	armName, _ := u.ArmForSwitch(int32(u.V))
+
+	if armName == "V0" {
+		result = *u.V0
+		ok = true
+	}
+
+	return
+}
+
+// MarshalBinary implements encoding.BinaryMarshaler.
+func (s AuthenticatedMessage) MarshalBinary() ([]byte, error) {
+	b := new(bytes.Buffer)
+	_, err := Marshal(b, s)
+	return b.Bytes(), err
+}
+
+// UnmarshalBinary implements encoding.BinaryUnmarshaler.
+func (s *AuthenticatedMessage) UnmarshalBinary(inp []byte) error {
+	_, err := Unmarshal(bytes.NewReader(inp), s)
+	return err
+}
+
+var (
+	_ encoding.BinaryMarshaler   = (*AuthenticatedMessage)(nil)
+	_ encoding.BinaryUnmarshaler = (*AuthenticatedMessage)(nil)
+)
+
+// Value is an XDR Typedef defines as:
+//
+//   typedef opaque Value<>;
+//
+type Value []byte
+
+// MarshalBinary implements encoding.BinaryMarshaler.
+func (s Value) MarshalBinary() ([]byte, error) {
+	b := new(bytes.Buffer)
+	_, err := Marshal(b, s)
+	return b.Bytes(), err
+}
+
+// UnmarshalBinary implements encoding.BinaryUnmarshaler.
+func (s *Value) UnmarshalBinary(inp []byte) error {
+	_, err := Unmarshal(bytes.NewReader(inp), s)
+	return err
+}
+
+var (
+	_ encoding.BinaryMarshaler   = (*Value)(nil)
+	_ encoding.BinaryUnmarshaler = (*Value)(nil)
+)
+
+// ScpBallot is an XDR Struct defines as:
+//
+//   struct SCPBallot
+//    {
+//        uint32 counter; // n
+//        Value value;    // x
+//    };
+//
+type ScpBallot struct {
+	Counter Uint32
+	Value   Value
+}
+
+// MarshalBinary implements encoding.BinaryMarshaler.
+func (s ScpBallot) MarshalBinary() ([]byte, error) {
+	b := new(bytes.Buffer)
+	_, err := Marshal(b, s)
+	return b.Bytes(), err
+}
+
+// UnmarshalBinary implements encoding.BinaryUnmarshaler.
+func (s *ScpBallot) UnmarshalBinary(inp []byte) error {
+	_, err := Unmarshal(bytes.NewReader(inp), s)
+	return err
+}
+
+var (
+	_ encoding.BinaryMarshaler   = (*ScpBallot)(nil)
+	_ encoding.BinaryUnmarshaler = (*ScpBallot)(nil)
+)
+
+// ScpStatementType is an XDR Enum defines as:
+//
+//   enum SCPStatementType
+//    {
+//        SCP_ST_PREPARE = 0,
+//        SCP_ST_CONFIRM = 1,
+//        SCP_ST_EXTERNALIZE = 2,
+//        SCP_ST_NOMINATE = 3
+//    };
+//
+type ScpStatementType int32
+
+const (
+	ScpStatementTypeScpStPrepare     ScpStatementType = 0
+	ScpStatementTypeScpStConfirm     ScpStatementType = 1
+	ScpStatementTypeScpStExternalize ScpStatementType = 2
+	ScpStatementTypeScpStNominate    ScpStatementType = 3
+)
+
+var scpStatementTypeMap = map[int32]string{
+	0: "ScpStatementTypeScpStPrepare",
+	1: "ScpStatementTypeScpStConfirm",
+	2: "ScpStatementTypeScpStExternalize",
+	3: "ScpStatementTypeScpStNominate",
+}
+
+// ValidEnum validates a proposed value for this enum.  Implements
+// the Enum interface for ScpStatementType
+func (e ScpStatementType) ValidEnum(v int32) bool {
+	_, ok := scpStatementTypeMap[v]
+	return ok
+}
+
+// String returns the name of `e`
+func (e ScpStatementType) String() string {
+	name, _ := scpStatementTypeMap[int32(e)]
+	return name
+}
+
+// MarshalBinary implements encoding.BinaryMarshaler.
+func (s ScpStatementType) MarshalBinary() ([]byte, error) {
+	b := new(bytes.Buffer)
+	_, err := Marshal(b, s)
+	return b.Bytes(), err
+}
+
+// UnmarshalBinary implements encoding.BinaryUnmarshaler.
+func (s *ScpStatementType) UnmarshalBinary(inp []byte) error {
+	_, err := Unmarshal(bytes.NewReader(inp), s)
+	return err
+}
+
+var (
+	_ encoding.BinaryMarshaler   = (*ScpStatementType)(nil)
+	_ encoding.BinaryUnmarshaler = (*ScpStatementType)(nil)
+)
+
+// ScpNomination is an XDR Struct defines as:
+//
+//   struct SCPNomination
+//    {
+//        Hash quorumSetHash; // D
+//        Value votes<>;      // X
+//        Value accepted<>;   // Y
+//    };
+//
+type ScpNomination struct {
+	QuorumSetHash Hash
+	Votes         []Value
+	Accepted      []Value
+}
+
+// MarshalBinary implements encoding.BinaryMarshaler.
+func (s ScpNomination) MarshalBinary() ([]byte, error) {
+	b := new(bytes.Buffer)
+	_, err := Marshal(b, s)
+	return b.Bytes(), err
+}
+
+// UnmarshalBinary implements encoding.BinaryUnmarshaler.
+func (s *ScpNomination) UnmarshalBinary(inp []byte) error {
+	_, err := Unmarshal(bytes.NewReader(inp), s)
+	return err
+}
+
+var (
+	_ encoding.BinaryMarshaler   = (*ScpNomination)(nil)
+	_ encoding.BinaryUnmarshaler = (*ScpNomination)(nil)
+)
+
+// ScpStatementPrepare is an XDR NestedStruct defines as:
+//
+//   struct
+//            {
+//                Hash quorumSetHash;       // D
+//                SCPBallot ballot;         // b
+//                SCPBallot* prepared;      // p
+//                SCPBallot* preparedPrime; // p'
+//                uint32 nC;                // c.n
+//                uint32 nH;                // h.n
+//            }
+//
+type ScpStatementPrepare struct {
+	QuorumSetHash Hash
+	Ballot        ScpBallot
+	Prepared      *ScpBallot
+	PreparedPrime *ScpBallot
+	NC            Uint32
+	NH            Uint32
+}
+
+// MarshalBinary implements encoding.BinaryMarshaler.
+func (s ScpStatementPrepare) MarshalBinary() ([]byte, error) {
+	b := new(bytes.Buffer)
+	_, err := Marshal(b, s)
+	return b.Bytes(), err
+}
+
+// UnmarshalBinary implements encoding.BinaryUnmarshaler.
+func (s *ScpStatementPrepare) UnmarshalBinary(inp []byte) error {
+	_, err := Unmarshal(bytes.NewReader(inp), s)
+	return err
+}
+
+var (
+	_ encoding.BinaryMarshaler   = (*ScpStatementPrepare)(nil)
+	_ encoding.BinaryUnmarshaler = (*ScpStatementPrepare)(nil)
+)
+
+// ScpStatementConfirm is an XDR NestedStruct defines as:
+//
+//   struct
+//            {
+//                SCPBallot ballot;   // b
+//                uint32 nPrepared;   // p.n
+//                uint32 nCommit;     // c.n
+//                uint32 nH;          // h.n
+//                Hash quorumSetHash; // D
+//            }
+//
+type ScpStatementConfirm struct {
+	Ballot        ScpBallot
+	NPrepared     Uint32
+	NCommit       Uint32
+	NH            Uint32
+	QuorumSetHash Hash
+}
+
+// MarshalBinary implements encoding.BinaryMarshaler.
+func (s ScpStatementConfirm) MarshalBinary() ([]byte, error) {
+	b := new(bytes.Buffer)
+	_, err := Marshal(b, s)
+	return b.Bytes(), err
+}
+
+// UnmarshalBinary implements encoding.BinaryUnmarshaler.
+func (s *ScpStatementConfirm) UnmarshalBinary(inp []byte) error {
+	_, err := Unmarshal(bytes.NewReader(inp), s)
+	return err
+}
+
+var (
+	_ encoding.BinaryMarshaler   = (*ScpStatementConfirm)(nil)
+	_ encoding.BinaryUnmarshaler = (*ScpStatementConfirm)(nil)
+)
+
+// ScpStatementExternalize is an XDR NestedStruct defines as:
+//
+//   struct
+//            {
+//                SCPBallot commit;         // c
+//                uint32 nH;                // h.n
+//                Hash commitQuorumSetHash; // D used before EXTERNALIZE
+//            }
+//
+type ScpStatementExternalize struct {
+	Commit              ScpBallot
+	NH                  Uint32
+	CommitQuorumSetHash Hash
+}
+
+// MarshalBinary implements encoding.BinaryMarshaler.
+func (s ScpStatementExternalize) MarshalBinary() ([]byte, error) {
+	b := new(bytes.Buffer)
+	_, err := Marshal(b, s)
+	return b.Bytes(), err
+}
+
+// UnmarshalBinary implements encoding.BinaryUnmarshaler.
+func (s *ScpStatementExternalize) UnmarshalBinary(inp []byte) error {
+	_, err := Unmarshal(bytes.NewReader(inp), s)
+	return err
+}
+
+var (
+	_ encoding.BinaryMarshaler   = (*ScpStatementExternalize)(nil)
+	_ encoding.BinaryUnmarshaler = (*ScpStatementExternalize)(nil)
+)
+
+// ScpStatementPledges is an XDR NestedUnion defines as:
+//
+//   union switch (SCPStatementType type)
+//        {
+//        case SCP_ST_PREPARE:
+//            struct
+//            {
+//                Hash quorumSetHash;       // D
+//                SCPBallot ballot;         // b
+//                SCPBallot* prepared;      // p
+//                SCPBallot* preparedPrime; // p'
+//                uint32 nC;                // c.n
+//                uint32 nH;                // h.n
+//            } prepare;
+//        case SCP_ST_CONFIRM:
+//            struct
+//            {
+//                SCPBallot ballot;   // b
+//                uint32 nPrepared;   // p.n
+//                uint32 nCommit;     // c.n
+//                uint32 nH;          // h.n
+//                Hash quorumSetHash; // D
+//            } confirm;
+//        case SCP_ST_EXTERNALIZE:
+//            struct
+//            {
+//                SCPBallot commit;         // c
+//                uint32 nH;                // h.n
+//                Hash commitQuorumSetHash; // D used before EXTERNALIZE
+//            } externalize;
+//        case SCP_ST_NOMINATE:
+//            SCPNomination nominate;
+//        }
+//
+type ScpStatementPledges struct {
+	Type        ScpStatementType
+	Prepare     *ScpStatementPrepare
+	Confirm     *ScpStatementConfirm
+	Externalize *ScpStatementExternalize
+	Nominate    *ScpNomination
+}
+
+// SwitchFieldName returns the field name in which this union's
+// discriminant is stored
+func (u ScpStatementPledges) SwitchFieldName() string {
+	return "Type"
+}
+
+// ArmForSwitch returns which field name should be used for storing
+// the value for an instance of ScpStatementPledges
+func (u ScpStatementPledges) ArmForSwitch(sw int32) (string, bool) {
+	switch ScpStatementType(sw) {
+	case ScpStatementTypeScpStPrepare:
+		return "Prepare", true
+	case ScpStatementTypeScpStConfirm:
+		return "Confirm", true
+	case ScpStatementTypeScpStExternalize:
+		return "Externalize", true
+	case ScpStatementTypeScpStNominate:
+		return "Nominate", true
+	}
+	return "-", false
+}
+
+// NewScpStatementPledges creates a new  ScpStatementPledges.
+func NewScpStatementPledges(aType ScpStatementType, value interface{}) (result ScpStatementPledges, err error) {
+	result.Type = aType
+	switch ScpStatementType(aType) {
+	case ScpStatementTypeScpStPrepare:
+		tv, ok := value.(ScpStatementPrepare)
+		if !ok {
+			err = fmt.Errorf("invalid value, must be ScpStatementPrepare")
+			return
+		}
+		result.Prepare = &tv
+	case ScpStatementTypeScpStConfirm:
+		tv, ok := value.(ScpStatementConfirm)
+		if !ok {
+			err = fmt.Errorf("invalid value, must be ScpStatementConfirm")
+			return
+		}
+		result.Confirm = &tv
+	case ScpStatementTypeScpStExternalize:
+		tv, ok := value.(ScpStatementExternalize)
+		if !ok {
+			err = fmt.Errorf("invalid value, must be ScpStatementExternalize")
+			return
+		}
+		result.Externalize = &tv
+	case ScpStatementTypeScpStNominate:
+		tv, ok := value.(ScpNomination)
+		if !ok {
+			err = fmt.Errorf("invalid value, must be ScpNomination")
+			return
+		}
+		result.Nominate = &tv
+	}
+	return
+}
+
+// MustPrepare retrieves the Prepare value from the union,
+// panicing if the value is not set.
+func (u ScpStatementPledges) MustPrepare() ScpStatementPrepare {
+	val, ok := u.GetPrepare()
+
+	if !ok {
+		panic("arm Prepare is not set")
+	}
+
+	return val
+}
+
+// GetPrepare retrieves the Prepare value from the union,
+// returning ok if the union's switch indicated the value is valid.
+func (u ScpStatementPledges) GetPrepare() (result ScpStatementPrepare, ok bool) {
+	armName, _ := u.ArmForSwitch(int32(u.Type))
+
+	if armName == "Prepare" {
+		result = *u.Prepare
+		ok = true
+	}
+
+	return
+}
+
+// MustConfirm retrieves the Confirm value from the union,
+// panicing if the value is not set.
+func (u ScpStatementPledges) MustConfirm() ScpStatementConfirm {
+	val, ok := u.GetConfirm()
+
+	if !ok {
+		panic("arm Confirm is not set")
+	}
+
+	return val
+}
+
+// GetConfirm retrieves the Confirm value from the union,
+// returning ok if the union's switch indicated the value is valid.
+func (u ScpStatementPledges) GetConfirm() (result ScpStatementConfirm, ok bool) {
+	armName, _ := u.ArmForSwitch(int32(u.Type))
+
+	if armName == "Confirm" {
+		result = *u.Confirm
+		ok = true
+	}
+
+	return
+}
+
+// MustExternalize retrieves the Externalize value from the union,
+// panicing if the value is not set.
+func (u ScpStatementPledges) MustExternalize() ScpStatementExternalize {
+	val, ok := u.GetExternalize()
+
+	if !ok {
+		panic("arm Externalize is not set")
+	}
+
+	return val
+}
+
+// GetExternalize retrieves the Externalize value from the union,
+// returning ok if the union's switch indicated the value is valid.
+func (u ScpStatementPledges) GetExternalize() (result ScpStatementExternalize, ok bool) {
+	armName, _ := u.ArmForSwitch(int32(u.Type))
+
+	if armName == "Externalize" {
+		result = *u.Externalize
+		ok = true
+	}
+
+	return
+}
+
+// MustNominate retrieves the Nominate value from the union,
+// panicing if the value is not set.
+func (u ScpStatementPledges) MustNominate() ScpNomination {
+	val, ok := u.GetNominate()
+
+	if !ok {
+		panic("arm Nominate is not set")
+	}
+
+	return val
+}
+
+// GetNominate retrieves the Nominate value from the union,
+// returning ok if the union's switch indicated the value is valid.
+func (u ScpStatementPledges) GetNominate() (result ScpNomination, ok bool) {
+	armName, _ := u.ArmForSwitch(int32(u.Type))
+
+	if armName == "Nominate" {
+		result = *u.Nominate
+		ok = true
+	}
+
+	return
+}
+
+// MarshalBinary implements encoding.BinaryMarshaler.
+func (s ScpStatementPledges) MarshalBinary() ([]byte, error) {
+	b := new(bytes.Buffer)
+	_, err := Marshal(b, s)
+	return b.Bytes(), err
+}
+
+// UnmarshalBinary implements encoding.BinaryUnmarshaler.
+func (s *ScpStatementPledges) UnmarshalBinary(inp []byte) error {
+	_, err := Unmarshal(bytes.NewReader(inp), s)
+	return err
+}
+
+var (
+	_ encoding.BinaryMarshaler   = (*ScpStatementPledges)(nil)
+	_ encoding.BinaryUnmarshaler = (*ScpStatementPledges)(nil)
+)
+
+// ScpStatement is an XDR Struct defines as:
+//
+//   struct SCPStatement
+//    {
+//        NodeID nodeID;    // v
+//        uint64 slotIndex; // i
+//
+//        union switch (SCPStatementType type)
+//        {
+//        case SCP_ST_PREPARE:
+//            struct
+//            {
+//                Hash quorumSetHash;       // D
+//                SCPBallot ballot;         // b
+//                SCPBallot* prepared;      // p
+//                SCPBallot* preparedPrime; // p'
+//                uint32 nC;                // c.n
+//                uint32 nH;                // h.n
+//            } prepare;
+//        case SCP_ST_CONFIRM:
+//            struct
+//            {
+//                SCPBallot ballot;   // b
+//                uint32 nPrepared;   // p.n
+//                uint32 nCommit;     // c.n
+//                uint32 nH;          // h.n
+//                Hash quorumSetHash; // D
+//            } confirm;
+//        case SCP_ST_EXTERNALIZE:
+//            struct
+//            {
+//                SCPBallot commit;         // c
+//                uint32 nH;                // h.n
+//                Hash commitQuorumSetHash; // D used before EXTERNALIZE
+//            } externalize;
+//        case SCP_ST_NOMINATE:
+//            SCPNomination nominate;
+//        }
+//        pledges;
+//    };
+//
+type ScpStatement struct {
+	NodeId    NodeId
+	SlotIndex Uint64
+	Pledges   ScpStatementPledges
+}
+
+// MarshalBinary implements encoding.BinaryMarshaler.
+func (s ScpStatement) MarshalBinary() ([]byte, error) {
+	b := new(bytes.Buffer)
+	_, err := Marshal(b, s)
+	return b.Bytes(), err
+}
+
+// UnmarshalBinary implements encoding.BinaryUnmarshaler.
+func (s *ScpStatement) UnmarshalBinary(inp []byte) error {
+	_, err := Unmarshal(bytes.NewReader(inp), s)
+	return err
+}
+
+var (
+	_ encoding.BinaryMarshaler   = (*ScpStatement)(nil)
+	_ encoding.BinaryUnmarshaler = (*ScpStatement)(nil)
+)
+
+// ScpEnvelope is an XDR Struct defines as:
+//
+//   struct SCPEnvelope
+//    {
+//        SCPStatement statement;
+//        Signature signature;
+//    };
+//
+type ScpEnvelope struct {
+	Statement ScpStatement
+	Signature Signature
+}
+
+// MarshalBinary implements encoding.BinaryMarshaler.
+func (s ScpEnvelope) MarshalBinary() ([]byte, error) {
+	b := new(bytes.Buffer)
+	_, err := Marshal(b, s)
+	return b.Bytes(), err
+}
+
+// UnmarshalBinary implements encoding.BinaryUnmarshaler.
+func (s *ScpEnvelope) UnmarshalBinary(inp []byte) error {
+	_, err := Unmarshal(bytes.NewReader(inp), s)
+	return err
+}
+
+var (
+	_ encoding.BinaryMarshaler   = (*ScpEnvelope)(nil)
+	_ encoding.BinaryUnmarshaler = (*ScpEnvelope)(nil)
+)
+
+// ScpQuorumSet is an XDR Struct defines as:
+//
+//   struct SCPQuorumSet
+//    {
+//        uint32 threshold;
+//        PublicKey validators<>;
+//        SCPQuorumSet innerSets<>;
+//    };
+//
+type ScpQuorumSet struct {
+	Threshold  Uint32
+	Validators []PublicKey
+	InnerSets  []ScpQuorumSet
+}
+
+// MarshalBinary implements encoding.BinaryMarshaler.
+func (s ScpQuorumSet) MarshalBinary() ([]byte, error) {
+	b := new(bytes.Buffer)
+	_, err := Marshal(b, s)
+	return b.Bytes(), err
+}
+
+// UnmarshalBinary implements encoding.BinaryUnmarshaler.
+func (s *ScpQuorumSet) UnmarshalBinary(inp []byte) error {
+	_, err := Unmarshal(bytes.NewReader(inp), s)
+	return err
+}
+
+var (
+	_ encoding.BinaryMarshaler   = (*ScpQuorumSet)(nil)
+	_ encoding.BinaryUnmarshaler = (*ScpQuorumSet)(nil)
 )
 
 var fmtTest = fmt.Sprint("this is a dummy usage of fmt")

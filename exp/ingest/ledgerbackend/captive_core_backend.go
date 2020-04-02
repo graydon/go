@@ -266,20 +266,26 @@ func (c *captiveStellarCore) GetLatestLedgerSequence() (uint32, error) {
 	return has.CurrentLedger, nil
 }
 
+func (c *captiveStellarCore) IsClosed() bool {
+	return c.nextLedger == 0
+}
+
 func (c *captiveStellarCore) Close() error {
-	var e0, e1, e2 error
+	if c.IsClosed() {
+		return nil
+	}
 	log.Info("closing captive stellar-core subprocess")
+	c.nextLedger = 0
+	c.lastLedger = nil
+	var e1, e2 error
 	if c.metaPipe != nil {
 		c.metaPipe = nil
 	}
-	if c.cmd != nil && c.cmd.Process != nil {
+	if c.processIsAlive() {
 		e1 = c.cmd.Process.Kill()
-		c.cmd.Process = nil
+		c.cmd = nil
 	}
 	e2 = os.RemoveAll(c.getTmpDir())
-	if e0 != nil {
-		return e0
-	}
 	if e1 != nil {
 		log.Error("error killing subprocess", e1.Error())
 		return e1

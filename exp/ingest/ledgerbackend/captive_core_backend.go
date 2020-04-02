@@ -36,16 +36,22 @@ var _ LedgerBackend = (*captiveStellarCore)(nil)
 
 // TODO: switch from history URLs to history archive interface provided from support package, to permit mocking
 
-// In this (crude, initial) sketch, we replay ledgers in blocks of 100,000
-const ledgersPerProcess = 100000
+// In this (crude, initial) sketch, we replay ledgers in blocks of 17,280
+// which is 24 hours worth of ledgers at 5 second intervals.
+const ledgersPerProcess = 17280
 const ledgersPerCheckpoint = 64
 
+// The number of checkpoints we're willing to scan over and ignore, without
+// restarting a subprocess.
+const numCheckpointsLeeway = 10
 
-func roundDownToCheckpointStart(ledger uint32) uint32 {
+func roundDownToFirstReplayAfterCheckpointStart(ledger uint32) uint32 {
 	v := (ledger / ledgersPerCheckpoint) * ledgersPerCheckpoint
 	if v == 0 {
 		// There's no ledger 0, the first checkpoint starts at 1
-		return 1
+		// but that's already been committed (it's the genesis
+		// ledger) so we will get replay starting at 2.
+		return 2
 	} else {
 		// All other checkpoints start at the next multiple of 64
 		return v
@@ -56,7 +62,8 @@ type captiveStellarCore struct {
 	nonce             string
 	networkPassphrase string
 	historyURLs       []string
-	nextLedger        uint32
+	nextLedger        uint32   // next ledger expected, error w/ restart if not seen
+	lastLedger        *uint32  // end of current segment if offline, nil if online
 	cmd               *exec.Cmd
 	metaPipe          io.Reader
 }
@@ -76,6 +83,18 @@ func NewCaptive(networkPassphrase string, historyURLs []string) *captiveStellarC
 	}
 }
 
+// Each captiveStellarCore is either doing bulk offline replay or tracking
+// a network as it closes ledgers online. These cases are differentiated
+// by the lastLedger field of captiveStellarCore, which is nil in the online
+// case (indicating there's no end to the subprocess) and non-nil in the
+// offline case (indicating that the subprocess will be closed after it yields
+// the last ledger in the segment).
+func (c *captiveStellarCore) IsInOfflineReplayMode() bool {
+	return c.lastLedger != nil
+}
+
+func (c *captiveStellarCore) IsInOnlineTrackingMode() bool {
+	return c.lastLedger == nil
 }
 
 // XDR and RPC define a (minimal) framing format which our metadata arrives in: a 4-byte
@@ -114,6 +133,8 @@ func unmarshalFramed(r io.Reader, v interface{}) (int, error) {
 	return m + n, nil
 }
 
+// Returns the sequence number of an LCM, returning an error if the LCM is of
+// an unknown version.
 func peekLedgerSequence(xlcm *xdr.LedgerCloseMeta) (uint32, error) {
 	v0, ok := xlcm.GetV0()
 	if !ok {
@@ -161,6 +182,44 @@ func (c *captiveStellarCore) copyLedgerCloseMeta(xlcm *xdr.LedgerCloseMeta, lcm 
 	return nil
 }
 
+func (c *captiveStellarCore) openOfflineReplaySubprocess(sequence uint32) error {
+	c.Close()
+	maxLedger, e := c.GetLatestLedgerSequence()
+	if e != nil {
+		return errors.Wrap(e, "getting latest ledger sequence")
+	}
+	if sequence > maxLedger {
+		err := errors.Errorf("sequence %d greater than max available %d",
+			sequence, maxLedger)
+		log.Error(err.Error())
+		return err
+	}
+	lastLedger := sequence + ledgersPerProcess
+	if lastLedger > maxLedger {
+		lastLedger = maxLedger
+	}
+	rangeArg := fmt.Sprintf("%d/%d", lastLedger, (lastLedger-sequence)+1)
+	args := []string{"--conf", c.getConfFileName(), "catchup", rangeArg,
+		"--replay-in-memory"}
+	log.WithField("args", args).Info("starting stellar-core subprocess")
+	cmd := exec.Command("stellar-core", args...)
+	cmd.Dir = c.getTmpDir()
+	cmd.Stdout = c.getLogLineWriter()
+	cmd.Stderr = cmd.Stdout
+	c.cmd = cmd
+	e = c.start()
+	if e != nil {
+		err := errors.Wrap(e, "starting stellar-core subprocess")
+		log.Error(err.Error())
+		return err
+	}
+	// The next ledger should be the first ledger of the checkpoint containing
+	// the requested ledger
+	c.nextLedger = roundDownToFirstReplayAfterCheckpointStart(sequence)
+	c.lastLedger = &lastLedger
+	return nil
+}
+
 // We assume that we'll be called repeatedly asking for ledgers in ascending
 // order, so when asked for ledger 23 we start a subprocess doing catchup
 // "100023/100000", which should replay 23, 24, 25, ... 100023. The wrinkle in
@@ -168,83 +227,85 @@ func (c *captiveStellarCore) copyLedgerCloseMeta(xlcm *xdr.LedgerCloseMeta, lcm 
 // the implicit start ledger, so we might need to skip a few ledgers until
 // we hit the one requested (this routine does so transparently if needed).
 func (c *captiveStellarCore) GetLedger(sequence uint32) (bool, LedgerCloseMeta, error) {
-	if c.nextLedger != sequence {
+
+	// First, if we're open but out of range for the request, close.
+	if !c.IsClosed() && !c.LedgerWithinCheckpoints(sequence, numCheckpointsLeeway) {
+		log.Info("subprocess is out of range of requested ledger")
 		c.Close()
-		maxLedger, e := c.GetLatestLedgerSequence()
-		if e != nil {
-			return false, LedgerCloseMeta{}, errors.Wrap(e, "getting latest ledger sequence")
-		}
-		if sequence > maxLedger {
-			return false, LedgerCloseMeta{}, errors.Errorf("sequence %d greater than max available %d",
-				sequence, maxLedger)
-		}
-		lastLedger := sequence + ledgersPerProcess
-		if lastLedger > maxLedger {
-			lastLedger = maxLedger
-		}
-		cmd := exec.Command("stellar-core",
-			"--conf", c.getConfFileName(),
-			"catchup", fmt.Sprintf("%d/%d", lastLedger, lastLedger - sequence),
-			"--replay-in-memory")
-		cmd.Dir = c.getTmpDir()
-		cmd.Stdout = c.getLogLineWriter()
-		cmd.Stderr = cmd.Stdout
-		c.cmd = cmd
-		e = c.start()
-		if e != nil {
-			return false, LedgerCloseMeta{}, errors.Wrap(e, "starting stellar-core subprocess")
-		}
-		// The next ledger should be the first ledger of the checkpoint containing
-		// the requested ledger
-		c.nextLedger = roundDownToCheckpointStart(sequence)
-	}
-	if c.metaPipe == nil {
-		return false, LedgerCloseMeta{}, errors.New("missing metadata pipe")
 	}
 
-	var e error
+	// Next, if we're closed, open.
+	if c.IsClosed() {
+		if e := c.openOfflineReplaySubprocess(sequence); e != nil {
+			err := errors.Wrap(e, "opening subprocess")
+			log.Error(err.Error())
+			return false, LedgerCloseMeta{}, err
+		}
+	}
+
+	// Check that we're where we expect to be: in range ...
+	if !c.LedgerWithinCheckpoints(sequence, 1) {
+		err := errors.New("unexpected subprocess next-ledger")
+		log.Error(err.Error())
+		return false, LedgerCloseMeta{}, err
+	}
+
+	// ... and open
+	if c.metaPipe == nil {
+		err := errors.New("missing metadata pipe")
+		log.Error(err.Error())
+		return false, LedgerCloseMeta{}, err
+	}
+
+	// Now loop along the range until we find the ledger we want.
+	var errOut error
 	for {
 		var xlcm xdr.LedgerCloseMeta
-		_, e = unmarshalFramed(c.metaPipe, &xlcm)
-		if e != nil {
-			e = errors.Wrap(e, "unmarshalling framed LedgerCloseMeta")
-			break
+		_, e0 := unmarshalFramed(c.metaPipe, &xlcm)
+		if e0 != nil {
+			if e0 == io.EOF {
+				errOut = errors.Wrap(e0, "got EOF from subprocess")
+				break
+			} else {
+				errOut = errors.Wrap(e0, "unmarshalling framed LedgerCloseMeta")
+				break
+			}
 		}
-		seq, e := peekLedgerSequence(&xlcm)
-		if e != nil {
+		seq, e1 := peekLedgerSequence(&xlcm)
 		log.WithField("seq", seq).Info("unmarshalled ledger from stellar-core")
+		if e1 != nil {
+			errOut = e1
 			break
 		}
 		if seq != c.nextLedger {
 			// We got something unexpected; close and reset
-			e = errors.Errorf("unexpected ledger %d", seq)
+			errOut = errors.Errorf("unexpected ledger %d", seq)
 			break
 		}
 		c.nextLedger += 1
 		if seq == sequence {
 			// Found the requested seq
 			var lcm LedgerCloseMeta
-			e = c.copyLedgerCloseMeta(&xlcm, &lcm)
-			if e != nil {
+			e2 := c.copyLedgerCloseMeta(&xlcm, &lcm)
+			if e2 != nil {
+				errOut = e2
 				break
 			}
+			// If we got the _last_ ledger in a segment, close before returning.
+			if c.lastLedger != nil && *c.lastLedger == seq {
+				log.Info("closing subprocess at end of replay segment")
+				c.Close()
+			}
 			return true, lcm, nil
-		} else if seq + ledgersPerCheckpoint < sequence {
-			// Core somehow started too early, fail.
-			e = errors.Errorf("too-early ledger %d", seq)
-			break
-		} else if seq > sequence {
-			// Core somehow overshot target, fail.
-			e = errors.Errorf("too-late ledger %d", seq)
-			break
 		}
 	}
 	// All paths above that break out of the loop (instead of return)
 	// set e to non-nil: there was an error and we should close and
 	// reset state before retuning an error to our caller.
+	log.Error(errOut.Error())
 	c.Close()
 	c.nextLedger = 0
-	return false, LedgerCloseMeta{}, e
+	return false, LedgerCloseMeta{}, errOut
 }
 
 func (c *captiveStellarCore) GetLatestLedgerSequence() (uint32, error) {
@@ -264,6 +325,15 @@ func (c *captiveStellarCore) GetLatestLedgerSequence() (uint32, error) {
 		"archive": c.historyURLs[0],
 		}).Info("got history archive latest ledger")
 	return has.CurrentLedger, nil
+}
+
+// Return true if a given ledger is after the next ledger to be read
+// from a given subprocess (so ledger will be read eventually) and no more
+// than numCheckpoints checkpoints ahead of the next ledger to be read
+// (so it will not be too long before ledger is read).
+func (c *captiveStellarCore) LedgerWithinCheckpoints(ledger uint32, numCheckpoints uint32) bool {
+	return ((c.nextLedger <= ledger) &&
+		(ledger <= (c.nextLedger + (numCheckpoints * ledgersPerCheckpoint))))
 }
 
 func (c *captiveStellarCore) IsClosed() bool {

@@ -6,6 +6,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/stellar/go/network"
 	"github.com/stellar/go/support/historyarchive"
+	logpkg "github.com/stellar/go/support/log"
 	"github.com/stellar/go/xdr"
 	"io"
 	"io/ioutil"
@@ -13,8 +14,8 @@ import (
 	"os"
 	"os/exec"
 	"path"
+	"regexp"
 	"strings"
-	"sync"
 	"time"
 )
 
@@ -38,34 +39,7 @@ var _ LedgerBackend = (*captiveStellarCore)(nil)
 // In this (crude, initial) sketch, we replay ledgers in blocks of 100,000
 const ledgersPerProcess = 100000
 const ledgersPerCheckpoint = 64
-const numLogLinesToKeep = 1024
 
-// Circular buffer of recent log lines from captive stellar core
-type recentLogLines struct {
-	lines [numLogLinesToKeep]*string
-	offset int
-	lock sync.RWMutex
-}
-
-func (r *recentLogLines) addLogLine(line string) {
-	r.lock.Lock()
-	r.lines[r.offset] = &line
-	r.offset = (r.offset + 1) % numLogLinesToKeep
-	r.lock.Unlock()
-}
-
-func (r *recentLogLines) getLogLines() []string {
-	r.lock.RLock()
-	var tmp []string
-	for i := 0; i < numLogLinesToKeep; i++ {
-		n := r.lines[(r.offset+i)%numLogLinesToKeep]
-		if n != nil {
-			tmp = append(tmp, *n)
-		}
-	}
-	r.lock.RUnlock()
-	return tmp
-}
 
 func roundDownToCheckpointStart(ledger uint32) uint32 {
 	v := (ledger / ledgersPerCheckpoint) * ledgersPerCheckpoint
@@ -83,7 +57,6 @@ type captiveStellarCore struct {
 	networkPassphrase string
 	historyURLs       []string
 	nextLedger        uint32
-	lastFewLogLines   recentLogLines
 	cmd               *exec.Cmd
 	metaPipe          io.Reader
 }
@@ -103,8 +76,6 @@ func NewCaptive(networkPassphrase string, historyURLs []string) *captiveStellarC
 	}
 }
 
-func (c *captiveStellarCore) GetRecentLogLines() []string {
-	return c.lastFewLogLines.getLogLines()
 }
 
 // XDR and RPC define a (minimal) framing format which our metadata arrives in: a 4-byte
@@ -114,21 +85,31 @@ func unmarshalFramed(r io.Reader, v interface{}) (int, error) {
 	var frameLen uint32
 	n, e := xdr.Unmarshal(r, &frameLen)
 	if e != nil {
-		return n, errors.Wrap(e, "unmarshalling XDR frame header")
+		err := errors.Wrap(e, "unmarshalling XDR frame header")
+		log.Error(err.Error())
+		return n, err
 	}
 	if n != 4 {
-		return n, errors.New("bad length of XDR frame header")
+		err := errors.New("bad length of XDR frame header")
+		log.Error(err.Error())
+		return n, err
 	}
 	if (frameLen & 0x80000000) != 0x80000000 {
-		return n, errors.New("malformed XDR frame header")
+		err := errors.New("malformed XDR frame header")
+		log.Error(err.Error())
+		return n, err
 	}
 	frameLen &= 0x7fffffff
 	m, e := xdr.Unmarshal(r, v)
 	if e != nil {
-		return n + m, errors.Wrap(e, "unmarshalling framed XDR")
+		err := errors.Wrap(e, "unmarshalling framed XDR")
+		log.Error(err.Error())
+		return n + m, err
 	}
 	if int64(m) != int64(frameLen) {
-		return n + m, errors.New("bad length of XDR frame body")
+		err := errors.New("bad length of XDR frame body")
+		log.Error(err.Error())
+		return n + m, err
 	}
 	return m + n, nil
 }
@@ -136,7 +117,9 @@ func unmarshalFramed(r io.Reader, v interface{}) (int, error) {
 func peekLedgerSequence(xlcm *xdr.LedgerCloseMeta) (uint32, error) {
 	v0, ok := xlcm.GetV0()
 	if !ok {
-		return 0, errors.New("unexpected XDR LedgerCloseMeta version")
+		err := errors.New("unexpected XDR LedgerCloseMeta version")
+		log.Error(err.Error())
+		return 0, err
 	}
 	return uint32(v0.LedgerHeader.Header.LedgerSeq), nil
 }
@@ -154,14 +137,18 @@ func (c *captiveStellarCore) copyLedgerCloseMeta(xlcm *xdr.LedgerCloseMeta, lcm 
 	for _, tx := range v0.TxSet.Txs {
 		hash, e := network.HashTransaction(&tx.Tx, c.networkPassphrase)
 		if e != nil {
-			return errors.Wrap(e, "hashing tx in LedgerCloseMeta")
+			err := errors.Wrap(e, "error hashing tx in LedgerCloseMeta")
+			log.Error(err.Error())
+			return err
 		}
 		envelopes[hash] = tx
 	}
 	for _, trm := range v0.TxProcessing {
 		txe, ok := envelopes[trm.Result.TransactionHash]
 		if !ok {
-			return errors.New("unknown tx hash in LedgerCloseMeta")
+			err := errors.New("unknown tx hash in LedgerCloseMeta")
+			log.Error(err.Error())
+			return err
 		}
 		lcm.TransactionEnvelope = append(lcm.TransactionEnvelope, txe)
 		lcm.TransactionResult = append(lcm.TransactionResult, trm.Result)
@@ -225,6 +212,7 @@ func (c *captiveStellarCore) GetLedger(sequence uint32) (bool, LedgerCloseMeta, 
 		}
 		seq, e := peekLedgerSequence(&xlcm)
 		if e != nil {
+		log.WithField("seq", seq).Info("unmarshalled ledger from stellar-core")
 			break
 		}
 		if seq != c.nextLedger {
@@ -271,11 +259,16 @@ func (c *captiveStellarCore) GetLatestLedgerSequence() (uint32, error) {
 	if e != nil {
 		return 0, e
 	}
+	log.WithFields(logpkg.F{
+		"seq": has.CurrentLedger,
+		"archive": c.historyURLs[0],
+		}).Info("got history archive latest ledger")
 	return has.CurrentLedger, nil
 }
 
 func (c *captiveStellarCore) Close() error {
 	var e0, e1, e2 error
+	log.Info("closing captive stellar-core subprocess")
 	if c.metaPipe != nil {
 		c.metaPipe = nil
 	}
@@ -288,9 +281,11 @@ func (c *captiveStellarCore) Close() error {
 		return e0
 	}
 	if e1 != nil {
+		log.Error("error killing subprocess", e1.Error())
 		return e1
 	}
 	if e2 != nil {
+		log.Error("error removing subprocess tmpdir", e2.Error())
 		return e2
 	}
 	return nil
@@ -332,13 +327,16 @@ func (c *captiveStellarCore) getConf() string {
 func (c *captiveStellarCore) getLogLineWriter() io.Writer {
 	r, w := io.Pipe()
 	br := bufio.NewReader(r)
+	// Strip timestamps from log lines from captive stellar-core. We emit our own.
+	dateRx := regexp.MustCompile("^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3} ")
 	go func() {
 		for {
 			line, e := br.ReadString('\n')
 			if e != nil {
 				break
 			}
-			c.lastFewLogLines.addLogLine(line)
+			line = dateRx.ReplaceAllString(line, "")
+			log.Info("stellar-core: ", line)
 		}
 	}()
 	return w
@@ -347,8 +345,11 @@ func (c *captiveStellarCore) getLogLineWriter() io.Writer {
 // Makes the temp directory and writes the config file to it; called by the
 // platform-specific captiveStellarCore.Start() methods.
 func (c *captiveStellarCore) writeConf() error {
-	e := os.MkdirAll(c.getTmpDir(), 0755)
+	dir := c.getTmpDir()
+	log.WithFields(logpkg.F{"dir": dir}).Info("creating subprocess tmpdir")
+	e := os.MkdirAll(dir, 0755)
 	if e != nil {
+		log.WithFields(logpkg.F{"dir":dir}).Error("error creating subprocess tmpdir", e.Error())
 		return e
 	}
 	conf := c.getConf()

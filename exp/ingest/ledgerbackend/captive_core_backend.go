@@ -13,7 +13,7 @@ import (
 	"math/rand"
 	"os"
 	"os/exec"
-	"path"
+	"path/filepath"
 	"regexp"
 	"strings"
 	"time"
@@ -353,6 +353,7 @@ func (c *captiveStellarCore) Close() error {
 	}
 	if c.processIsAlive() {
 		e1 = c.cmd.Process.Kill()
+		c.cmd.Wait()
 		c.cmd = nil
 	}
 	e2 = os.RemoveAll(c.getTmpDir())
@@ -369,11 +370,11 @@ func (c *captiveStellarCore) Close() error {
 
 
 func (c *captiveStellarCore) getTmpDir() string {
-	return path.Join(os.TempDir(), c.nonce)
+	return filepath.Join(os.TempDir(), c.nonce)
 }
 
 func (c *captiveStellarCore) getConfFileName() string {
-	return path.Join(c.getTmpDir(), "stellar-core.conf")
+	return filepath.Join(c.getTmpDir(), "stellar-core.conf")
 }
 
 func (c *captiveStellarCore) getConf() string {
@@ -384,7 +385,7 @@ func (c *captiveStellarCore) getConf() string {
 		"DISABLE_XDR_FSYNC=true",
 		"UNSAFE_QUORUM=true",
 		fmt.Sprintf(`NETWORK_PASSPHRASE="%s"`, c.networkPassphrase),
-		fmt.Sprintf(`BUCKET_DIR_PATH="%s/buckets"`, c.getTmpDir()),
+		fmt.Sprintf(`BUCKET_DIR_PATH="%s"`, filepath.Join(c.getTmpDir(), "buckets")),
 		fmt.Sprintf(`METADATA_OUTPUT_STREAM="%s"`, c.getPipeName()),
 	}
 	for i, val := range c.historyURLs {
@@ -397,7 +398,7 @@ func (c *captiveStellarCore) getConf() string {
 		"[QUORUM_SET]",
 		"THRESHOLD_PERCENT=100",
 		`VALIDATORS=["GCZBOIAY4HLKAJVNJORXZOZRAY2BJDBZHKPBHZCRAIUR5IHC2UHBGCQR"]`)
-	return strings.Join(lines, "\n")
+	return strings.ReplaceAll(strings.Join(lines, "\n"), "\\", "\\\\")
 }
 
 func (c *captiveStellarCore) getLogLineWriter() io.Writer {

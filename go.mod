@@ -7,6 +7,7 @@ require (
 	firebase.google.com/go v3.12.0+incompatible
 	github.com/BurntSushi/toml v0.3.1
 	github.com/Masterminds/squirrel v0.0.0-20161115235646-20f192218cf5
+	github.com/Microsoft/go-winio v0.4.14
 	github.com/ajg/form v0.0.0-20160822230020-523a5da1a92f // indirect
 	github.com/asaskevich/govalidator v0.0.0-20180319081651-7d2e70ef918f
 	github.com/aws/aws-sdk-go v1.25.25

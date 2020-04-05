@@ -12,7 +12,7 @@ import (
 // Windows-specific methods for the captiveStellarCore type.
 
 func (c *captiveStellarCore) getPipeName() string {
-	return fmt.Sprintf(`\\.pipe\%s`, c.nonce)
+	return fmt.Sprintf(`\\.\pipe\%s`, c.nonce)
 }
 
 func (c *captiveStellarCore) start() error {
@@ -37,8 +37,9 @@ func (c *captiveStellarCore) start() error {
 	// Launch a goroutine to reap immediately on exit (I think this is right,
 	// as we do not want zombies and we might abruptly forget / kill / close
 	// the process, but I'm not certain).
+	cmd := c.cmd
 	go func() {
-		c.cmd.Process.Wait()
+		cmd.Wait()
 	}()
 
 	// Then accept on the server end.
@@ -59,7 +60,7 @@ func (c *captiveStellarCore) processIsAlive() bool {
 		return false
 	}
 	p, e := os.FindProcess(c.cmd.Process.Pid)
-	if e == nil || p == nil {
+	if e != nil || p == nil {
 		return false
 	}
 	return true

@@ -1,11 +1,8 @@
 package ledgerbackend
 
 import (
-	logpkg "github.com/stellar/go/support/log"
 	"github.com/stellar/go/xdr"
 )
-
-var log = logpkg.DefaultLogger.WithField("service", "expingest")
 
 // LedgerBackend represents the interface to a ledger data store.
 type LedgerBackend interface {

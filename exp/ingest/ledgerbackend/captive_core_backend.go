@@ -11,12 +11,12 @@ import (
 	"path/filepath"
 	"regexp"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/pkg/errors"
 	"github.com/stellar/go/network"
 	"github.com/stellar/go/support/historyarchive"
-	logpkg "github.com/stellar/go/support/log"
 	"github.com/stellar/go/xdr"
 )
 
@@ -49,27 +49,25 @@ const numCheckpointsLeeway = 10
 func roundDownToFirstReplayAfterCheckpointStart(ledger uint32) uint32 {
 	v := (ledger / ledgersPerCheckpoint) * ledgersPerCheckpoint
 	if v == 0 {
-		// There's no ledger 0, the first checkpoint starts at 1
-		// but that's already been committed (it's the genesis
-		// ledger) so we will get replay starting at 2.
-		return 2
-	} else {
-		// All other checkpoints start at the next multiple of 64
-		return v
+		return 1
 	}
+	// All other checkpoints start at the next multiple of 64
+	return v
 }
 
 type captiveStellarCore struct {
 	nonce             string
 	networkPassphrase string
 	historyURLs       []string
-	nextLedger        uint32  // next ledger expected, error w/ restart if not seen
 	lastLedger        *uint32 // end of current segment if offline, nil if online
 	cmd               *exec.Cmd
 	metaPipe          io.Reader
+
+	nextLedgerMutex sync.Mutex
+	nextLedger      uint32 // next ledger expected, error w/ restart if not seen
 }
 
-// Returns a new captiveStellarCore that is not running. Will lazily start a subprocess
+// NewCaptive returns a new captiveStellarCore that is not running. Will lazily start a subprocess
 // to feed it a block of streaming metadata when user calls .GetLedger(), and will kill
 // and restart the subprocess if subsequent calls to .GetLedger() are discontiguous.
 //
@@ -106,29 +104,24 @@ func unmarshalFramed(r io.Reader, v interface{}) (int, error) {
 	n, e := xdr.Unmarshal(r, &frameLen)
 	if e != nil {
 		err := errors.Wrap(e, "unmarshalling XDR frame header")
-		log.Error(err.Error())
 		return n, err
 	}
 	if n != 4 {
 		err := errors.New("bad length of XDR frame header")
-		log.Error(err.Error())
 		return n, err
 	}
 	if (frameLen & 0x80000000) != 0x80000000 {
 		err := errors.New("malformed XDR frame header")
-		log.Error(err.Error())
 		return n, err
 	}
 	frameLen &= 0x7fffffff
 	m, e := xdr.Unmarshal(r, v)
 	if e != nil {
 		err := errors.Wrap(e, "unmarshalling framed XDR")
-		log.Error(err.Error())
 		return n + m, err
 	}
 	if int64(m) != int64(frameLen) {
 		err := errors.New("bad length of XDR frame body")
-		log.Error(err.Error())
 		return n + m, err
 	}
 	return m + n, nil
@@ -140,7 +133,6 @@ func peekLedgerSequence(xlcm *xdr.LedgerCloseMeta) (uint32, error) {
 	v0, ok := xlcm.GetV0()
 	if !ok {
 		err := errors.New("unexpected XDR LedgerCloseMeta version")
-		log.Error(err.Error())
 		return 0, err
 	}
 	return uint32(v0.LedgerHeader.Header.LedgerSeq), nil
@@ -159,18 +151,14 @@ func (c *captiveStellarCore) copyLedgerCloseMeta(xlcm *xdr.LedgerCloseMeta, lcm 
 	for _, tx := range v0.TxSet.Txs {
 		hash, e := network.HashTransactionInEnvelope(tx, c.networkPassphrase)
 		if e != nil {
-			err := errors.Wrap(e, "error hashing tx in LedgerCloseMeta")
-			log.Error(err.Error())
-			return err
+			return errors.Wrap(e, "error hashing tx in LedgerCloseMeta")
 		}
 		envelopes[hash] = tx
 	}
 	for _, trm := range v0.TxProcessing {
 		txe, ok := envelopes[trm.Result.TransactionHash]
 		if !ok {
-			err := errors.New("unknown tx hash in LedgerCloseMeta")
-			log.Error(err.Error())
-			return err
+			return errors.New("unknown tx hash in LedgerCloseMeta")
 		}
 		lcm.TransactionEnvelope = append(lcm.TransactionEnvelope, txe)
 		lcm.TransactionResult = append(lcm.TransactionResult, trm.Result)
@@ -192,7 +180,6 @@ func (c *captiveStellarCore) openOfflineReplaySubprocess(sequence uint32) error 
 	if sequence > maxLedger {
 		err := errors.Errorf("sequence %d greater than max available %d",
 			sequence, maxLedger)
-		log.Error(err.Error())
 		return err
 	}
 	lastLedger := sequence + ledgersPerProcess
@@ -202,7 +189,6 @@ func (c *captiveStellarCore) openOfflineReplaySubprocess(sequence uint32) error 
 	rangeArg := fmt.Sprintf("%d/%d", lastLedger, (lastLedger-sequence)+1)
 	args := []string{"--conf", c.getConfFileName(), "catchup", rangeArg,
 		"--replay-in-memory"}
-	log.WithField("args", args).Info("starting stellar-core subprocess")
 	cmd := exec.Command("stellar-core", args...)
 	cmd.Dir = c.getTmpDir()
 	cmd.Stdout = c.getLogLineWriter()
@@ -211,12 +197,13 @@ func (c *captiveStellarCore) openOfflineReplaySubprocess(sequence uint32) error 
 	e = c.start()
 	if e != nil {
 		err := errors.Wrap(e, "starting stellar-core subprocess")
-		log.Error(err.Error())
 		return err
 	}
 	// The next ledger should be the first ledger of the checkpoint containing
 	// the requested ledger
+	c.nextLedgerMutex.Lock()
 	c.nextLedger = roundDownToFirstReplayAfterCheckpointStart(sequence)
+	c.nextLedgerMutex.Unlock()
 	c.lastLedger = &lastLedger
 	return nil
 }
@@ -228,34 +215,26 @@ func (c *captiveStellarCore) openOfflineReplaySubprocess(sequence uint32) error 
 // the implicit start ledger, so we might need to skip a few ledgers until
 // we hit the one requested (this routine does so transparently if needed).
 func (c *captiveStellarCore) GetLedger(sequence uint32) (bool, LedgerCloseMeta, error) {
-
 	// First, if we're open but out of range for the request, close.
 	if !c.IsClosed() && !c.LedgerWithinCheckpoints(sequence, numCheckpointsLeeway) {
-		log.Info("subprocess is out of range of requested ledger")
 		c.Close()
 	}
 
 	// Next, if we're closed, open.
 	if c.IsClosed() {
 		if e := c.openOfflineReplaySubprocess(sequence); e != nil {
-			err := errors.Wrap(e, "opening subprocess")
-			log.Error(err.Error())
-			return false, LedgerCloseMeta{}, err
+			return false, LedgerCloseMeta{}, errors.Wrap(e, "opening subprocess")
 		}
 	}
 
 	// Check that we're where we expect to be: in range ...
 	if !c.LedgerWithinCheckpoints(sequence, 1) {
-		err := errors.New("unexpected subprocess next-ledger")
-		log.Error(err.Error())
-		return false, LedgerCloseMeta{}, err
+		return false, LedgerCloseMeta{}, errors.New("unexpected subprocess next-ledger")
 	}
 
 	// ... and open
 	if c.metaPipe == nil {
-		err := errors.New("missing metadata pipe")
-		log.Error(err.Error())
-		return false, LedgerCloseMeta{}, err
+		return false, LedgerCloseMeta{}, errors.New("missing metadata pipe")
 	}
 
 	// Now loop along the range until we find the ledger we want.
@@ -273,17 +252,18 @@ func (c *captiveStellarCore) GetLedger(sequence uint32) (bool, LedgerCloseMeta, 
 			}
 		}
 		seq, e1 := peekLedgerSequence(&xlcm)
-		log.WithField("seq", seq).Info("unmarshalled ledger from stellar-core")
 		if e1 != nil {
 			errOut = e1
 			break
 		}
+		c.nextLedgerMutex.Lock()
 		if seq != c.nextLedger {
 			// We got something unexpected; close and reset
 			errOut = errors.Errorf("unexpected ledger %d", seq)
 			break
 		}
-		c.nextLedger += 1
+		c.nextLedger++
+		c.nextLedgerMutex.Unlock()
 		if seq == sequence {
 			// Found the requested seq
 			var lcm LedgerCloseMeta
@@ -294,7 +274,6 @@ func (c *captiveStellarCore) GetLedger(sequence uint32) (bool, LedgerCloseMeta, 
 			}
 			// If we got the _last_ ledger in a segment, close before returning.
 			if c.lastLedger != nil && *c.lastLedger == seq {
-				log.Info("closing subprocess at end of replay segment")
 				c.Close()
 			}
 			return true, lcm, nil
@@ -303,9 +282,7 @@ func (c *captiveStellarCore) GetLedger(sequence uint32) (bool, LedgerCloseMeta, 
 	// All paths above that break out of the loop (instead of return)
 	// set e to non-nil: there was an error and we should close and
 	// reset state before retuning an error to our caller.
-	log.Error(errOut.Error())
 	c.Close()
-	c.nextLedger = 0
 	return false, LedgerCloseMeta{}, errOut
 }
 
@@ -321,14 +298,10 @@ func (c *captiveStellarCore) GetLatestLedgerSequence() (uint32, error) {
 	if e != nil {
 		return 0, e
 	}
-	log.WithFields(logpkg.F{
-		"seq":     has.CurrentLedger,
-		"archive": c.historyURLs[0],
-	}).Info("got history archive latest ledger")
 	return has.CurrentLedger, nil
 }
 
-// Return true if a given ledger is after the next ledger to be read
+// LedgerWithinCheckpoints returns true if a given ledger is after the next ledger to be read
 // from a given subprocess (so ledger will be read eventually) and no more
 // than numCheckpoints checkpoints ahead of the next ledger to be read
 // (so it will not be too long before ledger is read).
@@ -338,6 +311,8 @@ func (c *captiveStellarCore) LedgerWithinCheckpoints(ledger uint32, numCheckpoin
 }
 
 func (c *captiveStellarCore) IsClosed() bool {
+	c.nextLedgerMutex.Lock()
+	defer c.nextLedgerMutex.Unlock()
 	return c.nextLedger == 0
 }
 
@@ -345,8 +320,10 @@ func (c *captiveStellarCore) Close() error {
 	if c.IsClosed() {
 		return nil
 	}
-	log.Info("closing captive stellar-core subprocess")
+	c.nextLedgerMutex.Lock()
 	c.nextLedger = 0
+	c.nextLedgerMutex.Unlock()
+
 	c.lastLedger = nil
 	var e1, e2 error
 	if c.metaPipe != nil {
@@ -359,12 +336,10 @@ func (c *captiveStellarCore) Close() error {
 	}
 	e2 = os.RemoveAll(c.getTmpDir())
 	if e1 != nil {
-		log.Error("error killing subprocess", e1.Error())
-		return e1
+		return errors.Wrap(e1, "error killing subprocess")
 	}
 	if e2 != nil {
-		log.Error("error removing subprocess tmpdir", e2.Error())
-		return e2
+		return errors.Wrap(e2, "error removing subprocess tmpdir")
 	}
 	return nil
 }
@@ -413,7 +388,8 @@ func (c *captiveStellarCore) getLogLineWriter() io.Writer {
 				break
 			}
 			line = dateRx.ReplaceAllString(line, "")
-			log.Info("stellar-core: ", line)
+			// Leaving for debug purposes:
+			// fmt.Print(line)
 		}
 	}()
 	return w
@@ -423,11 +399,9 @@ func (c *captiveStellarCore) getLogLineWriter() io.Writer {
 // platform-specific captiveStellarCore.Start() methods.
 func (c *captiveStellarCore) writeConf() error {
 	dir := c.getTmpDir()
-	log.WithFields(logpkg.F{"dir": dir}).Info("creating subprocess tmpdir")
 	e := os.MkdirAll(dir, 0755)
 	if e != nil {
-		log.WithFields(logpkg.F{"dir": dir}).Error("error creating subprocess tmpdir", e.Error())
-		return e
+		return errors.Wrap(e, "error creating subprocess tmpdir")
 	}
 	conf := c.getConf()
 	return ioutil.WriteFile(c.getConfFileName(), []byte(conf), 0644)

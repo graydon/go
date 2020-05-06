@@ -6,6 +6,8 @@ import (
 	"bufio"
 	"os"
 	"syscall"
+
+	"github.com/pkg/errors"
 )
 
 // Posix-specific methods for the captiveStellarCore type.
@@ -24,31 +26,30 @@ func (c *captiveStellarCore) start() error {
 	// Note io.File objects close-on-finalization.
 	readFile, writeFile, e := os.Pipe()
 	if e != nil {
-		return e
+		return errors.Wrap(e, "error making a pipe")
 	}
+
+	defer writeFile.Close()
 
 	// Then write config file pointing to it.
 	e = c.writeConf()
 	if e != nil {
-		_ = writeFile.Close()
-		return e
+		return errors.Wrap(e, "error writing conf")
 	}
 
 	// Add the write-end to the set of inherited file handles. This is defined
 	// to be fd 3 on posix platforms.
-	c.cmd.ExtraFiles = []*os.File{ writeFile }
+	c.cmd.ExtraFiles = []*os.File{writeFile}
 	e = c.cmd.Start()
 	if e != nil {
-		return e
+		return errors.Wrap(e, "error starting stellar-core")
 	}
 
 	// Launch a goroutine to reap immediately on exit (I think this is right,
 	// as we do not want zombies and we might abruptly forget / kill / close
 	// the process, but I'm not certain).
 	cmd := c.cmd
-	go func() {
-		cmd.Wait()
-	}()
+	go cmd.Wait()
 
 	c.metaPipe = bufio.NewReaderSize(readFile, 1024*1024)
 	return nil

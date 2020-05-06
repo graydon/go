@@ -203,7 +203,7 @@ func (we *web) streamIndexActionHandler(jfn interface{}, sfn streamFunc) http.Ha
 
 // showActionHandler handles all non-streamable endpoints.
 func showActionHandler(jfn interface{}) http.HandlerFunc {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
 		contentType := render.Negotiate(r)
 		if jfn == nil || (contentType != render.MimeHal && contentType != render.MimeJSON) {
@@ -223,7 +223,7 @@ func showActionHandler(jfn interface{}) http.HandlerFunc {
 		}
 
 		h.ServeHTTP(w, r)
-	})
+	}
 }
 
 // getAccountID retrieves the account id by the provided key. The key is
@@ -240,8 +240,7 @@ func getAccountID(r *http.Request, key string, required bool) (string, error) {
 		return val, nil
 	}
 
-	_, err = strkey.Decode(strkey.VersionByteAccountID, val)
-	if err != nil {
+	if _, err = strkey.Decode(strkey.VersionByteAccountID, val); err != nil {
 		// TODO: add errInvalidValue
 		return "", problem.MakeInvalidFieldProblem(key, errors.New("invalid address"))
 	}
@@ -251,7 +250,7 @@ func getAccountID(r *http.Request, key string, required bool) (string, error) {
 
 // getShowActionQueryParams gets the available query params for all non-indexable endpoints.
 func getShowActionQueryParams(r *http.Request, requireAccountID bool) (*showActionQueryParams, error) {
-	txHash, err := hchi.GetStringFromURL(r, "tx_id")
+	txHash, err := actions.GetTransactionID(r, "tx_id")
 	if err != nil {
 		return nil, errors.Wrap(err, "getting tx id")
 	}
@@ -376,7 +375,7 @@ func (handler objectActionHandler) ServeHTTP(
 	problem.Render(r.Context(), w, hProblem.NotAcceptable)
 }
 
-const singleObjectStreamLimit = 10
+const defaultObjectStreamLimit = 10
 
 type streamableObjectAction interface {
 	GetResource(
@@ -388,6 +387,7 @@ type streamableObjectAction interface {
 type streamableObjectActionHandler struct {
 	action        streamableObjectAction
 	streamHandler sse.StreamHandler
+	limit         int
 }
 
 func (handler streamableObjectActionHandler) ServeHTTP(
@@ -446,11 +446,15 @@ func (handler streamableObjectActionHandler) renderStream(
 	r *http.Request,
 ) {
 	var lastResponse actions.StreamableObjectResponse
+	limit := handler.limit
+	if limit == 0 {
+		limit = defaultObjectStreamLimit
+	}
 
 	handler.streamHandler.ServeStream(
 		w,
 		r,
-		singleObjectStreamLimit,
+		limit,
 		repeatableReadStream(r, func() ([]sse.Event, error) {
 			response, err := handler.action.GetResource(w, r)
 			if err != nil {

@@ -3,12 +3,10 @@ package horizon
 import (
 	"context"
 	"net/http"
-	"net/url"
-	"time"
 
-	raven "github.com/getsentry/raven-go"
-	"github.com/gomodule/redigo/redis"
-	metrics "github.com/rcrowley/go-metrics"
+	"github.com/getsentry/raven-go"
+	"github.com/rcrowley/go-metrics"
+
 	"github.com/stellar/go/exp/orderbook"
 	"github.com/stellar/go/services/horizon/internal/db2/core"
 	"github.com/stellar/go/services/horizon/internal/db2/history"
@@ -127,6 +125,7 @@ func initIngestMetrics(app *App) {
 	app.metrics.Register("ingest.ledger_ingestion", app.expingester.Metrics.LedgerIngestionTimer)
 	app.metrics.Register("ingest.ledger_in_memory_ingestion", app.expingester.Metrics.LedgerInMemoryIngestionTimer)
 	app.metrics.Register("ingest.state_verify", app.expingester.Metrics.StateVerifyTimer)
+	app.metrics.Register("ingest.local_latest_ledger", app.expingester.Metrics.LocalLatestLedgerGauge)
 }
 
 func initTxSubMetrics(app *App) {
@@ -144,58 +143,6 @@ func initWebMetrics(app *App) {
 	app.metrics.Register("requests.total", app.web.requestTimer)
 	app.metrics.Register("requests.succeeded", app.web.successMeter)
 	app.metrics.Register("requests.failed", app.web.failureMeter)
-}
-
-func initRedis(app *App) {
-	if app.config.RedisURL == "" {
-		return
-	}
-
-	redisURL, err := url.Parse(app.config.RedisURL)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	app.redis = &redis.Pool{
-		MaxIdle:     3,
-		IdleTimeout: 240 * time.Second,
-		Dial:        dialRedis(redisURL),
-		TestOnBorrow: func(c redis.Conn, t time.Time) error {
-			_, pingErr := c.Do("PING")
-			return pingErr
-		},
-	}
-
-	// test the connection
-	c := app.redis.Get()
-	defer c.Close()
-
-	_, err = c.Do("PING")
-	if err != nil {
-		log.Fatal(err)
-	}
-}
-
-func dialRedis(redisURL *url.URL) func() (redis.Conn, error) {
-	return func() (redis.Conn, error) {
-		c, err := redis.Dial("tcp", redisURL.Host)
-		if err != nil {
-			return nil, err
-		}
-
-		if redisURL.User == nil {
-			return c, err
-		}
-
-		if pass, ok := redisURL.User.Password(); ok {
-			if _, err = c.Do("AUTH", pass); err != nil {
-				c.Close()
-				return nil, err
-			}
-		}
-
-		return c, err
-	}
 }
 
 func initSubmissionSystem(app *App) {
@@ -241,7 +188,6 @@ func initSubmissionSystem(app *App) {
 			History:        &history.Q{Session: app.HorizonSession(context.Background())},
 			SkipCoreChecks: app.config.IngestFailedTransactions,
 		},
-		Sequences:         cq.SequenceProvider(),
-		NetworkPassphrase: app.config.NetworkPassphrase,
+		Sequences: cq.SequenceProvider(),
 	}
 }

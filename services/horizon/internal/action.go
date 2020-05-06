@@ -44,7 +44,12 @@ func (action *Action) CoreQ() *core.Q {
 // horizon's database.
 func (action *Action) HistoryQ() *history.Q {
 	if action.hq == nil {
-		action.hq = &history.Q{Session: action.App.HorizonSession(action.R.Context())}
+		var err error
+		action.hq, err = actions.HistoryQFromRequest(action.R)
+		if err != nil {
+			// Fall back to the default app session
+			action.hq = &history.Q{Session: action.App.HorizonSession(action.R.Context())}
+		}
 	}
 
 	return action.hq
@@ -190,7 +195,7 @@ func (w *web) getAccountInfo(ctx context.Context, qp *showActionQueryParams) (in
 	defer horizonSession.Rollback()
 	historyQ := &history.Q{horizonSession}
 
-	return actions.AccountInfo(ctx, &core.Q{w.coreSession(ctx)}, historyQ, qp.AccountID)
+	return actions.AccountInfo(ctx, historyQ, qp.AccountID)
 }
 
 // getTransactionPage returns a page containing the transaction records of an account or a ledger.

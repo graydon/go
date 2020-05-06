@@ -131,24 +131,36 @@ func (w *web) mustInstallMiddlewares(app *App, connTimeout time.Duration) {
 	w.internalRouter.Use(loggerMiddleware)
 }
 
+type historyLedgerSourceFactory struct {
+	updateFrequency time.Duration
+}
+
+func (f historyLedgerSourceFactory) Get() ledger.Source {
+	return ledger.NewHistoryDBSource(f.updateFrequency)
+}
+
 // mustInstallActions installs the routing configuration of horizon onto the
 // provided app.  All route registration should be implemented here.
 func (w *web) mustInstallActions(
 	config Config,
 	pathFinder paths.Finder,
 	orderBookGraph *orderbook.OrderBookGraph,
-	stateMiddleware *StateMiddleware,
+	session *db.Session,
 ) {
 	if w == nil {
 		log.Fatal("missing web instance for installing web actions")
+	}
+
+	stateMiddleware := StateMiddleware{
+		HorizonSession: session,
 	}
 
 	r := w.router
 	r.Get("/", RootAction{}.Handle)
 
 	streamHandler := sse.StreamHandler{
-		RateLimiter:  w.rateLimiter,
-		LedgerSource: ledger.NewHistoryDBSource(w.sseUpdateFrequency),
+		RateLimiter:         w.rateLimiter,
+		LedgerSourceFactory: historyLedgerSourceFactory{updateFrequency: w.sseUpdateFrequency},
 	}
 
 	// State endpoints behind stateMiddleware
@@ -210,12 +222,13 @@ func (w *web) mustInstallActions(
 	// account actions - /accounts/{account_id} has been created above so we
 	// need to use absolute routes here. Make sure we use regexp check here for
 	// emptiness. Without it, requesting `/accounts//payments` return all payments!
-	r.Get("/accounts/{account_id:\\w+}/transactions", w.streamIndexActionHandler(w.getTransactionPage, w.streamTransactions))
-	r.Get("/accounts/{account_id:\\w+}/operations", OperationIndexAction{}.Handle)
-	r.Get("/accounts/{account_id:\\w+}/payments", OperationIndexAction{OnlyPayments: true}.Handle)
-	r.Get("/accounts/{account_id:\\w+}/effects", EffectIndexAction{}.Handle)
-	r.Get("/accounts/{account_id:\\w+}/trades", TradeIndexAction{}.Handle)
-
+	r.Group(func(r chi.Router) {
+		r.Get("/accounts/{account_id:\\w+}/transactions", w.streamIndexActionHandler(w.getTransactionPage, w.streamTransactions))
+		r.Get("/accounts/{account_id:\\w+}/operations", OperationIndexAction{}.Handle)
+		r.Get("/accounts/{account_id:\\w+}/payments", OperationIndexAction{OnlyPayments: true}.Handle)
+		r.Get("/accounts/{account_id:\\w+}/effects", EffectIndexAction{}.Handle)
+		r.Get("/accounts/{account_id:\\w+}/trades", TradeIndexAction{}.Handle)
+	})
 	// ledger actions
 	r.Route("/ledgers", func(r chi.Router) {
 		r.Get("/", LedgerIndexAction{}.Handle)
@@ -246,18 +259,20 @@ func (w *web) mustInstallActions(
 		r.Get("/{op_id}/effects", EffectIndexAction{}.Handle)
 	})
 
-	// payment actions
-	r.Get("/payments", OperationIndexAction{OnlyPayments: true}.Handle)
+	r.Group(func(r chi.Router) {
+		// payment actions
+		r.Get("/payments", OperationIndexAction{OnlyPayments: true}.Handle)
 
-	// effect actions
-	r.Get("/effects", EffectIndexAction{}.Handle)
+		// effect actions
+		r.Get("/effects", EffectIndexAction{}.Handle)
 
-	// trading related endpoints
-	r.Get("/trades", TradeIndexAction{}.Handle)
-	r.Get("/trade_aggregations", TradeAggregateIndexAction{}.Handle)
-	// /offers/{offer_id} has been created above so we need to use absolute
-	// routes here.
-	r.Get("/offers/{offer_id}/trades", TradeIndexAction{}.Handle)
+		// trading related endpoints
+		r.Get("/trades", TradeIndexAction{}.Handle)
+		r.Get("/trade_aggregations", TradeAggregateIndexAction{}.Handle)
+		// /offers/{offer_id} has been created above so we need to use absolute
+		// routes here.
+		r.Get("/offers/{offer_id}/trades", TradeIndexAction{}.Handle)
+	})
 
 	// Transaction submission API
 	r.Post("/transactions", TransactionCreateAction{}.Handle)
@@ -324,12 +339,6 @@ func (w *web) horizonSession(ctx context.Context) (*db.Session, error) {
 	}
 
 	return &db.Session{DB: w.historyQ.Session.DB, Ctx: ctx}, nil
-}
-
-// coreSession returns a new session that loads data from the stellar core
-// database. The returned session is bound to `ctx`.
-func (w *web) coreSession(ctx context.Context) *db.Session {
-	return &db.Session{DB: w.coreQ.Session.DB, Ctx: ctx}
 }
 
 // isHistoryStale returns true if the latest history ledger is more than

@@ -3,11 +3,6 @@ package ledgerbackend
 import (
 	"bufio"
 	"fmt"
-	"github.com/pkg/errors"
-	"github.com/stellar/go/network"
-	"github.com/stellar/go/support/historyarchive"
-	logpkg "github.com/stellar/go/support/log"
-	"github.com/stellar/go/xdr"
 	"io"
 	"io/ioutil"
 	"math/rand"
@@ -17,6 +12,12 @@ import (
 	"regexp"
 	"strings"
 	"time"
+
+	"github.com/pkg/errors"
+	"github.com/stellar/go/network"
+	"github.com/stellar/go/support/historyarchive"
+	logpkg "github.com/stellar/go/support/log"
+	"github.com/stellar/go/xdr"
 )
 
 // Ensure captiveStellarCore implements LedgerBackend
@@ -62,8 +63,8 @@ type captiveStellarCore struct {
 	nonce             string
 	networkPassphrase string
 	historyURLs       []string
-	nextLedger        uint32   // next ledger expected, error w/ restart if not seen
-	lastLedger        *uint32  // end of current segment if offline, nil if online
+	nextLedger        uint32  // next ledger expected, error w/ restart if not seen
+	lastLedger        *uint32 // end of current segment if offline, nil if online
 	cmd               *exec.Cmd
 	metaPipe          io.Reader
 }
@@ -156,7 +157,7 @@ func (c *captiveStellarCore) copyLedgerCloseMeta(xlcm *xdr.LedgerCloseMeta, lcm 
 	lcm.LedgerHeader = v0.LedgerHeader
 	envelopes := make(map[xdr.Hash]xdr.TransactionEnvelope)
 	for _, tx := range v0.TxSet.Txs {
-		hash, e := network.HashTransaction(&tx.Tx, c.networkPassphrase)
+		hash, e := network.HashTransactionInEnvelope(tx, c.networkPassphrase)
 		if e != nil {
 			err := errors.Wrap(e, "error hashing tx in LedgerCloseMeta")
 			log.Error(err.Error())
@@ -321,9 +322,9 @@ func (c *captiveStellarCore) GetLatestLedgerSequence() (uint32, error) {
 		return 0, e
 	}
 	log.WithFields(logpkg.F{
-		"seq": has.CurrentLedger,
+		"seq":     has.CurrentLedger,
 		"archive": c.historyURLs[0],
-		}).Info("got history archive latest ledger")
+	}).Info("got history archive latest ledger")
 	return has.CurrentLedger, nil
 }
 
@@ -367,7 +368,6 @@ func (c *captiveStellarCore) Close() error {
 	}
 	return nil
 }
-
 
 func (c *captiveStellarCore) getTmpDir() string {
 	return filepath.Join(os.TempDir(), c.nonce)
@@ -426,7 +426,7 @@ func (c *captiveStellarCore) writeConf() error {
 	log.WithFields(logpkg.F{"dir": dir}).Info("creating subprocess tmpdir")
 	e := os.MkdirAll(dir, 0755)
 	if e != nil {
-		log.WithFields(logpkg.F{"dir":dir}).Error("error creating subprocess tmpdir", e.Error())
+		log.WithFields(logpkg.F{"dir": dir}).Error("error creating subprocess tmpdir", e.Error())
 		return e
 	}
 	conf := c.getConf()

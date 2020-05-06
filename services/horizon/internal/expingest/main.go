@@ -95,6 +95,10 @@ type System struct {
 		// StateVerifyTimer exposes timing metrics about the rate and
 		// duration of state verification.
 		StateVerifyTimer metrics.Timer
+
+		// LocalLatestLedgerGauge exposes the local (order book graph)
+		// latest processed ledger
+		LocalLatestLedgerGauge metrics.Gauge
 	}
 
 	ctx    context.Context
@@ -187,6 +191,7 @@ func (s *System) initMetrics() {
 	s.Metrics.LedgerIngestionTimer = metrics.NewTimer()
 	s.Metrics.LedgerInMemoryIngestionTimer = metrics.NewTimer()
 	s.Metrics.StateVerifyTimer = metrics.NewTimer()
+	s.Metrics.LocalLatestLedgerGauge = metrics.NewGauge()
 }
 
 // Run starts ingestion system. Ingestion system supports distributed ingestion
@@ -304,6 +309,14 @@ func (s *System) runStateMachine(cur stateMachineNode) error {
 	}
 }
 
+func (s *System) graphApply(sequence uint32) error {
+	if err := s.graph.Apply(sequence); err != nil {
+		return err
+	}
+	s.Metrics.LocalLatestLedgerGauge.Update(int64(sequence))
+	return nil
+}
+
 func (s *System) loadOffersIntoMemory(sequence uint32) error {
 	defer s.graph.Discard()
 
@@ -333,8 +346,7 @@ func (s *System) loadOffersIntoMemory(sequence uint32) error {
 		})
 	}
 
-	err = s.graph.Apply(sequence)
-	if err != nil {
+	if err := s.graphApply(sequence); err != nil {
 		return errors.Wrap(err, "Error running graph.Apply")
 	}
 

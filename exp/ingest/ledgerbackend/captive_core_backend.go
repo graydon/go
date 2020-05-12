@@ -171,22 +171,21 @@ func (c *captiveStellarCore) copyLedgerCloseMeta(xlcm *xdr.LedgerCloseMeta, lcm 
 	return nil
 }
 
-func (c *captiveStellarCore) openOfflineReplaySubprocess(sequence uint32) error {
+func (c *captiveStellarCore) openOfflineReplaySubprocess(nextLedger, lastLedger uint32) error {
 	c.Close()
 	maxLedger, e := c.GetLatestLedgerSequence()
 	if e != nil {
 		return errors.Wrap(e, "getting latest ledger sequence")
 	}
-	if sequence > maxLedger {
+	if nextLedger > maxLedger {
 		err := errors.Errorf("sequence %d greater than max available %d",
-			sequence, maxLedger)
+			nextLedger, maxLedger)
 		return err
 	}
-	lastLedger := sequence + ledgersPerProcess
 	if lastLedger > maxLedger {
 		lastLedger = maxLedger
 	}
-	rangeArg := fmt.Sprintf("%d/%d", lastLedger, (lastLedger-sequence)+1)
+	rangeArg := fmt.Sprintf("%d/%d", lastLedger, (lastLedger-nextLedger)+1)
 	args := []string{"--conf", c.getConfFileName(), "catchup", rangeArg,
 		"--replay-in-memory"}
 	cmd := exec.Command("stellar-core", args...)
@@ -202,9 +201,30 @@ func (c *captiveStellarCore) openOfflineReplaySubprocess(sequence uint32) error 
 	// The next ledger should be the first ledger of the checkpoint containing
 	// the requested ledger
 	c.nextLedgerMutex.Lock()
-	c.nextLedger = roundDownToFirstReplayAfterCheckpointStart(sequence)
+	c.nextLedger = roundDownToFirstReplayAfterCheckpointStart(nextLedger)
 	c.nextLedgerMutex.Unlock()
 	c.lastLedger = &lastLedger
+	return nil
+}
+
+func (c *captiveStellarCore) PrepareRange(from uint32, to uint32) error {
+	// `from-1` here because being able to read ledger `from-1` is a confirmation
+	// that the range is ready. This effectively makes getting ledger #1 impossible.
+	// TODO: should be replaced with by a tee reader with buffer or similar in the
+	// later stage of development.
+	if e := c.openOfflineReplaySubprocess(from-1, to); e != nil {
+		return errors.Wrap(e, "opening subprocess")
+	}
+
+	if c.metaPipe == nil {
+		return errors.New("missing metadata pipe")
+	}
+
+	_, _, err := c.GetLedger(from - 1)
+	if err != nil {
+		return errors.Wrap(err, "opening getting ledger `from-1`")
+	}
+
 	return nil
 }
 
@@ -222,7 +242,7 @@ func (c *captiveStellarCore) GetLedger(sequence uint32) (bool, LedgerCloseMeta, 
 
 	// Next, if we're closed, open.
 	if c.IsClosed() {
-		if e := c.openOfflineReplaySubprocess(sequence); e != nil {
+		if e := c.openOfflineReplaySubprocess(sequence, sequence+ledgersPerProcess); e != nil {
 			return false, LedgerCloseMeta{}, errors.Wrap(e, "opening subprocess")
 		}
 	}
@@ -260,6 +280,7 @@ func (c *captiveStellarCore) GetLedger(sequence uint32) (bool, LedgerCloseMeta, 
 		if seq != c.nextLedger {
 			// We got something unexpected; close and reset
 			errOut = errors.Errorf("unexpected ledger %d", seq)
+			c.nextLedgerMutex.Unlock()
 			break
 		}
 		c.nextLedger++

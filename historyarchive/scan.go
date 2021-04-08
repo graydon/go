@@ -363,8 +363,8 @@ func (arch *Archive) CheckCheckpointFilesMissing(opts *CommandOptions) map[strin
 	for _, cat := range Categories() {
 		missing[cat] = make([]uint32, 0)
 		for ix := range opts.Range.GenerateCheckpoints(arch.checkpointManager) {
-			fileExists, mapEntryExists := arch.checkpointFiles[cat][ix]
-			if !fileExists || !mapEntryExists {
+			fileExists := arch.checkpointFiles[cat][ix]
+			if !fileExists {
 				missing[cat] = append(missing[cat], ix)
 			}
 		}

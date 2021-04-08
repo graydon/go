@@ -348,8 +348,8 @@ func (arch *Archive) NoteExistingBucket(bucket Hash) {
 func (arch *Archive) NoteReferencedBucket(bucket Hash) bool {
 	arch.mutex.Lock()
 	defer arch.mutex.Unlock()
-	_, exists := arch.referencedBuckets[bucket]
-	if exists {
+	_, mapEntryExists := arch.referencedBuckets[bucket]
+	if mapEntryExists {
 		return false
 	}
 	arch.referencedBuckets[bucket] = true
@@ -377,8 +377,8 @@ func (arch *Archive) CheckBucketsMissing() map[Hash]bool {
 	defer arch.mutex.Unlock()
 	missing := make(map[Hash]bool)
 	for k := range arch.referencedBuckets {
-		_, ok := arch.allBuckets[k]
-		if !ok {
+		bucketExists, mapEntryExists := arch.allBuckets[k]
+		if !bucketExists || !mapEntryExists {
 			missing[k] = true
 		}
 	}

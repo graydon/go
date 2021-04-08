@@ -6,7 +6,7 @@ package historyarchive
 
 import (
 	"fmt"
-	"log"
+	log "github.com/sirupsen/logrus"
 )
 
 // Repair repairs a destination archive based on a source archive, it assumes that the source and destination have the

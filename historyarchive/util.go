@@ -7,8 +7,8 @@ package historyarchive
 import (
 	"bufio"
 	"fmt"
+	log "github.com/sirupsen/logrus"
 	"io"
-	"log"
 	"path"
 )
 

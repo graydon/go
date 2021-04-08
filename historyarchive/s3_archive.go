@@ -7,6 +7,7 @@ package historyarchive
 import (
 	"bytes"
 	"context"
+	log "github.com/sirupsen/logrus"
 	"io"
 	"net/http"
 	"path"

@@ -6,7 +6,7 @@ package main
 
 import (
 	"fmt"
-	"log"
+	log "github.com/sirupsen/logrus"
 	"net/http"
 	_ "net/http/pprof"
 	"os"
@@ -47,6 +47,8 @@ type Options struct {
 	Last        int
 	Recent      bool
 	Profile     bool
+	Debug       bool
+	Trace       bool
 	CommandOpts historyarchive.CommandOptions
 	ConnectOpts historyarchive.ConnectOptions
 }
@@ -96,6 +98,17 @@ func (opts *Options) MaybeProfile() {
 		go func() {
 			log.Println(http.ListenAndServe("localhost:6060", nil))
 		}()
+	}
+}
+
+func (opts *Options) SetupLogging() {
+	if opts.Debug {
+		log.SetLevel(log.DebugLevel)
+		log.Debug("set logging to DEBUG level")
+	}
+	if opts.Trace {
+		log.SetLevel(log.TraceLevel)
+		log.Trace("set logging to TRACE level")
 	}
 }
 
@@ -246,9 +259,24 @@ func main() {
 		"collect and serve profile locally",
 	)
 
+	rootCmd.PersistentFlags().BoolVar(
+		&opts.Debug,
+		"debug",
+		false,
+		"set log level to DEBUG",
+	)
+
+	rootCmd.PersistentFlags().BoolVar(
+		&opts.Trace,
+		"trace",
+		false,
+		"set log level to TRACE",
+	)
+
 	rootCmd.AddCommand(&cobra.Command{
 		Use: "status",
 		Run: func(cmd *cobra.Command, args []string) {
+			opts.SetupLogging()
 			status(firstArg(args), &opts)
 		},
 	})
@@ -256,6 +284,7 @@ func main() {
 	rootCmd.AddCommand(&cobra.Command{
 		Use: "log",
 		Run: func(cmd *cobra.Command, args []string) {
+			opts.SetupLogging()
 			opts.MaybeProfile()
 			logArchive(firstArg(args), &opts)
 		},
@@ -264,6 +293,7 @@ func main() {
 	rootCmd.AddCommand(&cobra.Command{
 		Use: "scan",
 		Run: func(cmd *cobra.Command, args []string) {
+			opts.SetupLogging()
 			opts.MaybeProfile()
 			scan(firstArg(args), &opts)
 		},
@@ -272,6 +302,7 @@ func main() {
 	rootCmd.AddCommand(&cobra.Command{
 		Use: "mirror",
 		Run: func(cmd *cobra.Command, args []string) {
+			opts.SetupLogging()
 			opts.MaybeProfile()
 			src, dst := srcDst(args)
 			mirror(src, dst, &opts)
@@ -281,6 +312,7 @@ func main() {
 	rootCmd.AddCommand(&cobra.Command{
 		Use: "repair",
 		Run: func(cmd *cobra.Command, args []string) {
+			opts.SetupLogging()
 			opts.MaybeProfile()
 			src, dst := srcDst(args)
 			repair(src, dst, &opts)
@@ -290,6 +322,7 @@ func main() {
 	rootCmd.AddCommand(&cobra.Command{
 		Use: "dumpxdr",
 		Run: func(cmd *cobra.Command, args []string) {
+			opts.SetupLogging()
 			err := historyarchive.DumpXdrAsJson(args)
 			if err != nil {
 				log.Fatal(err)

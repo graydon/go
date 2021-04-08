@@ -9,9 +9,9 @@ import (
 	"compress/gzip"
 	"crypto/sha256"
 	"fmt"
+	log "github.com/sirupsen/logrus"
 	"hash"
 	"io"
-	"log"
 	"sort"
 
 	"github.com/stellar/go/xdr"

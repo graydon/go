@@ -34,7 +34,7 @@ func Repair(src *Archive, dst *Archive, opts *CommandOptions) error {
 				return err
 			}
 			if !categoryRequired(cat) && !exists {
-				log.Printf("Skipping nonexistent, optional %s file %s", cat, pth)
+				log.Warnf("Skipping nonexistent, optional %s file %s", cat, pth)
 				continue
 			}
 			log.Printf("Repairing %s", pth)

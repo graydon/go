@@ -246,7 +246,7 @@ func reportValidity(ty string, nbad int, total int) {
 	if nbad == 0 {
 		log.Printf("Verified %d %ss have expected hashes", total, ty)
 	} else {
-		log.Printf("Error: %d %ss (of %d checked) have unexpected hashes", nbad, ty, total)
+		log.Errorf("Error: %d %ss (of %d checked) have unexpected hashes", nbad, ty, total)
 	}
 }
 
@@ -260,7 +260,7 @@ func compareHashMaps(expect map[uint32]Hash, actual map[uint32]Hash, ty string,
 		}
 		if ahash != ehash {
 			n++
-			log.Printf("Error: mismatched hash on %s 0x%8.8x: expected %s, got %s",
+			log.Errorf("Error: mismatched hash on %s 0x%8.8x: expected %s, got %s",
 				ty, eledger, ehash, ahash)
 		}
 	}

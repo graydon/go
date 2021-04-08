@@ -268,9 +268,9 @@ func compareHashMaps(expect map[uint32]Hash, actual map[uint32]Hash, ty string,
 	return n
 }
 
-func (arch *Archive) ReportInvalid(opts *CommandOptions) error {
+func (arch *Archive) ReportInvalid(opts *CommandOptions) (bool, error) {
 	if !opts.Verify {
-		return nil
+		return false, nil
 	}
 
 	arch.mutex.Lock()
@@ -316,7 +316,7 @@ func (arch *Archive) ReportInvalid(opts *CommandOptions) error {
 	totalInvalid += arch.invalidTxResultSets
 
 	if totalInvalid != 0 {
-		return fmt.Errorf("Detected %d objects with unexpected hashes", totalInvalid)
+		return true, fmt.Errorf("Detected %d objects with unexpected hashes", totalInvalid)
 	}
-	return nil
+	return false, nil
 }

@@ -385,7 +385,7 @@ func (arch *Archive) CheckBucketsMissing() map[Hash]bool {
 	return missing
 }
 
-func (arch *Archive) ReportMissing(opts *CommandOptions) error {
+func (arch *Archive) ReportMissing(opts *CommandOptions) (bool, error) {
 
 	log.Printf("Examining checkpoint files for gaps")
 	missingCheckpointFiles := arch.CheckCheckpointFilesMissing(opts)
@@ -416,5 +416,5 @@ func (arch *Archive) ReportMissing(opts *CommandOptions) error {
 		log.Printf("No missing buckets referenced in range %s", opts.Range)
 	}
 
-	return nil
+	return missingCheckpoints || len(missingBuckets) != 0, nil
 }

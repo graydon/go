@@ -122,8 +122,8 @@ func scan(a string, opts *Options) {
 	arch := historyarchive.MustConnect(a, opts.ConnectOpts)
 	opts.SetRange(arch, nil)
 	e1 := arch.Scan(&opts.CommandOpts)
-	e2 := arch.ReportMissing(&opts.CommandOpts)
-	e3 := arch.ReportInvalid(&opts.CommandOpts)
+	missing, e2 := arch.ReportMissing(&opts.CommandOpts)
+	invalid, e3 := arch.ReportInvalid(&opts.CommandOpts)
 	if e1 != nil {
 		log.Fatal(e1)
 	}
@@ -132,6 +132,12 @@ func scan(a string, opts *Options) {
 	}
 	if e3 != nil {
 		log.Fatal(e3)
+	}
+	if missing {
+		log.Fatal("Some objects were missing")
+	}
+	if invalid {
+		log.Fatal("Some objects were invalid")
 	}
 }
 

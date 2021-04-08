@@ -377,8 +377,8 @@ func (arch *Archive) CheckBucketsMissing() map[Hash]bool {
 	defer arch.mutex.Unlock()
 	missing := make(map[Hash]bool)
 	for k := range arch.referencedBuckets {
-		bucketExists, mapEntryExists := arch.allBuckets[k]
-		if !bucketExists || !mapEntryExists {
+		bucketExists := arch.allBuckets[k]
+		if !bucketExists {
 			missing[k] = true
 		}
 	}
